@@ -19,6 +19,7 @@ from storage.vectors.pgvector_store import (  # noqa: F401
     get_chunks_with_embeddings,
     search_in_course,
     search_global_excluding,
+    search_topics_semantic,
     delete_course,
     drop_collection,
 )

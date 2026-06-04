@@ -188,6 +188,40 @@ def search_global_excluding(
     ]
 
 
+def search_topics_semantic(
+    query_vector: np.ndarray,
+    limit: int = 40,
+) -> list[dict]:
+    """
+    ANN over every TOPIC chunk across all courses, sorted by cosine desc.
+
+    Powers semantic /topics/search: the query string is embedded by the same
+    SciNCL encoder and matched against the 938 topic vectors via the HNSW index.
+    The `chunk_id LIKE '%__topic__%'` guard is a no-op today (only topic chunks
+    are embedded) but keeps the search topic-only if descriptions/objectives are
+    ever embedded later. Returns [{chunk_id, course_id, score}].
+    """
+    lit = _vec_literal(query_vector)
+    with _Conn() as cur:
+        if config.ANN_INDEX_TYPE == 'hnsw':
+            cur.execute(f"SET LOCAL hnsw.ef_search = {config.ANN_HNSW_EF_SEARCH}")
+        cur.execute(
+            r"""
+            SELECT chunk_id, course_id, 1 - (embedding <=> %s::vector) AS sim
+            FROM chunk_embeddings
+            WHERE chunk_id LIKE '%%\_\_topic\_\_%%'
+            ORDER BY embedding <=> %s::vector
+            LIMIT %s
+            """,
+            (lit, lit, limit),
+        )
+        rows = cur.fetchall()
+    return [
+        {"chunk_id": r[0], "course_id": r[1], "score": float(r[2])}
+        for r in rows
+    ]
+
+
 # ── Deletes ──────────────────────────────────────────────────────────────────
 def delete_course(course_id: str):
     with _Conn() as cur:

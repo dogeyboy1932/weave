@@ -1,21 +1,13 @@
-import json
 import time
 from collections import OrderedDict
-from pathlib import Path
 from threading import Lock
 from typing import Optional
 from fastapi import APIRouter, Query, Header, HTTPException
 from pydantic import BaseModel
 import storage.postgres.store as pg_store
-import config
+from storage.vectors import store as vector_store
+from storage.vectors.encoder import encode
 from llm.llm_explainer import explain_topic_connection
-
-# Load topic descriptions once at import time
-_DEFS: dict = {}
-_defs_path = Path(config.DEFINITIONS_PATH)
-if _defs_path.exists():
-    with open(_defs_path) as _f:
-        _DEFS = json.load(_f)
 
 router = APIRouter()
 
@@ -92,13 +84,13 @@ def course_info(course: str = Query(..., description="Course ID")):
     """
     summary = pg_store.get_course_tag_summary(course)
 
-    # Enrich topics with descriptions
+    # Enrich topics with descriptions parsed from the embedded topic chunks.
+    descriptions = pg_store.get_topic_descriptions_for_course(course)
     topics_enriched = []
     for t in summary["topics"]:
-        key = f"{course}: {t['topic']}"
         topics_enriched.append({
             **t,
-            "description": _DEFS.get(key, ""),
+            "description": descriptions.get(t['topic'], ""),
         })
 
     return {
@@ -110,37 +102,47 @@ def course_info(course: str = Query(..., description="Course ID")):
 
 @router.get("/search")
 def search_topics(
-    q:   str = Query(..., min_length=2, description="Topic keyword or buzzword"),
+    q:   str = Query(..., min_length=2, description="Topic concept or phrase"),
     top: int = Query(40, ge=1, le=100),
 ):
     """
-    Two-phase topic search:
+    Two-phase semantic topic search:
 
-    Phase 1 — Direct: topics whose text or tags contain the query string.
-    Phase 2 — Related: topics from other courses sharing exact tags with phase-1 hits.
+    Phase 1 — Direct: the query is embedded with the same SciNCL encoder used at
+    ingest and matched by cosine (pgvector HNSW ANN) against the topic vectors.
+    This means "Machine Learning" surfaces CS 446's "Neural networks" even though
+    the exact words never appear in the topic text — the old keyword ILIKE match
+    returned nothing for such queries.
 
-    Example: searching "RLC circuit" matches ECE210's RLC Circuit topic (phase 1),
-    then surfaces ME340's Spring-Mass-Damper (phase 2) because both share tags like
-    "second-order-ode" and "natural-frequency".
+    Phase 2 — Related: topics from OTHER courses sharing exact tags with the
+    phase-1 hits, e.g. ECE 210's RLC Circuit ⇔ ME 340's Spring-Mass-Damper via
+    "second-order-ode" / "natural-frequency".
 
-    Performance: every cross-row lookup (per-topic neighbors, per-pair course
-    similarity) is batched into a single Postgres round trip. Identical queries
-    are served from a 5-minute in-process LRU cache.
+    Performance: one ANN query for phase 1, then every cross-row lookup
+    (per-topic neighbors, per-course descriptions, per-pair course similarity) is
+    batched. Identical queries are served from a 5-minute in-process LRU cache.
     """
     cache_key = (q.strip().lower(), top)
     cached = _cache_get(cache_key)
     if cached is not None:
         return cached
 
-    def _add_description(item: dict) -> dict:
-        key = f"{item['course_id']}: {item['topic_text']}"
-        item['description'] = _DEFS.get(key, "")
-        return item
+    # Per-course description cache so phase-2 (related) items can be enriched
+    # without re-fetching a course's topic chunks more than once.
+    _desc_cache: dict[str, dict] = {}
 
-    # Phase 1: direct text + tag match (one query)
-    matches = pg_store.search_topics(q, top)
+    def _desc(course_id: str, topic_text: str) -> str:
+        if course_id not in _desc_cache:
+            _desc_cache[course_id] = pg_store.get_topic_descriptions_for_course(course_id)
+        return _desc_cache[course_id].get(topic_text, "")
+
+    # Phase 1: semantic nearest topics (embed query → ANN over topic vectors).
+    qvec = encode([q])[0]
+    hits = vector_store.search_topics_semantic(qvec, limit=top)
+    matches = pg_store.resolve_topic_chunks(hits)  # cosine-ranked, with descriptions
     for m in matches:
-        _add_description(m)
+        m['matched_by']   = 'semantic'
+        m['matched_tags'] = []
 
     # Collect all tags from direct matches for phase 2
     all_tags: list[str] = []
@@ -155,7 +157,7 @@ def search_topics(
     direct_courses = list(dict.fromkeys(m['course_id'] for m in matches))
     related = pg_store.find_related_by_tags(all_tags, exclude_courses=direct_courses)
     for r in related:
-        _add_description(r)
+        r['description'] = _desc(r['course_id'], r['topic_text'])
         # The UI doesn't render `topic_matches` for related items, so we
         # don't fetch them. (Saved ~50 round trips per search.)
         r['explanation'] = None
@@ -222,17 +224,12 @@ def explain_topic(
     src_ctx = pg_store.get_topic_context(body.source_course, body.source_topic)
     tgt_ctx = pg_store.get_topic_context(body.target_course, body.target_topic)
 
-    # Descriptions from topic_definitions.json if available
-    import json as _json
-    from pathlib import Path
-    import config as _cfg
-    defs: dict = {}
-    defs_path = Path(_cfg.DEFINITIONS_PATH)
-    if defs_path.exists():
-        with open(defs_path) as f:
-            defs = _json.load(f)
-    src_desc = defs.get(f"{body.source_course}: {body.source_topic}", "") or src_ctx.get("course_description", "")
-    tgt_desc = defs.get(f"{body.target_course}: {body.target_topic}", "") or tgt_ctx.get("course_description", "")
+    # Topic descriptions parsed from the embedded topic chunks (falls back to the
+    # course description when a topic has no definition).
+    src_desc = pg_store.get_topic_descriptions_for_course(body.source_course).get(
+        body.source_topic, "") or src_ctx.get("course_description", "")
+    tgt_desc = pg_store.get_topic_descriptions_for_course(body.target_course).get(
+        body.target_topic, "") or tgt_ctx.get("course_description", "")
 
     # Use shared_tags from the request, fall back to overlap between both tag lists
     shared = body.shared_tags

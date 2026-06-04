@@ -547,6 +547,109 @@ def search_topics(query: str, limit: int = 40) -> list[dict]:
     return results
 
 
+# ── Topic-chunk text helpers ─────────────────────────────────────────────────
+# Embedded topic chunks store raw_text as
+#   "{topic_text}: {definition}. Related concepts: {tags}."
+# with NO course prefix (variant-C, see scoring/chunker.topic_chunk_text). These
+# two helpers recover the clean topic_text / definition from that raw_text and
+# are the single source of truth so the description shown in the UI is exactly
+# what was embedded — no separate topic_definitions.json read required.
+def _match_topic_text(raw: str, topic_texts: list[str]) -> Optional[str]:
+    """The longest topic_text that prefixes raw_text (robust to ':' in names)."""
+    cands = [
+        t for t in topic_texts
+        if raw == t or raw.startswith(t + ':') or raw.startswith(t + '.')
+    ]
+    return max(cands, key=len) if cands else None
+
+
+def _extract_definition(raw: str, topic_text: str) -> str:
+    rest = raw[len(topic_text):].lstrip(': ').strip()
+    idx = rest.rfind('. Related concepts:')
+    if idx != -1:
+        rest = rest[:idx]
+    return rest.strip()
+
+
+def get_topic_descriptions_for_course(course_id: str) -> dict[str, str]:
+    """{topic_text: definition} for one course, parsed from embedded topic chunks.
+    Replaces the legacy topic_definitions.json lookup."""
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT raw_text FROM chunks WHERE course_id=%s AND chunk_type='topic'",
+            (course_id,),
+        )
+        raws = [r[0] for r in cur.fetchall()]
+        cur.execute(
+            "SELECT topic_text FROM topic_categories WHERE course_id=%s",
+            (course_id,),
+        )
+        topic_texts = [r[0] for r in cur.fetchall()]
+    out: dict[str, str] = {}
+    for raw in raws:
+        tt = _match_topic_text(raw, topic_texts)
+        if tt is not None:
+            out[tt] = _extract_definition(raw, tt)
+    return out
+
+
+def resolve_topic_chunks(chunk_hits: list[dict]) -> list[dict]:
+    """
+    Resolve pgvector ANN hits over topic chunks back to topic metadata.
+
+    chunk_hits: [{chunk_id, course_id, score}] from
+    storage.vectors.store.search_topics_semantic(). Recovers the clean topic_text
+    via _match_topic_text and the definition via _extract_definition.
+
+    Returns [{course_id, topic_text, categories, tags, description, score}],
+    preserving the input (cosine-ranked) order, skipping any unresolved hit.
+    """
+    if not chunk_hits:
+        return []
+
+    chunk_ids = [h['chunk_id'] for h in chunk_hits]
+    course_ids = list({h['course_id'] for h in chunk_hits})
+
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT chunk_id, raw_text FROM chunks WHERE chunk_id = ANY(%s::text[])",
+            (chunk_ids,),
+        )
+        raw_by_chunk = {r[0]: r[1] for r in cur.fetchall()}
+
+        cur.execute(
+            "SELECT course_id, topic_text, categories, COALESCE(tags, '[]') "
+            "FROM topic_categories WHERE course_id = ANY(%s::text[])",
+            (course_ids,),
+        )
+        meta_by_course: dict[str, dict[str, dict]] = {}
+        for r in cur.fetchall():
+            meta_by_course.setdefault(r[0], {})[r[1]] = {
+                'categories': r[2] if isinstance(r[2], dict) else json.loads(r[2]),
+                'tags':       r[3] if isinstance(r[3], list) else json.loads(r[3]),
+            }
+
+    out: list[dict] = []
+    for h in chunk_hits:
+        raw = raw_by_chunk.get(h['chunk_id'])
+        if raw is None:
+            continue
+        course_meta = meta_by_course.get(h['course_id'], {})
+        topic_text = _match_topic_text(raw, list(course_meta.keys()))
+        if topic_text is None:
+            continue
+        meta = course_meta[topic_text]
+        out.append({
+            'course_id':   h['course_id'],
+            'topic_text':  topic_text,
+            'categories':  meta['categories'],
+            'tags':        meta['tags'],
+            'description': _extract_definition(raw, topic_text),
+            'score':       round(float(h['score']), 4),
+        })
+    return out
+
+
 def find_related_by_tags(tags: list[str], exclude_courses: list[str]) -> list[dict]:
     """Find topics from other courses that share any exact tag with the given tag list."""
     if not tags or not exclude_courses:

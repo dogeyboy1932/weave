@@ -922,6 +922,104 @@ usual `README.md`, `config.py`, `config.yml`, `Dockerfile.api`, `fly.toml`,
 
 ---
 
+## Phase 18 — Data-quality rework + semantic topic search
+
+**Date:** June 4, 2026
+
+Phase 17 got the app *deployable*; Phase 18 got the *signal* clean. The driving
+complaint (`fix.txt`): top matches were dominated by baseline embedding noise and
+same-domain near-duplicates, and the category enrichment from Phase 16 had
+contaminated the department-faithful category distributions the non-obvious score
+depends on. The goal was a final, deliberate pass over what gets embedded and how
+it's scored — "this should be the last time we re-embed."
+
+**1. Variant-C embedding text.** `scoring/chunker.py` dropped the course-name
+prefix from each topic chunk. The embedded text is now
+`"{topic}: {definition}. Related concepts: {tags}."` with **no** `<course>` prefix
+— the implicit department signal that prefix carried was masking exactly the
+cross-domain isomorphisms SciNCL exists to surface. The build is factored into two
+shared helpers, `topic_chunk_text()` (embedded text) and `topic_term_text()`
+(lex/TF-IDF text), so the ingest path and the merge-by-topic append path can never
+drift in format. Tags now also feed `term_text`, with hyphens flattened
+(`isomorphic-to-rlc-circuit` → `isomorphic rlc circuit`) so multi-word tags bridge
+lexically too.
+
+**2. CHEM glossary, term-counts only.** `mechse_syllabi.json` glossary entries
+became `glossary`-type chunks that feed term counts (lex/TF-IDF) but are
+deliberately **not** embedded — keeping ~100 glossary points per CHEM course out of
+the vector space avoids making CHEM spuriously "central." Their value is purely
+lexical bridging on genuine CHEM↔PHYS overlaps.
+
+**3. Categories reverted.** `data/courses_dump.json` category distributions were
+rolled back to their pre-Phase-16 (commit `385b853`) department-faithful values;
+the enriched tags were kept. This re-surfaced the electrical↔mechanics family
+(ECE 205 ↔ TAM 211/212) at the top of the non-obvious ranking.
+
+**4. Scoring retune.** `sem_floor` 0.35 → **0.74** in `config.yml`, and the
+non-obvious score now uses the *calibrated* semantic score
+(`scoring/hybrid_scorer.py`) instead of raw cosine — this killed baseline-noise junk
+(CS 521 ↔ ME 330 fell from rank #16 to #433). `min_score` 0.55 → 0.40 retuned the
+NetworkX graph to ~129–140 edges.
+
+**5. Shared-topics drill-down.** `scoring/vector_similarity.shared_topics()` computes
+the *direct pairwise* topic-to-topic cosine matrix between two specific courses and
+returns the strongest cross-course pairs — intentionally **not** served from the
+global `topic_similarity` table, whose per-topic top-k is dominated by same-domain
+near-duplicates and so discards the cross-domain bridges this view exists to show
+(e.g. ECE 205 "Ohm's law" ↔ TAM 212 "Newton's laws" at 0.90). Exposed at
+`/similarity/shared-topics` and rendered in the UI "why similar" modal.
+
+> **Key insight:** the canonical ME 340 ↔ ECE 205 (damping ↔ RLC, 0.92) is a
+> *topic-level* signal, not a *course-level* non-obvious rank — course averaging
+> washes it out. That's expected behaviour, surfaced by the drill-down, not a bug.
+
+**6. Ingestion hardening.** Both ingest paths dropped a dead `topic_definitions.json`
+read. Append is now **merge-by-topic** (`_upsert_topics_into_course()` in
+`api/routes/ingest.py`): an incoming topic that matches an existing one
+(cosine ≥ `MERGE_COSINE` = 0.88) unions tags, takes the richer definition,
+re-embeds, and overwrites the same `chunk_id` — no dilution from duplicate near-topics;
+a genuinely new topic is added.
+
+**7. The 905 stale-embedding bug (critical data fix).** `delete_course` had never
+deleted a course's rows from `chunks` / `chunk_embeddings`, so every re-ingest left
+the old vectors behind. The database had accumulated **905 stale embeddings (~49%)**
+— old `topicpatch` / `definition` / `_app` chunks polluting every semantic
+similarity. Fixed `delete_course` to cascade, added
+`wipe_content_tables()`, and made `scripts/restore_from_dump.py` wipe to a clean
+slate before reloading. The DB is now exactly **938 legitimate topic vectors**
+(35 courses; MATH 415/463 contribute none — they have empty topic lists, so their
+`non_obvious_score` is legitimately null).
+
+**8. Semantic topic search.** `/topics/search` was rigid keyword matching — a
+`topic_text ILIKE '%q%'` that returned *nothing* for a query like "Machine Learning."
+It now embeds the query with the same SciNCL encoder
+(`storage.vectors.store.search_topics_semantic`) and runs a pgvector HNSW ANN over
+the 938 topic vectors, ranking by cosine; "RLC circuit" → ECE 205 at 0.93, and the
+real ML topic (CS 568) surfaces where keyword search drew a blank. Results resolve
+back to topic metadata via `pg_store.resolve_topic_chunks()`, which recovers the
+clean `topic_text` by longest-prefix match against `topic_categories`. The
+cross-domain phase-2 (shared-tag) pass is unchanged. With this in place,
+`topic_definitions.json` is no longer read at request time — topic descriptions are
+parsed straight from the embedded chunk text
+(`pg_store.get_topic_descriptions_for_course`), so the UI shows exactly what was
+embedded. The file is retained only as recovery input for `restore_from_dump.py`.
+
+**Archive sweep.** Dead files removed from git and moved into the gitignored
+`.archive/` (kept on disk), matching the Phase 17 convention:
+- `data/ME_340_edit.json` — a one-off per-course edit buffer.
+- `data/course_info.json`, `data/instructors.json` — orphaned source files. Their
+  config constants (`COURSE_INFO_PATH`, `INSTRUCTORS_PATH`) were dropped in Phase 17
+  and instructor data now lives inside `courses_dump.json`; nothing reads them.
+- `scripts/enrich_tags.py` — the one-off Phase 16 tag/category re-derivation script,
+  whose category output was reverted this phase (tags are now baked into the dump).
+- `NEXT_CHAT_HANDOFF.md` — a session-handoff scratch doc, superseded by this section.
+
+Retained as the recovery path: `scripts/restore_from_dump.py` +
+`data/courses_dump.json` + `data/topic_definitions.json` + `data/mechse_syllabi.json`
+(the last still read for CHEM glossaries).
+
+---
+
 ## Cross-cutting design principles that emerged
 
 These weren't planned up front — they crystallized through arguments with reality. They are the rules the codebase now lives by.
