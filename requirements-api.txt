@@ -4,11 +4,16 @@
 
 # Storage
 psycopg2-binary>=2.9
-neo4j>=5.14,<6.0
+pgvector>=0.2.4
+pyyaml>=6.0
 
-# ML / Embeddings  (PyTorch CPU wheel installed separately in Dockerfile)
+# ML / Embeddings  (PyTorch CPU wheel installed separately in Dockerfile when
+# runtime=pytorch). The ONNX runtime path needs only onnxruntime + tokenizers
+# (~50 MB total) — strip the PyTorch line above when shipping the ONNX bundle.
 sentence-transformers>=2.3,<3.0
 transformers>=4.36,<5.0
+onnxruntime>=1.17,<2.0
+tokenizers>=0.15
 
 # PDF parsing
 pdfplumber>=0.10

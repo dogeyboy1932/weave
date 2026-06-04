@@ -1,52 +1,26 @@
 """
-Vector-store dispatcher. Selects backend at import time based on VECTOR_BACKEND:
+Vector store. Pgvector (in Supabase Postgres) is the only backend.
 
-    VECTOR_BACKEND=milvus     -> storage.vectors.milvus_store (local docker-compose stack)
-    VECTOR_BACKEND=pgvector   -> storage.vectors.pgvector_store (Supabase / any Postgres+pgvector)
+This module used to dispatch between pgvector and a local-Milvus backend; the
+Milvus path moved to .archive/legacy-local-docker/ when the project consolidated
+on a single cloud-backed pipeline (see archive/README.md and docs/HISTORY.md
+Phase 12). Imports across the codebase still do:
 
-Importers should always do:
     from storage.vectors import store as vs
 
-and call vs.get_or_create_collection(), vs.insert_chunks(...), etc. — exactly the
-same function names as the underlying backend modules.
+— so we keep this thin re-export to avoid a noisy rename across every call site.
 """
-from __future__ import annotations
+from storage.vectors.pgvector_store import (  # noqa: F401
+    DIM,
+    get_or_create_collection,
+    insert_chunks,
+    get_embeddings_for_course,
+    get_chunk_embedding,
+    get_chunks_with_embeddings,
+    search_in_course,
+    search_global_excluding,
+    delete_course,
+    drop_collection,
+)
 
-import os
-
-_BACKEND = os.environ.get("VECTOR_BACKEND", "milvus").lower().strip()
-
-if _BACKEND == "pgvector":
-    from storage.vectors.pgvector_store import (  # noqa: F401
-        DIM,
-        get_or_create_collection,
-        insert_chunks,
-        get_embeddings_for_course,
-        get_chunk_embedding,
-        get_chunks_with_embeddings,
-        search_in_course,
-        search_global_excluding,
-        delete_course,
-        drop_collection,
-    )
-elif _BACKEND == "milvus":
-    from storage.vectors.milvus_store import (  # noqa: F401
-        DIM,
-        get_or_create_collection,
-        insert_chunks,
-        get_embeddings_for_course,
-        get_chunk_embedding,
-        get_chunks_with_embeddings,
-        search_in_course,
-        search_global_excluding,
-        delete_course,
-        drop_collection,
-    )
-else:
-    raise ValueError(
-        f"VECTOR_BACKEND={_BACKEND!r} is not supported. "
-        "Set VECTOR_BACKEND to 'milvus' or 'pgvector'."
-    )
-
-
-BACKEND_NAME = _BACKEND
+BACKEND_NAME = "pgvector"

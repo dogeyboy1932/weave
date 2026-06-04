@@ -2,17 +2,14 @@
 .venv/
 .model_cache/
 
-# Oracle deploy secrets and state (legacy path)
-deploy/legacy/oci/credentials.env
-deploy/legacy/oci/state/
-deploy/legacy/oci/.venv/
+# Production deploy secrets (filled-in copy of credentials.env.example)
+deploy/credentials.env
 
-# Free-tier deploy secrets
-deploy/free/credentials.env
-
-# Aura credential backups downloaded from the Neo4j console
+# Stray Neo4j Aura credential backups from earlier deploys
 deploy/Neo4j-*.txt
-deploy/legacy/Neo4j-*.txt
+
+# ONNX bundle (created by scripts/export_scincl_onnx.py — see docs/ARCHITECTURE.md)
+models/
 
 __pycache__/
 *.pyc
@@ -26,3 +23,5 @@ build/
 # MemPalace per-project files (issue #185)
 mempalace.yaml
 entities.json
+
+/.archive

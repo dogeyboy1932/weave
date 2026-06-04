@@ -1,34 +1,56 @@
 """
-pgvector-backed vector store. Drop-in replacement for storage/vectors/milvus_store.py.
+pgvector-backed vector store — the only backend.
 
 Uses the SAME Postgres connection as storage/postgres/store.py and requires
 the `vector` extension (Supabase has it preinstalled; CREATE EXTENSION is a no-op
 if already present).
 
-Public API matches milvus_store.py exactly so both can be swapped via
-storage/vectors/store.py based on the VECTOR_BACKEND env var.
+The legacy Milvus backend lives in .archive/legacy-local-docker/milvus_store.py.
 """
 from __future__ import annotations
 
 import numpy as np
 from psycopg2.extras import execute_values
 
+import config
 from storage.postgres.store import _Conn
 
-DIM = 768
+DIM = config.EMBEDDING_DIM
 
 _DDL = f"""
 CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE IF NOT EXISTS chunk_embeddings (
-    chunk_id  VARCHAR PRIMARY KEY,
-    course_id VARCHAR NOT NULL,
-    embedding vector({DIM}) NOT NULL
+    chunk_id      VARCHAR PRIMARY KEY,
+    course_id     VARCHAR NOT NULL,
+    embedding     vector({DIM}) NOT NULL,
+    model_version VARCHAR
 );
 
 CREATE INDEX IF NOT EXISTS chunk_embeddings_course_id_idx
     ON chunk_embeddings (course_id);
+
+-- Ensure model_version exists when upgrading from an older schema.
+ALTER TABLE chunk_embeddings ADD COLUMN IF NOT EXISTS model_version VARCHAR;
 """
+
+
+# ANN index — HNSW for cosine distance, parameters from config.yml.
+# Created idempotently after the table exists. Building the index is cheap
+# (≤ a few seconds at 1.7k vectors) and ef_search is set per-session below.
+def _ensure_ann_index():
+    if config.ANN_INDEX_TYPE != 'hnsw':
+        return
+    op_class = 'vector_cosine_ops' if config.ANN_DISTANCE == 'cosine' else 'vector_l2_ops'
+    with _Conn() as cur:
+        cur.execute(
+            f"""
+            CREATE INDEX IF NOT EXISTS chunk_embeddings_hnsw
+                ON chunk_embeddings
+                USING hnsw (embedding {op_class})
+                WITH (m = {config.ANN_HNSW_M})
+            """
+        )
 
 
 def _vec_literal(arr: np.ndarray | list) -> str:
@@ -43,26 +65,33 @@ def get_or_create_collection():
     """Equivalent of Milvus' get_or_create_collection — ensures table+index exist."""
     with _Conn() as cur:
         cur.execute(_DDL)
+    _ensure_ann_index()
 
 
 # ── Inserts ──────────────────────────────────────────────────────────────────
 def insert_chunks(chunks: list[dict]):
-    """chunks: list of {chunk_id, course_id, embedding (np.ndarray shape (768,))}"""
+    """
+    chunks: list of {chunk_id, course_id, embedding (np.ndarray shape (DIM,))}.
+    Each row is stamped with the current encoder's model_version so we can
+    detect mixed-version embeddings.
+    """
     if not chunks:
         return
+    model_version = config.EMBEDDING_MODEL_ID
     rows = [
-        (c["chunk_id"], c["course_id"], _vec_literal(c["embedding"]))
+        (c["chunk_id"], c["course_id"], _vec_literal(c["embedding"]), model_version)
         for c in chunks
     ]
     sql = """
-    INSERT INTO chunk_embeddings (chunk_id, course_id, embedding)
+    INSERT INTO chunk_embeddings (chunk_id, course_id, embedding, model_version)
     VALUES %s
     ON CONFLICT (chunk_id) DO UPDATE SET
-        course_id = EXCLUDED.course_id,
-        embedding = EXCLUDED.embedding
+        course_id     = EXCLUDED.course_id,
+        embedding     = EXCLUDED.embedding,
+        model_version = EXCLUDED.model_version
     """
     with _Conn() as cur:
-        execute_values(cur, sql, rows, template="(%s, %s, %s::vector)")
+        execute_values(cur, sql, rows, template="(%s, %s, %s::vector, %s)")
 
 
 # ── Queries ──────────────────────────────────────────────────────────────────
@@ -114,6 +143,8 @@ def search_in_course(
         return []
     scores: list[float] = []
     with _Conn() as cur:
+        if config.ANN_INDEX_TYPE == 'hnsw':
+            cur.execute(f"SET LOCAL hnsw.ef_search = {config.ANN_HNSW_EF_SEARCH}")
         for v in query_vectors:
             cur.execute(
                 """
@@ -138,6 +169,8 @@ def search_global_excluding(
     """ANN across ALL courses except exclude_course_id, sorted by score desc."""
     lit = _vec_literal(query_vector)
     with _Conn() as cur:
+        if config.ANN_INDEX_TYPE == 'hnsw':
+            cur.execute(f"SET LOCAL hnsw.ef_search = {config.ANN_HNSW_EF_SEARCH}")
         cur.execute(
             """
             SELECT chunk_id, course_id, 1 - (embedding <=> %s::vector) AS sim

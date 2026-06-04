@@ -1,6 +1,9 @@
-# Full-fat production image. Mirrors local capabilities so production can do
-# everything local can: PDF ingest, SciNCL encoding, topic graph builds,
-# label_categories, etc. Larger image (~1.5 GB) but no cold-start downloads.
+# Production image. Two build modes selected by EMBEDDING_RUNTIME:
+#   --build-arg EMBEDDING_RUNTIME=pytorch  (default; ships SciNCL via torch CPU)
+#   --build-arg EMBEDDING_RUNTIME=onnx     (ships models/ ONNX bundle, no torch)
+# The ONNX path drops PyTorch + sentence-transformers from the image (~700 MB →
+# ~150 MB) once you've run scripts/export_scincl_onnx.py and committed
+# models/scincl-int8.onnx + tokenizer + MANIFEST.json.
 #
 # Run maintenance ops via:
 #   flyctl ssh console --app <app>
@@ -8,8 +11,10 @@
 
 FROM python:3.12-slim
 
-# System deps: libpq for psycopg2, libgomp for torch CPU, build-essential for any
-# wheels that compile, plus poppler for pdfplumber's pdfminer.six.
+ARG EMBEDDING_RUNTIME=pytorch
+ENV EMBEDDING_RUNTIME=${EMBEDDING_RUNTIME}
+
+# System deps: libpq for psycopg2, libgomp for torch CPU's OpenMP (no-op for ONNX).
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq5 \
         libgomp1 \
@@ -17,35 +22,54 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install CPU-only PyTorch wheel first so sentence-transformers doesn't pull the
-# 2 GB CUDA build.
+# In pytorch mode, install CPU-only torch first so sentence-transformers
+# doesn't pull the 2 GB CUDA build. In onnx mode, skip torch entirely.
 RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch>=2.0,<3.0"
+ && if [ "$EMBEDDING_RUNTIME" = "pytorch" ]; then \
+        pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch>=2.0,<3.0"; \
+    fi
 
 COPY requirements-api.txt ./
-RUN pip install --no-cache-dir -r requirements-api.txt
+RUN if [ "$EMBEDDING_RUNTIME" = "onnx" ]; then \
+        # Skip torch + sentence-transformers; they aren't loaded on the ONNX path.
+        grep -v -E '^(sentence-transformers|transformers)\b' requirements-api.txt > /tmp/req.txt && \
+        pip install --no-cache-dir -r /tmp/req.txt && \
+        pip install --no-cache-dir "tokenizers>=0.15"; \
+    else \
+        pip install --no-cache-dir -r requirements-api.txt; \
+    fi
 
-# Bake the SciNCL model into the image so cold starts skip the 420 MB download.
+# Bake assets needed at runtime.
 ENV SCINCL_CACHE_DIR=/app/.model_cache
-RUN python -c "from sentence_transformers import SentenceTransformer; \
-SentenceTransformer('malteos/scincl', cache_folder='/app/.model_cache')"
+RUN if [ "$EMBEDDING_RUNTIME" = "pytorch" ]; then \
+        # 420 MB SciNCL weights → ~1.5 GB image; saves cold-start download.
+        python -c "from sentence_transformers import SentenceTransformer; \
+SentenceTransformer('malteos/scincl', cache_folder='/app/.model_cache')"; \
+    fi
 
-# Bake NLTK stopwords (chunker.py imports them at module load).
 ENV NLTK_DATA=/usr/share/nltk_data
 RUN python -c "import nltk; nltk.download('stopwords', download_dir='/usr/share/nltk_data', quiet=True)"
 
 # App code. scripts/ is included so maintenance ops are runnable via `fly ssh`.
-# ui/ is served by FastAPI so Fly hosts both the UI and the API.
 COPY api/        ./api/
 COPY scoring/    ./scoring/
 COPY storage/    ./storage/
 COPY llm/        ./llm/
 COPY scripts/    ./scripts/
 COPY config.py   ./
+COPY config.yml  ./
 COPY data/       ./data/
 COPY ui/         ./ui/
 
-ENV VECTOR_BACKEND=pgvector
+# To ship the ONNX bundle (Phase B), run `python scripts/export_scincl_onnx.py`
+# on a dev box, commit the resulting `models/` directory, and uncomment:
+#
+#   COPY models/ ./models/
+#
+# The line is intentionally absent today: with BuildKit, a COPY of a
+# non-existent directory fails the build, and `models/` is gitignored until
+# someone explicitly opts in to the ONNX runtime.
+
 ENV POSTGRES_SSLMODE=require
 ENV PORT=8080
 ENV PYTHONUNBUFFERED=1

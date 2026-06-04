@@ -30,7 +30,6 @@ jobs:
             echo "Fix (one time):"
             echo "  flyctl tokens create deploy --app siip-armchair-akhil --name github-actions --expiry 8760h"
             echo "  gh secret set FLY_API_TOKEN --repo dogeyboy1932/armchair"
-            echo "See deploy/free/GITHUB_ACTIONS.md"
             exit 1
           fi
           flyctl apps show "$FLY_APP" >/dev/null

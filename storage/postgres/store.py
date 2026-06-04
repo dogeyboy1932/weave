@@ -99,6 +99,23 @@ CREATE TABLE IF NOT EXISTS topic_similarity (
     sem_score FLOAT   NOT NULL,
     PRIMARY KEY (course_a, topic_a, course_b, topic_b)
 );
+
+-- Every API request is logged here. Cheap, structured, useful as offline
+-- evaluation data: "what did users actually search for, what came back,
+-- and how fast?"  No PII — user_agent is hashed.
+CREATE TABLE IF NOT EXISTS query_log (
+    id            BIGSERIAL PRIMARY KEY,
+    ts            TIMESTAMPTZ DEFAULT NOW(),
+    endpoint      TEXT    NOT NULL,
+    method        TEXT    NOT NULL,
+    query_params  JSONB,
+    status_code   INTEGER,
+    result_count  INTEGER,
+    latency_ms    INTEGER,
+    user_agent_hash TEXT
+);
+CREATE INDEX IF NOT EXISTS query_log_ts_idx       ON query_log (ts DESC);
+CREATE INDEX IF NOT EXISTS query_log_endpoint_idx ON query_log (endpoint);
 """
 
 _MIGRATION = """
@@ -106,6 +123,10 @@ ALTER TABLE similarity_cache ADD COLUMN IF NOT EXISTS category_jsd      FLOAT;
 ALTER TABLE similarity_cache ADD COLUMN IF NOT EXISTS non_obvious_score  FLOAT;
 ALTER TABLE similarity_cache ADD COLUMN IF NOT EXISTS llm_explanation    TEXT;
 ALTER TABLE topic_categories  ADD COLUMN IF NOT EXISTS tags JSONB DEFAULT '[]';
+-- Graph stats (Louvain community + PageRank). Computed in-process by
+-- scoring/graph_compute.py after every similarity rebuild — replaces Neo4j.
+ALTER TABLE courses          ADD COLUMN IF NOT EXISTS community INTEGER;
+ALTER TABLE courses          ADD COLUMN IF NOT EXISTS pagerank  FLOAT;
 CREATE TABLE IF NOT EXISTS topic_explanations (
     source_course  TEXT NOT NULL,
     source_topic   TEXT NOT NULL,
@@ -202,6 +223,85 @@ def get_all_courses() -> list[tuple]:
         cur.execute("SELECT course_id, name, description, prereqs, credits, course_type, instructors "
                     "FROM courses ORDER BY sequence, course_id")
         return cur.fetchall()
+
+
+def upsert_course_graph_stats(rows: list[dict]):
+    """rows: [{'id': course_id, 'community': int, 'pagerank': float}, ...]"""
+    if not rows:
+        return
+    with _Conn() as cur:
+        execute_values(
+            cur,
+            "UPDATE courses AS c "
+            "SET community = v.community, pagerank = v.pagerank "
+            "FROM (VALUES %s) AS v(id, community, pagerank) "
+            "WHERE c.course_id = v.id",
+            [(r['id'], r['community'], r['pagerank']) for r in rows],
+            template="(%s,%s::int,%s::float)",
+        )
+
+
+def get_graph_nodes() -> list[dict]:
+    """All courses with their (community, pagerank) for graph view."""
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT course_id, name, community, pagerank FROM courses "
+            "ORDER BY sequence, course_id"
+        )
+        return [
+            {"id": r[0], "name": r[1], "community": r[2], "pagerank": r[3]}
+            for r in cur.fetchall()
+        ]
+
+
+def get_graph_edges(min_score: float = 0.4) -> list[dict]:
+    """All similarity_cache edges above min_score, for graph view."""
+    with _Conn() as cur:
+        cur.execute("""
+            SELECT course_a, course_b, final_score, lex_score, sem_score,
+                   driving_terms, category_jsd, non_obvious_score
+            FROM similarity_cache
+            WHERE final_score >= %s
+        """, (min_score,))
+        rows = cur.fetchall()
+    return [
+        {
+            "source":            r[0],
+            "target":            r[1],
+            "score":             r[2],
+            "lex_score":         r[3],
+            "sem_score":         r[4],
+            "driving_terms":     json.loads(r[5]) if r[5] else [],
+            "category_jsd":      r[6],
+            "non_obvious_score": r[7],
+        }
+        for r in rows
+    ]
+
+
+def get_all_similarity_edges() -> list[tuple]:
+    """Raw (course_a, course_b, final_score) for graph_compute. Includes nulls as 0.0."""
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT course_a, course_b, COALESCE(final_score, 0.0) FROM similarity_cache"
+        )
+        return [(r[0], r[1], float(r[2])) for r in cur.fetchall()]
+
+
+def delete_course(course_id: str):
+    """Remove a course and all its dependent rows (chunks/embeddings cascade)."""
+    with _Conn() as cur:
+        cur.execute(
+            "DELETE FROM similarity_cache WHERE course_a=%s OR course_b=%s",
+            (course_id, course_id),
+        )
+        cur.execute("DELETE FROM topic_categories WHERE course_id=%s", (course_id,))
+        cur.execute(
+            "DELETE FROM topic_similarity WHERE course_a=%s OR course_b=%s",
+            (course_id, course_id),
+        )
+        cur.execute("DELETE FROM term_counts WHERE course_id=%s", (course_id,))
+        cur.execute("DELETE FROM courses WHERE course_id=%s", (course_id,))
 
 
 def get_chunks_for_course(course_id: str) -> list[tuple]:
@@ -681,8 +781,36 @@ def sign_topic_explanation(sc: str, st: str, tc: str, tt: str, signed_by: str):
         """, (signed_by, sc, st, tc, tt))
 
 
+def insert_query_log(
+    endpoint: str,
+    method: str,
+    query_params: dict | None,
+    status_code: int,
+    result_count: int | None,
+    latency_ms: int,
+    user_agent_hash: str | None,
+):
+    """Best-effort insert. Caller wraps in try/except so request handling
+    never fails because logging failed."""
+    with _Conn() as cur:
+        cur.execute(
+            """
+            INSERT INTO query_log
+                (endpoint, method, query_params, status_code,
+                 result_count, latency_ms, user_agent_hash)
+            VALUES (%s, %s, %s::jsonb, %s, %s, %s, %s)
+            """,
+            (
+                endpoint, method,
+                json.dumps(query_params or {}),
+                status_code, result_count, latency_ms, user_agent_hash,
+            ),
+        )
+
+
 def drop_all():
     with _Conn() as cur:
         cur.execute(
-            "DROP TABLE IF EXISTS similarity_cache, term_counts, chunks, courses CASCADE"
+            "DROP TABLE IF EXISTS similarity_cache, term_counts, chunks, "
+            "courses, query_log CASCADE"
         )

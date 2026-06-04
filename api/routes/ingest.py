@@ -12,8 +12,8 @@ from scoring.hybrid_scorer     import score_pair
 from scoring.language_model    import build_all_lms
 from scoring.category_scorer   import course_category_vector
 from storage.vectors import store as vs
-from storage.neo4j import store as neo4j
 from storage.postgres import store as pg_store
+from scoring import graph_compute
 
 # Heavy ingest-only deps (PDF parsing, ML model, LLM extractors). These are
 # omitted from the slim production container — when missing the upload routes
@@ -94,19 +94,8 @@ def _run_ingest(course_id: str, course_name: str, raw_text: str, api_key: str | 
         _ingest_status[course_id] = {"status": "error", "message": msg}
         # Clean up partial data so the course isn't left in a broken state
         try:
-            import psycopg2
-            conn = psycopg2.connect(host=config.POSTGRES_HOST, port=config.POSTGRES_PORT,
-                dbname=config.POSTGRES_DB, user=config.POSTGRES_USER, password=config.POSTGRES_PASSWORD)
-            cur = conn.cursor()
-            for tbl, col in [('similarity_cache','course_a'),('similarity_cache','course_b'),
-                              ('topic_similarity','course_a'),('topic_similarity','course_b'),
-                              ('topic_categories','course_id'),('term_counts','course_id'),
-                              ('chunks','course_id')]:
-                cur.execute(f"DELETE FROM {tbl} WHERE {col}=%s", (course_id,))
-            cur.execute("DELETE FROM courses WHERE course_id=%s", (course_id,))
-            conn.commit(); cur.close(); conn.close()
+            pg_store.delete_course(course_id)
             vs.delete_course(course_id)
-            neo4j.delete_course(course_id)
         except Exception as cleanup_err:
             print(f"[ingest] cleanup error: {cleanup_err}")
 
@@ -125,6 +114,7 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     print(f"[ingest]   ✓ {len(topics)} topics, description + objectives — all in one call")
 
     topic_names = [t['name'] for t in topics]
+    topic_tags  = {t['name']: t.get('tags', []) for t in topics}
     local_defs  = {f"{course_id}: {t['name']}": t['description'] for t in topics}
     with open(config.DEFINITIONS_PATH) as f:
         global_defs = json.load(f)
@@ -139,10 +129,9 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
         'topics': topic_names,
         'definitions': [],
     }
-    chunks, term_counts = chunk_course(course_dict, merged_defs)
+    chunks, term_counts = chunk_course(course_dict, merged_defs, topic_tags=topic_tags)
 
     pg_store.upsert_course(course_id, course_name, description)
-    neo4j.upsert_course(course_id, course_name, description)
     pg_store.upsert_chunks([
         (c['chunk_id'], c['course_id'], c['chunk_type'], c['raw_text'], '[]')
         for c in chunks
@@ -195,13 +184,14 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     except Exception as e:
         print(f"[ingest]   ⚠ Topic graph rebuild failed: {e}")
 
-    # ── Step 7: Neo4j community detection (reclusters ALL courses from edge weights) ─
-    print(f"[ingest] Step 7/7 — Updating Neo4j community clusters …")
+    # ── Step 7: Graph stats — Louvain + PageRank reclustering (in-process) ─────────
+    print(f"[ingest] Step 7/7 — Recomputing community clusters + PageRank …")
     try:
-        neo4j.run_community_detection()
-        print(f"[ingest]   ✓ Community detection complete")
+        summary = graph_compute.recompute_graph_stats()
+        print(f"[ingest]   ✓ {summary['nodes']} nodes, {summary['edges']} edges, "
+              f"{summary['communities']} communities")
     except Exception as e:
-        print(f"[ingest]   ⚠ Community detection skipped: {e}")
+        print(f"[ingest]   ⚠ Graph recompute skipped: {e}")
 
     print(f"[ingest] ── '{course_name}' fully integrated — {len(chunks)} chunks, "
           f"{pair_count} pairs scored. Explanations generated on user request. ──\n")
@@ -249,9 +239,9 @@ async def ingest_pdf(
             "1. LLM: topic extraction + category labeling (Gemini)",
             "2. Postgres: course, chunks, term_counts, topic_categories",
             f"3. Vectors: SciNCL embed → {vs.BACKEND_NAME}",
-            "4. Postgres + Neo4j: hybrid scoring for all course pairs",
+            "4. Postgres: hybrid scoring for all course pairs",
             "5. Postgres: topic-to-topic similarity (topic_similarity)",
-            "6. Neo4j: Louvain communities + PageRank (full graph recluster)",
+            "6. Postgres: Louvain communities + PageRank (in-process recluster)",
         ],
         "note": "Scores and category data ready in ~60 s. Explanations generated on-demand via the UI.",
     }
@@ -289,6 +279,7 @@ def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     print(f"[append]   ✓ {len(topics)} topics extracted and labeled in one call")
 
     topic_names = [t['name'] for t in topics]
+    topic_tags  = {t['name']: t.get('tags', []) for t in topics}
 
     for t in topics:
         pg_store.upsert_topic_category(course_id, t['name'], t['categories'], t.get('tags', []))
@@ -305,7 +296,7 @@ def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: 
         'description': raw_text[:2000],
         'objectives': [], 'topics': topic_names, 'definitions': [],
     }
-    chunks, term_counts = chunk_course(course_dict, merged_defs)
+    chunks, term_counts = chunk_course(course_dict, merged_defs, topic_tags=topic_tags)
 
     # Prefix chunk IDs with a timestamp so they don't collide with existing chunks
 
@@ -361,13 +352,14 @@ def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     except Exception as e:
         print(f"[append]   ⚠ Topic graph rebuild failed: {e}")
 
-    # ── Step 6: Neo4j community detection ────────────────────────────────────────
-    print(f"[append] Step 6/6 — Updating Neo4j community clusters …")
+    # ── Step 6: Graph stats — Louvain + PageRank (in-process) ─────────────────────
+    print(f"[append] Step 6/6 — Recomputing community clusters + PageRank …")
     try:
-        neo4j.run_community_detection()
-        print(f"[append]   ✓ Community detection complete")
+        summary = graph_compute.recompute_graph_stats()
+        print(f"[append]   ✓ {summary['nodes']} nodes, {summary['edges']} edges, "
+              f"{summary['communities']} communities")
     except Exception as e:
-        print(f"[append]   ⚠ Community detection skipped: {e}")
+        print(f"[append]   ⚠ Graph recompute skipped: {e}")
 
     print(f"[append] ── Done — {len(chunks)} new chunks added to '{course_name}', "
           f"{pair_count} pairs rescored ──\n")

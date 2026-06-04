@@ -1,0 +1,36 @@
+name: heartbeat
+
+# Keeps the production stack warm. Supabase free pauses projects after
+# ~1 week of inactivity, then reaps them after extended pauses — which is
+# the failure mode that took the site down in May 2026 (see HISTORY.md).
+# This workflow pings /health weekly so the project never crosses the
+# pause threshold.
+#
+# Cost: free (GitHub Actions cron). Runtime: ~5 s.
+
+on:
+  schedule:
+    # Wednesday at 14:00 UTC — mid-week, mid-day, predictable.
+    - cron: '0 14 * * 3'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: |
+          URL="${SITE_URL:-https://siip-armchair-akhil.fly.dev}"
+          echo "→ $URL/health"
+          for attempt in 1 2 3; do
+            if curl -fsS --max-time 30 "$URL/health" -o /tmp/health.json; then
+              echo "✓ $(cat /tmp/health.json)"
+              exit 0
+            fi
+            echo "  attempt $attempt failed, retrying in 15 s …"
+            sleep 15
+          done
+          echo "✗ /health did not respond after 3 attempts"
+          exit 1
+        env:
+          SITE_URL: https://siip-armchair-akhil.fly.dev

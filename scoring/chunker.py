@@ -30,13 +30,22 @@ def tokenize(text: str) -> list[str]:
     return [t for t in tokens if t not in _ALL_STOP]
 
 
-def chunk_course(course: dict, topic_defs: dict) -> tuple[list[dict], dict]:
+def chunk_course(
+    course: dict,
+    topic_defs: dict,
+    topic_tags: dict | None = None,
+) -> tuple[list[dict], dict]:
     """
     Build chunk dicts and term counts for one course.
 
-    raw_text  is stored as-is (course name prefix helps the embedding model).
+    raw_text  is stored as-is and fed to SciNCL.
     term_text is what goes into the LM term counts — excludes the course name
               prefix so it doesn't inflate generic name words.
+    topic_tags: optional {topic_name: [tag, ...]} — when provided, each topic
+              chunk's raw_text is appended with ". Related concepts: ..."
+              (validated +0.034 cosine-gap widening on cross-domain matches;
+              see Phase 16 of docs/HISTORY.md). term_text is left untouched
+              so lex_score behaviour does not change.
 
     Returns (chunks, term_counts)
     """
@@ -55,14 +64,18 @@ def chunk_course(course: dict, topic_defs: dict) -> tuple[list[dict], dict]:
         })
         all_tokens.extend(tokenize(term_text))
 
-    # ── 1. Topic chunks (enriched with definition where available) ──────────────
+    # ── 1. Topic chunks (enriched with definition + cross-domain tags) ──────────
     for i, topic in enumerate(course.get('topics', [])):
         key        = f"{course_id}: {topic}"
         definition = topic_defs.get(key, '')
-        # raw_text: course name prefix gives embedding model context
-        # term_text: only topic + definition — no repeated course-name noise
-        raw_text  = (f"{course_name} [SEP] {topic}: {definition}"
-                     if definition else f"{course_name} [SEP] {topic}")
+        tags       = (topic_tags or {}).get(topic, [])
+        # raw_text: course name prefix gives embedding model context;
+        # trailing tags give SciNCL the LLM's cross-domain bridge vocabulary.
+        # term_text: only topic + definition — no repeated course-name noise.
+        core = (f"{course_name} [SEP] {topic}: {definition}"
+                if definition else f"{course_name} [SEP] {topic}")
+        raw_text  = (f"{core.rstrip('.').rstrip()}. Related concepts: {', '.join(tags)}."
+                     if tags else core)
         term_text = f"{topic}: {definition}" if definition else topic
         _add('topic', i, raw_text, term_text)
 

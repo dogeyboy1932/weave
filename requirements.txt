@@ -1,8 +1,7 @@
 # Storage
 psycopg2-binary>=2.9
-pymilvus==2.3.6
-marshmallow>=3.13,<4.0.0       # pymilvus→environs requires __version_info__ (added in 3.13)
-neo4j>=5.14,<6.0
+pgvector>=0.2.4
+pyyaml>=6.0
 
 # ML / Embeddings
 sentence-transformers>=2.3,<3.0

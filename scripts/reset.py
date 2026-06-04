@@ -1,8 +1,9 @@
 """
-Wipe all stores and optionally re-seed from scratch.
+Wipe all stores and optionally restore from data/courses_dump.json.
+
 Run from the akhil_app/ directory:
-    python scripts/reset.py          # wipe only
-    python scripts/reset.py --reseed # wipe then re-seed + rebuild graph
+    python scripts/reset.py            # wipe only
+    python scripts/reset.py --restore  # wipe then restore from dump
 """
 import sys
 from pathlib import Path
@@ -10,32 +11,23 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from storage.postgres import store as pg_store
-from storage.vectors import store as milvus
-from storage.neo4j import store as neo4j
+from storage.vectors  import store as vs
 
 
 def main():
     print("Dropping PostgreSQL tables …")
     pg_store.drop_all()
 
-    print("Dropping Milvus collection …")
-    milvus.drop_collection()
-
-    print("Clearing Neo4j graph …")
-    neo4j.clear()
+    print("Dropping vector collection …")
+    vs.drop_collection()
 
     print("Reset complete.")
 
-    if '--reseed' in sys.argv:
-        print("\nRe-seeding …")
-        import importlib, scripts.seed as seed_mod
-        importlib.reload(seed_mod)
-        seed_mod.main()
-
-        print("\nRebuilding graph …")
-        import scripts.build_graph as bg_mod
-        importlib.reload(bg_mod)
-        bg_mod.main()
+    if '--restore' in sys.argv:
+        print("\nRestoring from data/courses_dump.json (no LLM calls) …")
+        import importlib, scripts.restore_from_dump as rd_mod
+        importlib.reload(rd_mod)
+        rd_mod.main()
 
 
 if __name__ == '__main__':

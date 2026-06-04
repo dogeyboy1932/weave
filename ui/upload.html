@@ -501,12 +501,43 @@ function setFile(file) {
 }
 
 fileInput.addEventListener('change', e => setFile(e.target.files[0]));
+
+// Drop directly on the zone
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
+  e.stopPropagation();
   dropZone.classList.remove('dragover');
-  setFile(e.dataTransfer.files[0]);
+  if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+});
+
+// Page-wide drag handling so (a) the browser doesn't navigate when the user
+// misses the drop zone, and (b) the drop zone highlights as soon as a file
+// is dragged anywhere over the page — clear "aim here" cue.
+let dragDepth = 0;
+const isFileDrag = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+
+window.addEventListener('dragenter', e => {
+  if (!isFileDrag(e)) return;
+  e.preventDefault();
+  dragDepth++;
+  dropZone.classList.add('dragover');
+});
+window.addEventListener('dragover', e => { if (isFileDrag(e)) e.preventDefault(); });
+window.addEventListener('dragleave', e => {
+  if (!isFileDrag(e)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) dropZone.classList.remove('dragover');
+});
+window.addEventListener('drop', e => {
+  if (!isFileDrag(e)) return;
+  e.preventDefault();
+  dragDepth = 0;
+  dropZone.classList.remove('dragover');
+  // If they actually dropped on the zone, the dropZone handler above already
+  // ran and set the file. If they missed, fall back to picking the first file.
+  if (!selectedFile && e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
 });
 
 ['course-id', 'course-name'].forEach(id =>

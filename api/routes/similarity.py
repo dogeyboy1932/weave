@@ -26,7 +26,7 @@ def get_course_categories(
     dists = pg_store.get_topic_categories_for_course(course)
     if not dists:
         raise HTTPException(
-            404, detail=f"No category data for '{course}'. Run scripts/label_categories.py first."
+            404, detail=f"No category data for '{course}'. Run scripts/restore_from_dump.py.",
         )
     vec = course_category_vector(dists)
     return {
@@ -86,14 +86,14 @@ def get_non_obvious(
 
     Pairs with high semantic similarity but very different category distributions represent
     cross-domain connections that are structurally similar but not obviously related.
-    Requires label_categories.py + build_graph.py to have been run.
+    Requires scripts/restore_from_dump.py (or scripts/build_graph.py once
+    topic_categories is populated) to have filled similarity_cache.
     """
     pairs = pg_store.get_top_non_obvious(top=top, min_sem=min_sem)
     if not pairs:
         raise HTTPException(
             404,
-            detail="No non-obvious pairs found. Run scripts/label_categories.py "
-                   "then scripts/build_graph.py to populate non_obvious_score.",
+            detail="No non-obvious pairs found. Run scripts/restore_from_dump.py.",
         )
     return {"pairs": pairs, "count": len(pairs)}
 

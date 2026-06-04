@@ -10,10 +10,9 @@ from scoring.category_scorer   import (
     course_category_vector,
 )
 from storage.postgres import store as pg_store
-from storage.neo4j import store as neo4j
 
 
-_SEM_FLOOR = 0.35  # SciNCL cosine baseline for random engineering text pairs
+_SEM_FLOOR = config.SEM_FLOOR  # SciNCL cosine baseline for random eng-text pairs
 
 
 def _calibrate_sem(raw: float) -> float:
@@ -86,12 +85,6 @@ def score_pair(
         category_jsd=cat_jsd, non_obvious_score=non_obvious,
     )
 
-    if final >= config.MIN_SCORE:
-        neo4j.upsert_edge(
-            course_a, course_b, final, lex, sem, j, terms,
-            non_obvious_score=non_obvious, category_jsd=cat_jsd,
-        )
-
     return {
         'final': final, 'lex': lex, 'sem': sem, 'jsd': j, 'terms': terms,
         'category_jsd': cat_jsd, 'non_obvious': non_obvious,
@@ -101,7 +94,8 @@ def score_pair(
 def score_all_pairs(lms: dict, all_term_counts: dict) -> int:
     """
     Compute and persist similarity for every N*(N-1)/2 course pair.
-    Returns the number of Neo4j edges written (score ≥ MIN_SCORE).
+    Returns the number of edges that cleared MIN_SCORE (used downstream by
+    scoring.graph_compute.recompute_graph_stats to colour and size nodes).
     """
     course_ids = list(lms.keys())
     idf        = compute_idf(all_term_counts)
@@ -127,5 +121,5 @@ def score_all_pairs(lms: dict, all_term_counts: dict) -> int:
         if result['final'] >= config.MIN_SCORE:
             edge_count += 1
 
-    print(f"Done — {edge_count} Neo4j edges written (threshold={config.MIN_SCORE})")
+    print(f"Done — {edge_count} edges above MIN_SCORE={config.MIN_SCORE}")
     return edge_count

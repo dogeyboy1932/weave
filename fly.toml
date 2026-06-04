@@ -1,7 +1,9 @@
 # Fly.io deploy config for SIIP.
 # Fly hosts the API *and* the static UI from `ui/` on the same origin.
-# Databases live in Supabase (pgvector) + Neo4j Aura, set as secrets:
-#   fly secrets set DATABASE_URL=... NEO4J_URI=... NEO4J_USER=... NEO4J_PASSWORD=...
+# Single database: Supabase (Postgres + pgvector). Set as a secret:
+#   fly secrets set DATABASE_URL=...
+# Knowledge-graph stats (Louvain + PageRank) are computed in-process by
+# scoring/graph_compute.py and written back to Postgres — no Neo4j.
 
 app = "siip-armchair-akhil"
 primary_region = "ord"  # Chicago — close to UIUC
@@ -10,9 +12,7 @@ primary_region = "ord"  # Chicago — close to UIUC
   dockerfile = "Dockerfile.api"
 
 [env]
-  VECTOR_BACKEND   = "pgvector"
   POSTGRES_SSLMODE = "require"
-  # NEO4J_USER is set via `flyctl secrets set` (Aura instance-specific)
 
 [http_service]
   internal_port      = 8080

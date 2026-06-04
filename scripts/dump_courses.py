@@ -204,9 +204,8 @@ def main():
     print(f"✓ Exported {len(dump)} courses, {total_topics} topics → {out_path}")
     print(f"  Topics with tags: {tagged}/{total_topics}")
     print()
-    print("Edit the JSON, then run:")
-    print("  python scripts/generate_tags.py --in data/courses_dump.json   # auto-fill tags")
-    print("  python scripts/load_courses.py                                 # write to DB")
+    print("This file is the canonical snapshot used by scripts/restore_from_dump.py.")
+    print("Commit it to git so a fresh Supabase project can be reseeded without LLM calls.")
 
 
 if __name__ == "__main__":

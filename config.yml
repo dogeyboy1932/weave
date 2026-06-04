@@ -1,0 +1,57 @@
+# SIIP — single source of truth for all non-secret configuration.
+#
+# Secrets stay in environment variables (DATABASE_URL, GEMINI_API_KEY).
+# Any value here can be overridden by a matching environment variable —
+# config.py prefers env > yaml > built-in default. That keeps Fly secrets and
+# `.env` overrides working without surprise.
+#
+# When this file changes, redeploy. The values are read once at process start.
+
+model:
+  # Embedding model. The "id" is what gets stamped onto every embedding row in
+  # chunk_embeddings.model_version, so a swap (e.g. SciNCL → SciNCL-INT8) is
+  # detectable and reversible.
+  embedding:
+    id:        scincl-v1-fp32         # logical version stamp
+    hf_name:   malteos/scincl         # HuggingFace repo id (PyTorch path)
+    cache_dir: ./.model_cache
+    dim:       768
+    # Future ONNX cutover replaces this block with:
+    #   runtime:  onnx
+    #   onnx_path: models/scincl-int8.onnx
+    #   id:        scincl-v1-int8
+    runtime:   pytorch
+
+  # LLM (Gemini) — used only at ingest (one call) and on-demand explanations.
+  llm:
+    category_label_model: gemini-2.5-flash-lite
+    explain_model:        gemini-2.5-flash
+
+scoring:
+  # Hybrid = (ALPHA_LEX·lex + ALPHA_SEM·sem + ALPHA_CAT·(1-category_jsd)) / sum
+  # Weights are auto-normalized so they need not sum to 1.
+  alpha_lex: 0.3
+  alpha_sem: 0.5
+  alpha_cat: 0.2
+  alpha:     0.4              # legacy fallback when alpha_* aren't set
+  dirichlet_mu: 2000.0
+  sem_floor: 0.35             # SciNCL cosine baseline for random eng text pairs
+  min_score: 0.55             # graph-edge threshold + Louvain input
+
+retrieval:
+  top_k_ann:           5
+  top_k_driving_terms: 8
+  non_obvious_top_k:   50
+
+  # Vector index. HNSW is fine across the small-to-large range; FLAT is exact
+  # but slower past ~100k vectors.
+  ann:
+    index_type:      hnsw
+    distance:        cosine
+    hnsw_m:          16
+    hnsw_ef_search:  64
+
+storage:
+  # Pgvector is the only backend. The legacy Milvus path lives in
+  # archive/legacy-local-docker/ for historical reference.
+  postgres_sslmode: require

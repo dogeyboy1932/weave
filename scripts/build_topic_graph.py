@@ -1,5 +1,5 @@
 """
-Pre-compute topic-to-topic semantic similarity using Milvus ANN search.
+Pre-compute topic-to-topic semantic similarity using pgvector ANN search.
 
 For every labeled topic, finds the top-K most similar topics from other courses
 using SciNCL cosine similarity (same floor calibration as course-level sem_sim).
@@ -10,7 +10,7 @@ Run from akhil_app/ directory:
     python scripts/build_topic_graph.py --top-k 10 --min-score 0.1
     python scripts/build_topic_graph.py --course "CS 521"   # one course only
 
-Cost: $0 — pure Milvus ANN, no LLM calls.
+Cost: $0 — pure pgvector ANN (HNSW indexed), no LLM calls.
 Time: ~2-5 min for all 1,648 topics.
 """
 import sys
@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from storage.postgres import store as pg_store
-from storage.vectors import store as milvus
+from storage.vectors import store as vs
 
 
 
@@ -81,7 +81,7 @@ def build_for_courses(course_ids: list[str], top_k: int, min_score: float):
             continue
 
         # Get {chunk_id: embedding} for this course
-        chunk_embeddings = milvus.get_chunks_with_embeddings(course_id)
+        chunk_embeddings = vs.get_chunks_with_embeddings(course_id)
         # Restrict to topic chunks that have a known topic_text
         local_map = _build_chunk_to_topic(course_id, topic_texts)
 
@@ -93,7 +93,7 @@ def build_for_courses(course_ids: list[str], top_k: int, min_score: float):
             if embedding is None:
                 continue
 
-            hits = milvus.search_global_excluding(embedding, course_id, limit=top_k)
+            hits = vs.search_global_excluding(embedding, course_id, limit=top_k)
             for hit in hits:
                 raw_score = hit["score"]
                 if raw_score < min_score:
