@@ -1016,7 +1016,26 @@ embedded. The file is retained only as recovery input for `restore_from_dump.py`
 
 Retained as the recovery path: `scripts/restore_from_dump.py` +
 `data/courses_dump.json` + `data/topic_definitions.json` + `data/mechse_syllabi.json`
-(the last still read for CHEM glossaries).
+(the last still read for CHEM glossaries). `similarity.py` was also decoupled from
+`topic_definitions.json` (DB-backed descriptions like `topics.py`), so no request
+path reads that file anymore — it survives only as restore input.
+
+**Production runtime decision — PyTorch, ONNX parked.** The Phase 17 ONNX cutover
+was re-examined and deliberately **not** adopted. Both exported artifacts exceed
+GitHub's 100 MB/file limit (INT8 110 MB, FP32 `.data` 439 MB), so neither is
+git-committable — shipping ONNX would require an external Release-asset/LFS download
+step. INT8 also drifts to **0.9946** cosine against the PyTorch-built DB vectors
+(fails the 0.998 gate; practically invisible in ranking, but a permanent
+mixed-precision asterisk). Crucially, ONNX's *only* wins — smaller image, lower
+memory, faster cold start — are already obtained for free: `fly.toml` runs one
+always-on `shared-cpu-1x` 2 GB machine (`min_machines_running = 1`,
+`auto_stop_machines = "off"`) at ~$3.89/mo, inside Fly's $5 hobby credit, so the
+model is always warm (no cold start) and the bill is zero. ONNX would cost
+simplicity, a hermetic build, and dual-encoder maintenance for nothing not already
+in hand. The dormant 526 MB `models/` artifacts were deleted; the scaffolding
+(`scripts/export_scincl_onnx.py`, the encoder's `_encode_onnx` path, the Dockerfile
+dual-mode build, `config.yml` runtime switch) is kept so ONNX remains a clean opt-in
+if scale ever changes the math.
 
 ---
 

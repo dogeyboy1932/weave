@@ -166,17 +166,12 @@ def get_explanation(
         ctx_a = pg_store.get_course_explain_context(ca)
         ctx_b = pg_store.get_course_explain_context(cb)
 
-        # Enrich topic list with descriptions from topic_definitions.json
-        import json as _json
-        from pathlib import Path
-        import config as _cfg
-        defs: dict = {}
-        defs_path = Path(_cfg.DEFINITIONS_PATH)
-        if defs_path.exists():
-            with open(defs_path) as f:
-                defs = _json.load(f)
-        descs_a = {t: defs.get(f"{ca}: {t}", "") for t in ctx_a["topics"]}
-        descs_b = {t: defs.get(f"{cb}: {t}", "") for t in ctx_b["topics"]}
+        # Enrich topic list with descriptions parsed from the embedded topic
+        # chunks (no topic_definitions.json read — same source as topics.py).
+        defs_a = pg_store.get_topic_descriptions_for_course(ca)
+        defs_b = pg_store.get_topic_descriptions_for_course(cb)
+        descs_a = {t: defs_a.get(t, "") for t in ctx_a["topics"]}
+        descs_b = {t: defs_b.get(t, "") for t in ctx_b["topics"]}
 
         try:
             from google import genai
