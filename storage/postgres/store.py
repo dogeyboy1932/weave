@@ -289,7 +289,10 @@ def get_all_similarity_edges() -> list[tuple]:
 
 
 def delete_course(course_id: str):
-    """Remove a course and all its dependent rows (chunks/embeddings cascade)."""
+    """Remove a course and ALL its dependent rows. There is no FK cascade, so
+    chunks + chunk_embeddings must be deleted explicitly — omitting them (as an
+    earlier version did) orphans embeddings that then silently pollute every
+    sem_sim, which averages over all of a course's vectors."""
     with _Conn() as cur:
         cur.execute(
             "DELETE FROM similarity_cache WHERE course_a=%s OR course_b=%s",
@@ -301,7 +304,30 @@ def delete_course(course_id: str):
             (course_id, course_id),
         )
         cur.execute("DELETE FROM term_counts WHERE course_id=%s", (course_id,))
+        cur.execute("DELETE FROM chunk_embeddings WHERE course_id=%s", (course_id,))
+        cur.execute("DELETE FROM chunks WHERE course_id=%s", (course_id,))
         cur.execute("DELETE FROM courses WHERE course_id=%s", (course_id,))
+
+
+def wipe_content_tables(keep_course_ids: list[str] | None = None):
+    """
+    Clear all derived/content tables for a from-scratch rebuild (restore_from_dump).
+
+    Wipes chunks, chunk_embeddings, term_counts, topic_categories,
+    similarity_cache, topic_similarity entirely. If keep_course_ids is given,
+    also deletes any `courses` row NOT in that set (so a course dropped from the
+    dump — e.g. a test upload — doesn't linger like CS 411 did). The courses
+    rows themselves are otherwise preserved and re-upserted by the caller.
+    """
+    with _Conn() as cur:
+        for tbl in ("chunk_embeddings", "chunks", "term_counts",
+                    "topic_categories", "similarity_cache", "topic_similarity"):
+            cur.execute(f"DELETE FROM {tbl}")
+        if keep_course_ids:
+            cur.execute(
+                "DELETE FROM courses WHERE course_id <> ALL(%s)",
+                (list(keep_course_ids),),
+            )
 
 
 def get_chunks_for_course(course_id: str) -> list[tuple]:
@@ -430,6 +456,23 @@ def get_topic_categories_for_course(course_id: str) -> list[dict]:
         )
         rows = cur.fetchall()
     return [r[0] if isinstance(r[0], dict) else json.loads(r[0]) for r in rows]
+
+
+def get_topic_category_rows_for_course(course_id: str) -> list[dict]:
+    """Full topic rows for a course: [{topic_text, categories, tags}]. Used by the
+    merge-by-topic append to recover each existing topic's tags + categories."""
+    def _j(v):
+        return v if isinstance(v, (dict, list)) else (json.loads(v) if v else None)
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT topic_text, categories, tags FROM topic_categories WHERE course_id=%s",
+            (course_id,),
+        )
+        rows = cur.fetchall()
+    return [
+        {"topic_text": r[0], "categories": _j(r[1]) or {}, "tags": _j(r[2]) or []}
+        for r in rows
+    ]
 
 
 def get_topic_texts_for_course(course_id: str, limit: int = 5) -> list[str]:

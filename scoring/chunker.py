@@ -30,6 +30,34 @@ def tokenize(text: str) -> list[str]:
     return [t for t in tokens if t not in _ALL_STOP]
 
 
+def topic_chunk_text(topic: str, definition: str, tags: list[str] | None) -> str:
+    """
+    The variant-C embedded text for one topic chunk:
+        "{topic}: {definition}. Related concepts: {tag1, tag2, ...}."
+
+    NO course-name prefix — the implicit department signal it carries masks the
+    cross-domain isomorphisms SciNCL is meant to surface (see Phase 18). Shared
+    by chunk_course() at ingest and the merge-by-topic append path so the two
+    never drift in format.
+    """
+    core = f"{topic}: {definition}" if definition else topic
+    if tags:
+        return f"{core.rstrip('.').rstrip()}. Related concepts: {', '.join(tags)}."
+    return core
+
+
+def topic_term_text(topic: str, definition: str, tags: list[str] | None) -> str:
+    """
+    The lex/TF-IDF text for one topic — topic + definition + tags, with tag
+    hyphens flattened to spaces so multi-word tags split into bridge tokens
+    ('isomorphic-to-rlc-circuit' → isomorphic, rlc, circuit). No course name.
+    """
+    base = f"{topic}: {definition}" if definition else topic
+    if tags:
+        base += " " + " ".join(tags).replace("-", " ")
+    return base
+
+
 def chunk_course(
     course: dict,
     topic_defs: dict,
@@ -65,28 +93,31 @@ def chunk_course(
         all_tokens.extend(tokenize(term_text))
 
     # ── 1. Topic chunks (enriched with definition + cross-domain tags) ──────────
+    # raw_text (embedded) and term_text (lex) are built by the shared helpers
+    # topic_chunk_text / topic_term_text so the merge-by-topic append path
+    # produces byte-identical text. See those helpers for the rationale.
     for i, topic in enumerate(course.get('topics', [])):
         key        = f"{course_id}: {topic}"
         definition = topic_defs.get(key, '')
         tags       = (topic_tags or {}).get(topic, [])
-        # raw_text: course name prefix gives embedding model context;
-        # trailing tags give SciNCL the LLM's cross-domain bridge vocabulary.
-        # term_text: only topic + definition — no repeated course-name noise.
-        core = (f"{course_name} [SEP] {topic}: {definition}"
-                if definition else f"{course_name} [SEP] {topic}")
-        raw_text  = (f"{core.rstrip('.').rstrip()}. Related concepts: {', '.join(tags)}."
-                     if tags else core)
-        term_text = f"{topic}: {definition}" if definition else topic
-        _add('topic', i, raw_text, term_text)
+        _add('topic', i,
+             topic_chunk_text(topic, definition, tags),
+             topic_term_text(topic, definition, tags))
 
-    # ── 2. Inline definition chunks (CHEM courses only) ─────────────────────────
+    # ── 2. Glossary entries (CHEM courses only) — term counts, NOT embedded ─────
+    # Stored as 'glossary' chunks: they feed term_counts (→ lex_score / TF-IDF)
+    # but are deliberately excluded from pgvector. Keeping them out of the
+    # embedding space avoids inflating CHEM's vector neighbourhood with ~100
+    # extra points (which would make CHEM spuriously "central"). Their real value
+    # is lexical bridging — terms like "photoelectric effect", "electromagnetic
+    # radiation", "electron" raise lex_score on genuine CHEM↔PHYS overlaps.
     defs = course.get('definitions', [])
     if defs and defs[0].get('d_entry'):
         for i, (term, entry) in enumerate(
             zip(defs[0]['d_term'], defs[0]['d_entry'])
         ):
             text = f"{term}: {entry}"
-            _add('definition', i, text, text)
+            _add('glossary', i, text, text)
 
     # ── 3. Course description (LM term counts only — not stored in Milvus) ──────
     desc = course.get('description', '')

@@ -70,11 +70,10 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _mean_pool(last_hidden: np.ndarray, attention_mask: np.ndarray) -> np.ndarray:
-    mask = attention_mask[..., None].astype(np.float32)
-    summed = (last_hidden * mask).sum(axis=1)
-    denom  = np.maximum(mask.sum(axis=1), 1e-9)
-    return summed / denom
+def _cls_pool(last_hidden: np.ndarray) -> np.ndarray:
+    """SciNCL uses [CLS]-token pooling (verified via Pooling module config:
+    pooling_mode_cls_token=True). The [CLS] token is always position 0."""
+    return last_hidden[:, 0, :]
 
 
 def _l2(x: np.ndarray) -> np.ndarray:
@@ -164,7 +163,7 @@ def main():
         ).astype(np.int64),
     }
     last_hidden = sess.run(["last_hidden_state"], feeds)[0]
-    candidate = _l2(_mean_pool(last_hidden, inputs["attention_mask"]))
+    candidate = _l2(_cls_pool(last_hidden))
 
     cosines = [float(np.dot(baseline[i], candidate[i])) for i in range(len(GOLDEN_TEXTS))]
     worst   = min(cosines)
@@ -181,7 +180,7 @@ def main():
         "id":             model_id,
         "hf_name":        args.hf_name,
         "dim":            int(baseline.shape[1]),
-        "pooling":        "mean",
+        "pooling":        "cls",
         "normalize":      "l2",
         "max_seq_len":    512,
         "sha256":         _sha256(onnx_final),

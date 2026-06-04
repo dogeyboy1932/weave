@@ -1,0 +1,229 @@
+{
+  "CHEM 102": [
+    "Hummel, T",
+    "Marville, K",
+    "Gunasekera, B"
+  ],
+  "CHEM 103": [
+    "Decoste, D"
+  ],
+  "CHEM 104": [
+    "Andino Martinez, J",
+    "Ray, C"
+  ],
+  "CHEM 105": [
+    "Decoste, D"
+  ],
+  "CS 101": [
+    "Fowler, M"
+  ],
+  "MATH 221": [
+    "Whittlesey, K",
+    "Srikant, J"
+  ],
+  "MATH 231": [
+    "Bahreini Esfahani, M",
+    "Hoffmeister, A"
+  ],
+  "MATH 241": [
+    "Zharnitsky, V"
+  ],
+  "MATH 285": [
+    "Manfroi, A"
+  ],
+  "PHYS 211": [
+    "Stelzer, T",
+	"Farina, C"
+  ],
+  "PHYS 212": [
+    "Kwiat, P G",
+	"Tsokaros, A"
+  ],
+  "MATH 257": [
+    "Chuang, J",
+    "Hirani, A",
+    "Leditzky, F"
+  ],
+  "PHYS 213": [
+    "Cohen, O",
+	"Mahmood, F"
+  ],
+  "PHYS 214": [
+    "Cohen, O",
+	"Mahmood, F"
+  ],
+  "ECE 205": [
+    "Ravaioli, U"
+  ],
+  "ECE 206": [],
+  "MATH 441": [
+    "Tzirakis, N"
+  ],
+  "MATH 442": [
+    "Cooney, D"
+  ],
+  "TAM 210": [
+    "Halloran, K",
+    "Admal, N"
+  ],
+  "TAM 211": [
+    "Halloran, K",
+    "Admal, N"
+  ],
+  "TAM 212": [
+    "Golecki, T"
+  ],
+  "TAM 251": [
+    "Rosa, G",
+    "Faghir Hagh, V"
+  ],
+  "TAM 445": [
+    "Luetkemeyer, C"
+  ],
+  "TAM 456": [
+    "Hutchens, S"
+  ],
+  "TAM 470": [
+    "Mercer, B"
+  ],
+  "ME 340": [
+    "Salapaka, S",
+    "Farjam, N"
+  ],
+  "ME 440": [],
+  "TAM 412": [
+    "Vakakis, A"
+  ],
+  "ME 170": [
+    "Halloran, K"
+  ],
+  "ME 270": [
+    "Clemon, M"
+  ],
+  "ME 330": [
+    "Cai, L",
+    "Wharry, J"
+  ],
+  "ME 370": [
+    "Correa Panesso, J",
+    "Wandke, K"
+  ],
+  "ME 371": [
+    "Mercer, B",
+    "Wandke, K"
+  ],
+  "ME 431": [
+    "Downing, S",
+	"Yaacoub, J"
+  ],
+  "ME 432": [
+    "Ertekin, E"
+  ],
+  "ME 445": [
+    "Driggs-Campbell, K"
+  ],
+  "ME 446": [
+    "Yim, J"
+  ],
+  "ME 447": [
+    "Gazzola, M",
+	"Kim, S"
+  ],
+  "ME 451": [
+    "Correa Panesso, J",
+	"Eslaminia, A"
+  ],
+  "ME 452": [
+    "Toro Santamaria, R"
+  ],
+  "ME 453": [
+    "Toro Santamaria, R"
+  ],
+  "ME 455": [
+    "Correa Panesso, J"
+  ],
+  "ME 458": [
+    "King, W"
+  ],
+  "ME 487": [
+    "Bahl, G"
+  ],
+  "TAM 324": [
+    "Popovics, J"
+  ],
+  "ME 475": [
+    "Alleyne, M",
+	"Barley, W",
+	"Lee, P",
+	"Othman, A",
+	"Wissa, A"
+  ],
+  "ME 481": [
+    "Hoyle, M"
+  ],
+  "ME 482": [
+    "Kersh, M"
+  ],
+  "ME 483": [
+    "Han, B"
+  ],
+  "ME 360": [
+    "Clemon, M",
+    "Bentsman, J"
+  ],
+  "ME 460": [
+    "Hovakimyan, N"
+  ],
+  "ME 461": [
+    "Wandke, K"
+  ],
+  "ME 462": [
+    "Bentsman, J",
+	"Xu, Z"
+  ],
+  "ME 200": [
+    "Tang, K",
+    "He, J",
+    "Bradshaw, C"
+  ],
+  "ME 310": [
+    "Pearlstein, A",
+    "Gazzola, M"
+  ],
+  "ME 320": [
+    "Miljkovic, N",
+    "Smith, K"
+  ],
+  "ME 400": [
+    "Tang, K"
+  ],
+  "ME 401": [
+    "Nasiriziba, I",
+	"Tang, K"
+  ],
+  "ME 402": [
+    "Bradshaw, C"
+  ],
+  "ME 403": [
+    "Lee, CZhao, Z"
+  ],
+  "ME 404": [
+    "Brewster, M"
+  ],
+  "ME 410": [
+    "Kearney, S"
+  ],
+  "ME 411": [
+    "Brewster, M"
+  ],
+  "ME 412": [
+    "Raj, A"
+  ],
+  "ME 420": [
+    "Han, B"
+  ],
+  "TAM 335": [
+    "Tang, K",
+    "Feng, J"
+  ]
+}

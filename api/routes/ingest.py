@@ -1,7 +1,8 @@
 import json
-import time
 import tempfile
 from pathlib import Path
+
+import numpy as np
 
 from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, File, Form, Header, HTTPException, UploadFile
@@ -20,7 +21,8 @@ from scoring import graph_compute
 # return 503 instead of crashing at import time.
 try:
     import pdfplumber  # type: ignore
-    from scoring.chunker          import chunk_course
+    from scoring.chunker          import chunk_course, topic_chunk_text, topic_term_text, tokenize
+    from scoring.vector_similarity import _topic_name
     from storage.vectors.encoder          import encode
     from llm.topic_extractor  import analyze_course, extract_topics
     from llm.category_labeler import label_topic
@@ -115,10 +117,10 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
 
     topic_names = [t['name'] for t in topics]
     topic_tags  = {t['name']: t.get('tags', []) for t in topics}
-    local_defs  = {f"{course_id}: {t['name']}": t['description'] for t in topics}
-    with open(config.DEFINITIONS_PATH) as f:
-        global_defs = json.load(f)
-    merged_defs = {**global_defs, **local_defs}
+    # Definitions come straight from the LLM analysis — no dependency on the
+    # training-only data/topic_definitions.json, which the LLM output fully
+    # supersedes for every extracted topic.
+    topic_defs  = {f"{course_id}: {t['name']}": t['description'] for t in topics}
 
     # ── Step 2: Stack — chunk, embed, store ──────────────────────────────────────
     print(f"[ingest] Step 2/5 — Chunking + embedding …")
@@ -129,7 +131,7 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
         'topics': topic_names,
         'definitions': [],
     }
-    chunks, term_counts = chunk_course(course_dict, merged_defs, topic_tags=topic_tags)
+    chunks, term_counts = chunk_course(course_dict, topic_defs, topic_tags=topic_tags)
 
     pg_store.upsert_course(course_id, course_name, description)
     pg_store.upsert_chunks([
@@ -138,7 +140,7 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     ])
     pg_store.upsert_term_counts(course_id, term_counts)
 
-    embed_chunks = [c for c in chunks if c['chunk_type'] in ('topic', 'definition')]
+    embed_chunks = [c for c in chunks if c['chunk_type'] == 'topic']
     if embed_chunks:
         embeddings = encode([c['raw_text'] for c in embed_chunks])
         vs.insert_chunks([
@@ -251,9 +253,11 @@ def _run_append(course_id: str, course_name: str, raw_text: str, api_key: str | 
     """
     Append additional material (lecture notes, slides, extra reading) to an existing course.
 
-    New topics are extracted and labeled, new chunks are embedded and stored alongside
-    existing ones, term counts are accumulated (not replaced), and all similarity scores
-    for this course are recomputed from the full combined dataset.
+    Topic-centric merge: extracted topics that match an existing course topic
+    (cosine ≥ MERGE_COSINE) upgrade it in place — union tags, richer definition,
+    re-embed, overwrite the same chunk (one chunk per topic, no dilution).
+    Genuinely new topics are added as fresh chunks. All similarity scores for the
+    course are then recomputed.
     """
     _ingest_status[course_id] = {"status": "running", "message": ""}
     print(f"\n[append] ── Appending material to '{course_name}' ({course_id}) ──")
@@ -268,59 +272,140 @@ def _run_append(course_id: str, course_name: str, raw_text: str, api_key: str | 
         _ingest_status[course_id] = {"status": "error", "message": msg}
 
 
+# Cosine above which an incoming (appended) topic is treated as the SAME topic
+# as an existing one and merged in place rather than added as a new chunk. Same-
+# course re-coverage of a concept lands well above this; genuinely new topics
+# fall below it. Tunable; lives here rather than config.yml as an internal knob.
+MERGE_COSINE = 0.88
+
+
+def _parse_definition(raw_text: str, name: str) -> str:
+    """Recover a topic's definition from its stored variant-C chunk text
+    ("{name}: {definition}. Related concepts: ...")."""
+    body = raw_text
+    prefix = f"{name}: "
+    if body.startswith(prefix):
+        body = body[len(prefix):]
+    idx = body.rfind(". Related concepts:")
+    if idx != -1:
+        body = body[:idx]
+    return body.strip()
+
+
+def _upsert_topics_into_course(course_id: str, course_name: str, topics: list[dict]) -> dict:
+    """
+    Merge a freshly-analysed set of topics into an existing course, topic-by-topic
+    (the lecture-materials path).
+
+    For each incoming topic, embed its variant-C text and compare to the course's
+    existing topic embeddings:
+      • cosine ≥ MERGE_COSINE → MERGE: keep the existing topic's name + categories
+        (categories stay department-faithful), union the tags, keep the richer
+        (longer) definition, re-embed and OVERWRITE the existing chunk in place.
+        One chunk per topic — no duplicate embedding, so no mean-of-max dilution.
+      • otherwise → ADD as a brand-new topic chunk, indistinguishable afterwards
+        from any topic ingested originally.
+
+    term_counts: only newly-ADDED topics contribute (accumulated). Merged topics
+    are already represented, so they are not re-counted (no lex double-count); the
+    re-embedding carries their upgraded signal in sem, the stronger channel.
+
+    Returns {"merged": n, "added": m, "embedded": k}.
+    """
+    safe_id = course_id.replace(' ', '_').replace('/', '_')
+
+    # Existing topic state: chunk_id → {name, definition, embedding}.
+    existing_emb  = vs.get_chunks_with_embeddings(course_id)          # {chunk_id: ndarray}
+    existing_text = dict(pg_store.get_chunks_for_course(course_id))   # {chunk_id: raw_text}
+    cat_rows      = pg_store.get_topic_category_rows_for_course(course_id)
+    existing_tags = {d['topic_text']: d.get('tags', []) for d in cat_rows}
+    existing_cats = {d['topic_text']: d.get('categories', {}) for d in cat_rows}
+
+    match_ids:  list[str] = []
+    match_vecs: list = []
+    name_by_id: dict[str, str] = {}
+    next_idx = 0
+    for cid, raw in existing_text.items():
+        if '__topic__' not in cid:
+            continue
+        try:
+            next_idx = max(next_idx, int(cid.rsplit('__', 1)[1]) + 1)
+        except ValueError:
+            pass
+        name_by_id[cid] = _topic_name(raw)
+        if existing_emb.get(cid) is not None:
+            match_ids.append(cid)
+            match_vecs.append(existing_emb[cid])
+    M = np.stack(match_vecs).astype(np.float32) if match_vecs else None
+
+    merged = added = 0
+    new_term_counts: dict[str, int] = {}
+
+    for t in topics:
+        name     = t['name']
+        new_def  = t.get('description', '')
+        new_tags = t.get('tags', [])
+        new_emb  = encode([topic_chunk_text(name, new_def, new_tags)])[0]
+
+        best_cid, best_cos = None, -1.0
+        if M is not None:
+            sims = M @ new_emb
+            j = int(sims.argmax())
+            best_cos, best_cid = float(sims[j]), match_ids[j]
+
+        if best_cid is not None and best_cos >= MERGE_COSINE:
+            # ── MERGE into the existing topic (overwrite in place) ──
+            ex_name = name_by_id[best_cid]
+            ex_def  = _parse_definition(existing_text[best_cid], ex_name)
+            ex_tags = existing_tags.get(ex_name, [])
+            union_tags  = list(dict.fromkeys([*ex_tags, *new_tags]))
+            richer_def  = new_def if len(new_def) > len(ex_def) else ex_def
+            merged_text = topic_chunk_text(ex_name, richer_def, union_tags)
+            merged_emb  = encode([merged_text])[0]
+            pg_store.upsert_chunks([(best_cid, course_id, 'topic', merged_text, '[]')])
+            vs.insert_chunks([{'chunk_id': best_cid, 'course_id': course_id, 'embedding': merged_emb}])
+            pg_store.upsert_topic_category(course_id, ex_name, existing_cats.get(ex_name, {}), union_tags)
+            # keep the match matrix current so later incoming topics see the update
+            M[match_ids.index(best_cid)] = merged_emb
+            merged += 1
+        else:
+            # ── ADD as a brand-new topic ──
+            new_cid = f"{safe_id}__topic__{next_idx}"
+            next_idx += 1
+            new_text = topic_chunk_text(name, new_def, new_tags)
+            pg_store.upsert_chunks([(new_cid, course_id, 'topic', new_text, '[]')])
+            vs.insert_chunks([{'chunk_id': new_cid, 'course_id': course_id, 'embedding': new_emb}])
+            pg_store.upsert_topic_category(course_id, name, t.get('categories', {}), new_tags)
+            # new topics contribute to lex term counts
+            for tok in tokenize(topic_term_text(name, new_def, new_tags)):
+                new_term_counts[tok] = new_term_counts.get(tok, 0) + 1
+            # make the new topic matchable for subsequent incoming topics
+            match_ids.append(new_cid)
+            name_by_id[new_cid] = name
+            M = new_emb.reshape(1, -1).astype(np.float32) if M is None else np.vstack([M, new_emb])
+            added += 1
+
+    if new_term_counts:
+        pg_store.accumulate_term_counts(course_id, new_term_counts)
+
+    return {"merged": merged, "added": added, "embedded": merged + added}
+
+
 def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: str | None = None):
     from google import genai
     llm = genai.Client(api_key=api_key)
 
     # ── Step 1: ONE LLM call — full analysis of the new material ─────────────────
     print(f"[append] Step 1/4 — LLM: full analysis of new material …")
-    analysis    = analyze_course(course_id, course_name, raw_text, client=llm)
-    topics      = analysis['topics']
+    analysis = analyze_course(course_id, course_name, raw_text, client=llm)
+    topics   = analysis['topics']
     print(f"[append]   ✓ {len(topics)} topics extracted and labeled in one call")
 
-    topic_names = [t['name'] for t in topics]
-    topic_tags  = {t['name']: t.get('tags', []) for t in topics}
-
-    for t in topics:
-        pg_store.upsert_topic_category(course_id, t['name'], t['categories'], t.get('tags', []))
-
-    # ── Step 2: Stack — chunk new material, embed, accumulate term counts ─────────
-    print(f"[append] Step 2/4 — Chunking + embedding new material …")
-    local_defs = {f"{course_id}: {t['name']}": t['description'] for t in topics}
-    with open(config.DEFINITIONS_PATH) as f:
-        global_defs = json.load(f)
-    merged_defs = {**global_defs, **local_defs}
-
-    course_dict = {
-        'id': course_id, 'name': course_name,
-        'description': raw_text[:2000],
-        'objectives': [], 'topics': topic_names, 'definitions': [],
-    }
-    chunks, term_counts = chunk_course(course_dict, merged_defs, topic_tags=topic_tags)
-
-    # Prefix chunk IDs with a timestamp so they don't collide with existing chunks
-
-    ts = int(time.time())
-    safe_id = course_id.replace(' ', '_').replace('/', '_')
-    for c in chunks:
-        c['chunk_id'] = c['chunk_id'].replace(f"{safe_id}__", f"{safe_id}_app{ts}__", 1)
-
-    pg_store.upsert_chunks([
-        (c['chunk_id'], c['course_id'], c['chunk_type'], c['raw_text'], '[]')
-        for c in chunks
-    ])
-    # Accumulate: add new term counts on top of existing ones
-    pg_store.accumulate_term_counts(course_id, term_counts)
-
-    embed_chunks = [c for c in chunks if c['chunk_type'] in ('topic', 'definition')]
-    if embed_chunks:
-        embeddings = encode([c['raw_text'] for c in embed_chunks])
-        vs.insert_chunks([
-            {'chunk_id': embed_chunks[i]['chunk_id'], 'course_id': course_id,
-             'embedding': embeddings[i]}
-            for i in range(len(embed_chunks))
-        ])
-    print(f"[append]   ✓ {len(chunks)} new chunks stored, {len(embed_chunks)} embedded ({vs.BACKEND_NAME})")
+    # ── Step 2: Merge topics into the course (upsert-by-topic, no dilution) ───────
+    print(f"[append] Step 2/4 — Merging topics (re-embed existing, add new) …")
+    stats = _upsert_topics_into_course(course_id, course_name, topics)
+    print(f"[append]   ✓ {stats['merged']} topics upgraded in place, "
+          f"{stats['added']} new topics added ({vs.BACKEND_NAME})")
 
     # ── Steps 4: Math — recompute all similarity scores for this course ────────────
     print(f"[append] Step 4/5 — Recomputing similarity scores …")
@@ -361,7 +446,7 @@ def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: 
     except Exception as e:
         print(f"[append]   ⚠ Graph recompute skipped: {e}")
 
-    print(f"[append] ── Done — {len(chunks)} new chunks added to '{course_name}', "
+    print(f"[append] ── Done — topics merged into '{course_name}', "
           f"{pair_count} pairs rescored ──\n")
 
 

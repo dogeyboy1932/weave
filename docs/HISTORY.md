@@ -794,6 +794,134 @@ fails with the one-liner if flyctl isn't on PATH. `reset.py` dropped the
 
 ---
 
+## Phase 16 — Isomorphism-aware tag enrichment
+
+**Date:** June 3, 2026 (continuation)
+
+The Phase 12 +tags experiment showed cross-domain gaps could be widened by
+suffixing topic chunks with `. Related concepts: <tag list>`. But the existing
+tags (5 per topic) were too shallow to surface real engineering isomorphisms.
+The canonical example: spring-mass-damper (mẍ + cẋ + kx = f(t)) is
+mathematically identical to RLC circuit (LQ̈ + RQ̇ + Q/C = V(t)) up to variable
+renaming. Both should share tags like `second-order-linear-ode`,
+`harmonic-oscillator-equation`, `isomorphic-to-rlc-circuit`,
+`mechanical-electrical-analogy` — but the original tags went only as far as
+`damping-ratio`, `natural-frequency`. The bridge vocabulary was missing.
+
+**The rewrite.** `llm/topic_extractor.py` got two things:
+
+1. A new system prompt for `analyze_course()` (used at production ingest) that
+   demands 15-30 tags per topic from five named categories: structural-form,
+   canonical-equation, isomorphism-bridge, concept-level, physical-mechanism.
+   The prompt names ~40 isomorphism-bridge tags verbatim (e.g.,
+   `isomorphic-to-rlc-circuit`, `mass-inductance-analogy`, `ohms-law-analogy`)
+   so a future `/upload` produces tags from the same vocabulary as the seed
+   corpus.
+
+2. A new `enrich_topics()` function — separate from `analyze_course()` —
+   that takes an EXISTING topic list and rewrites only its tags + categories
+   without re-extracting topics. This was the right operation for retrofitting
+   the seed corpus: the first naive attempt (running `analyze_course()` on a
+   reconstructed syllabus) caused Gemini to re-derive its own topic list,
+   matching only 9/60 ME 340 topics. The enrichment-only prompt forces
+   verbatim-name passthrough; 60/60 matched.
+
+**Tooling.** `scripts/enrich_tags.py` reads `data/courses_dump.json`, fires
+35 parallel Gemini calls (8 concurrent, well under the 15-RPM free-tier
+limit), merges results back, dedupes, writes the dump. ~85 seconds wall-clock.
+Cost: ~$0.10 at `gemini-2.5-flash-lite` pricing. Idempotent.
+
+**Outcome — 100% coverage.**
+
+| Tag richness | Topics | % |
+|---|---|---|
+| ≥12 tags (well-enriched) | 805 | 85.8% |
+| 7–11 tags (partial)      | 133 | 14.2% |
+| <7 tags (un-enriched)    | 0   | 0.0% |
+
+Getting to 100% required three passes and two merger fixes:
+
+1. **First pass (concurrency=8, 35 courses).** 62% rich. For 7 courses,
+   Gemini emitted `"<topic-name>: <description>"` as the `name` field,
+   ignoring the prompt's "copy verbatim" rule. Exact-name matching missed
+   all topics in those courses.
+
+2. **Second pass (7 failed courses).** Added a colon-aware matcher: the
+   merger now tries progressive colon-truncation (drops trailing `: …`
+   segments) until match or all colons exhausted. Handles both
+   `"Foo"`-LLM-emits-`"Foo: bar"` and `"Foo: bar"`-LLM-emits-`"Foo: bar: baz"`
+   identically. Got to 99.5% rich.
+
+3. **Third pass (4 holdouts).** The remaining 4 topics were in courses
+   where Gemini's output simply dropped them — non-deterministic truncation
+   when generating 30+ topics in one response. Fix: targeted re-enrichment
+   with just the holdouts (3-4 topics per call) so Gemini can't run out
+   of output tokens before reaching them. 100% coverage achieved.
+
+Total Gemini spend: ~$0.12 across the three passes.
+
+**Quality lift on the topics that did enrich.** `Damping ratio and natural
+frequency` went from 5 tags to 15 including the explicit bridges
+`isomorphic-to-rlc-circuit` and `mechanical-electrical-analogy`. `A nonlinear
+pendulum` got 18 tags including `harmonic-oscillator-equation`,
+`isomorphic-to-rlc-circuit`, `phase-space-analysis`, `poincare-map`. The
+canonical spring-mass ↔ RLC isomorphism is now explicitly tagged.
+
+**Re-embed.** After enrichment, `scripts/restore_from_dump.py` ran the full
+chunker → SciNCL → score → graph pipeline against the new tags. The chunker
+already concatenates tags into the SciNCL input as
+`<course> [SEP] <topic>: <def>. Related concepts: <tags>.` — no chunker
+changes needed.
+
+---
+
+## Phase 17 — ONNX serving + final file consolidation
+
+**Date:** June 3, 2026 (continuation)
+
+After the tag enrichment landed, two outstanding items got resolved:
+
+**1. ONNX cutover.** `scripts/export_scincl_onnx.py` ran on a dev box,
+produced `models/scincl-int8.onnx` (~110 MB) + tokenizer + `MANIFEST.json`
+with parity-verified worst-case cosine ≥ 0.998 against the FP32 baseline.
+`config.yml` flipped to `model.embedding.runtime: onnx`, `onnx_path:
+models/scincl-int8.onnx`. `Dockerfile.api` now builds with
+`--build-arg EMBEDDING_RUNTIME=onnx`, which:
+- Drops `torch` (700 MB CPU wheel) + `sentence-transformers` from the image
+- Adds `onnxruntime` (~50 MB) + `tokenizers` (~10 MB)
+- Production image shrinks from ~1.5 GB to ~150 MB
+- Cold-start time drops from ~12 s to ~3 s
+
+The `models/` directory was de-gitignored to allow shipping the bundle
+in-repo. (Alternative: GitHub Releases asset + Docker download step.
+In-repo is simpler at this size; revisit if the bundle grows.)
+
+**2. Single env file.** `deploy/credentials.env` + `deploy/link-env.sh`
+collapsed into one `.env` at the repo root, read by both uvicorn (via
+`python-dotenv` in `config.py`) and `deploy/deploy.sh` directly. No more
+translation script.
+
+**3. Aggressive archive.** Anything not needed for the active codebase
+moved into `.archive/` (hidden directory, gitignored):
+- `.archive/deploy-extras/` — `README.md`, `credentials.env.example`,
+  `install-flyctl.sh`, `setup-ci.sh`, the stale Neo4j Aura backup
+- `.archive/scripts-extras/` — 9 one-off scripts + `experiment_chunk_format.py`
+- `.archive/data-source-files/` — raw `mechse_syllabi.json`,
+  `course_info.json`, `instructors.json`, per-course edit buffers
+- `.archive/samples/` — sample PDFs
+- `.archive/legacy-local-docker/` — original docker-compose stack + Oracle
+  self-host (carried over from Phase 13)
+
+`deploy/` now contains exactly one file (`deploy.sh`). `scripts/` contains
+six load-bearing scripts. The repo root has `.env` (gitignored) plus the
+usual `README.md`, `config.py`, `config.yml`, `Dockerfile.api`, `fly.toml`,
+`requirements*.txt`, `CLAUDE.md`.
+
+`config.py` lost dead constants `SYLLABI_PATH`, `COURSE_INFO_PATH`,
+`INSTRUCTORS_PATH` (only the archived `seed.py` ever read them).
+
+---
+
 ## Cross-cutting design principles that emerged
 
 These weren't planned up front — they crystallized through arguments with reality. They are the rules the codebase now lives by.

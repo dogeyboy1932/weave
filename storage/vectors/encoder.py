@@ -57,11 +57,10 @@ _ort_session = None
 _ort_tokenizer = None
 
 
-def _mean_pool(last_hidden: np.ndarray, attention_mask: np.ndarray) -> np.ndarray:
-    mask = attention_mask[..., None].astype(np.float32)
-    summed = (last_hidden * mask).sum(axis=1)
-    denom  = np.maximum(mask.sum(axis=1), 1e-9)
-    return summed / denom
+def _cls_pool(last_hidden: np.ndarray) -> np.ndarray:
+    """SciNCL uses [CLS]-token pooling (verified via Pooling module config:
+    pooling_mode_cls_token=True). [CLS] is always position 0."""
+    return last_hidden[:, 0, :]
 
 
 def _l2_normalize(x: np.ndarray) -> np.ndarray:
@@ -134,7 +133,7 @@ def _encode_onnx(texts: list[str]) -> np.ndarray:
         ).astype(np.int64),
     }
     last_hidden = sess.run(["last_hidden_state"], feeds)[0]
-    return _l2_normalize(_mean_pool(last_hidden, inputs["attention_mask"])).astype(np.float32)
+    return _l2_normalize(_cls_pool(last_hidden)).astype(np.float32)
 
 
 # ── Public encode() dispatcher ────────────────────────────────────────────────

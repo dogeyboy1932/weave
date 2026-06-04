@@ -261,3 +261,119 @@ def extract_and_label_topics(course_id: str, course_name: str, text: str,
                               client) -> list[tuple[str, str, dict]]:
     result = analyze_course(course_id, course_name, text, client)
     return [(t['name'], t['description'], t['categories']) for t in result['topics']]
+
+
+# ── Enrichment-only prompt (does NOT re-extract topics) ──────────────────────
+_ENRICH_SYSTEM = f"""You are enriching an existing list of academic topics with \
+cross-domain isomorphism-aware tags and 8-bin category distributions. \
+DO NOT propose new topics. DO NOT rename topics. DO NOT skip topics. \
+For each input topic, output ONE corresponding entry in the same order with the same `name`.
+
+For EACH topic produce:
+  - name: copy verbatim from input. Do NOT change spelling, casing, or punctuation.
+  - categories: probability distribution over 8 engineering domains, sums to 1.0:
+       Mechanics, Thermodynamics, Electrical, Fluids, Materials,
+       Mathematics, Chemistry, Systems
+    Assign non-zero weight to the 2-3 most relevant categories; be specific.
+  - tags: 15–25 lowercase hyphenated phrases (2–5 words each) capturing the
+    topic's underlying mathematical and physical structure.
+
+Tag categories to draw from (mix several):
+  (a) STRUCTURAL-FORM: "second-order-linear-ode", "first-order-linear-ode",
+      "partial-differential-equation", "linear-time-invariant-system",
+      "lumped-parameter-model", "distributed-parameter-system",
+      "boundary-value-problem", "eigenvalue-problem", "state-space-model",
+      "transfer-function", "convolution-integral", "variational-principle",
+      "conservation-law", "balance-equation".
+  (b) CANONICAL-EQUATION: "harmonic-oscillator-equation", "diffusion-equation",
+      "wave-equation", "poisson-equation", "laplace-equation",
+      "navier-stokes-equation", "schrodinger-equation",
+      "characteristic-equation", "dispersion-relation".
+  (c) ISOMORPHISM-BRIDGE — include whenever applicable, use these exact phrases:
+      "isomorphic-to-rlc-circuit", "isomorphic-to-spring-mass-damper",
+      "isomorphic-to-thermal-rc-network", "mechanical-electrical-analogy",
+      "thermal-electrical-analogy", "force-voltage-analogy",
+      "mass-inductance-analogy", "stiffness-capacitance-analogy",
+      "damping-resistance-analogy", "displacement-charge-analogy",
+      "ohms-law-analogy", "energy-storage-dissipation-analogy",
+      "impedance-analogy", "diffusion-conduction-analogy".
+  (d) CONCEPT-LEVEL: "natural-frequency", "damping-ratio", "resonance",
+      "underdamped-response", "frequency-response", "impulse-response",
+      "fourier-analysis", "laplace-transform", "spectral-decomposition",
+      "normal-modes", "quality-factor", "time-constant", "phase-margin".
+  (e) PHYSICAL-MECHANISM: "energy-conservation", "momentum-conservation",
+      "entropy-production", "dissipation-mechanism", "feedback-loop".
+
+THE CORE INSIGHT: many engineering systems are isomorphic. A spring-mass-damper
+(ME: mẍ + cẋ + kx = f(t)) IS an RLC circuit (ECE: LQ̈ + RQ̇ + Q/C = V(t))
+up to variable renaming. The tags must expose this hidden structure so a BERT
+model can detect cross-domain matches it would otherwise miss.
+
+RULES:
+- At least one tag from group (a) AND at least one from group (c) or (d) per topic.
+- Include isomorphism-bridge tags from group (c) whenever applicable — be liberal.
+- 15–25 tags per topic. No fewer than 15.
+- BAD tags: "analysis", "method", "engineering", "system" alone — too generic.
+- BAD tags: domain-locked unless suffixed (e.g., "hookes-law-stiffness" OK,
+  "hookes-law" alone is not).
+- Lowercase, hyphen-separated, 2–5 words. No spaces, no punctuation, no acronym caps.
+
+Return ONLY raw JSON, no markdown:
+{{
+  "topics": [
+    {{"name": "<verbatim>", "categories": {_CAT_SCHEMA}, "tags": ["...", "..."]}},
+    ...
+  ]
+}}"""
+
+
+def enrich_topics(course_id: str, course_name: str,
+                  topics: list[dict], client) -> list[dict]:
+    """
+    Enrich an EXISTING list of topics with richer tags + categories.
+    Does not extract new topics. Input shape: [{name, description}, ...].
+    Output shape: [{name, categories, tags}, ...] in same order.
+    """
+    topic_block = "\n".join(
+        f"{i+1}. {t['name']}: {t.get('description', '').strip()[:300]}"
+        for i, t in enumerate(topics)
+    )
+    prompt = (
+        f"Course: {course_name} ({course_id})\n"
+        f"Topics to enrich ({len(topics)} total — output exactly this many in order):\n\n"
+        f"{topic_block}"
+    )
+    response = client.models.generate_content(
+        model=config.CATEGORY_LABEL_MODEL,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=_ENRICH_SYSTEM,
+            max_output_tokens=32768,  # 60 topics × 25 tags × ~6 tokens = ~9k, with headroom
+            thinking_config=types.ThinkingConfig(thinking_budget=0),
+        ),
+    )
+    raw = response.text.strip()
+    s, e = raw.find('{'), raw.rfind('}') + 1
+    if s == -1 or e <= s:
+        raise ValueError(f"Enrich LLM returned invalid JSON: {raw[:300]}")
+    data = json.loads(raw[s:e])
+
+    enriched = []
+    for t in data.get('topics', []):
+        name = (t.get('name') or '').strip()
+        if not name:
+            continue
+        raw_cats = t.get('categories') or {}
+        total = sum(raw_cats.get(c, 0.0) for c in CATEGORIES)
+        cats = ({c: raw_cats[c] / total for c in CATEGORIES if raw_cats.get(c, 0) > 0}
+                if total > 0 else {})
+        seen, tags = set(), []
+        for tg in (t.get('tags') or []):
+            s2 = str(tg).lower().strip()
+            if s2 and s2 not in seen:
+                seen.add(s2)
+                tags.append(s2)
+            if len(tags) >= 30:
+                break
+        enriched.append({"name": name, "categories": cats, "tags": tags})
+    return enriched

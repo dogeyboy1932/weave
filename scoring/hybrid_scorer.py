@@ -76,7 +76,12 @@ def score_pair(
     non_obvious = None
     if category_vecs and course_a in category_vecs and course_b in category_vecs:
         cat_jsd = compute_category_jsd(category_vecs[course_a], category_vecs[course_b])
-        non_obvious = compute_non_obvious(sem, cat_jsd)
+        # Use CALIBRATED sem (baseline-subtracted), not raw. Raw SciNCL cosine
+        # has a ~0.74 noise floor, so raw_sem × cat_jsd lets pure-baseline pairs
+        # (e.g. CS 521 ↔ ME 330, no real topic overlap) ride a high cat_jsd into
+        # the top ranks. Calibrating first zeroes that noise — only genuine
+        # above-baseline similarity contributes to the non-obvious signal.
+        non_obvious = compute_non_obvious(_calibrate_sem(sem), cat_jsd)
 
     final = _hybrid(lex, sem, cat_jsd)
 

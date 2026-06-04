@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 import storage.postgres.store as pg_store
 from scoring.category_scorer import course_category_vector, CATEGORIES
+from scoring.vector_similarity import shared_topics as _shared_topics
 from llm.llm_explainer import explain_connection
 
 router = APIRouter()
@@ -58,7 +59,28 @@ def get_similarity(
             detail=f"No similarity found for '{a}' ↔ '{b}'. "
                    "Run scripts/build_graph.py first.",
         )
+    # Drill-down: which topics actually drive this match. Computed directly
+    # between the two courses (not from the global topic_similarity table).
+    result["shared_topics"] = _shared_topics(
+        result["course_a"], result["course_b"], top_k=5, min_score=0.0,
+    )
     return result
+
+
+@router.get("/shared-topics")
+def get_shared_topics(
+    a:       str   = Query(..., description="First course ID, e.g. ME 340"),
+    b:       str   = Query(..., description="Second course ID, e.g. ECE 205"),
+    top:     int   = Query(5, ge=1, le=20),
+    min_score: float = Query(0.0, ge=0.0, le=1.0),
+):
+    """
+    The "why similar" drill-down: strongest topic-to-topic overlaps between two
+    courses, e.g. ME 340 'Damping ratio' ↔ ECE 205 'RLC circuits'. Deduplicated
+    so each topic appears at most once. Pure pgvector math, no LLM.
+    """
+    pairs = _shared_topics(a, b, top_k=top, min_score=min_score)
+    return {"course_a": a, "course_b": b, "shared_topics": pairs, "count": len(pairs)}
 
 
 @router.get("/neighbors")

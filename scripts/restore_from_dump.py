@@ -45,7 +45,28 @@ from storage.vectors        import store as vs
 from storage.vectors.encoder import encode
 
 
-def _course_dict_from_dump(cid: str, entry: dict) -> dict:
+def _load_glossaries(syllabi_path: Path) -> dict[str, list]:
+    """
+    Build {course_id: definitions_block} from mechse_syllabi.json.
+
+    Only 3 CHEM courses carry a populated glossary (Oxford Dictionary of
+    Chemistry entries). The chunker turns these into 'glossary' chunks that
+    feed term_counts / lex_score but are NOT embedded — see chunk_course().
+    Returns {} silently if the file is missing so restore still works.
+    """
+    if not syllabi_path.exists():
+        return {}
+    with open(syllabi_path) as f:
+        syllabi = json.load(f)
+    out: dict[str, list] = {}
+    for c in syllabi.get('courses', []):
+        defs = c.get('definitions', [])
+        if defs and isinstance(defs[0], dict) and defs[0].get('d_entry'):
+            out[c['id']] = defs
+    return out
+
+
+def _course_dict_from_dump(cid: str, entry: dict, glossaries: dict) -> dict:
     """Translate dump shape → the dict shape scoring.chunker.chunk_course expects."""
     return {
         'id':          cid,
@@ -53,7 +74,7 @@ def _course_dict_from_dump(cid: str, entry: dict) -> dict:
         'description': entry.get('description', ''),
         'objectives':  entry.get('objectives', []),
         'topics':      [t['name'] for t in entry.get('topics', [])],
-        'definitions': [],
+        'definitions': glossaries.get(cid, []),
     }
 
 
@@ -99,8 +120,19 @@ def main():
     print("\n[1/8] Initialising schema + vector collection …")
     pg_store.init_schema()
     vs.get_or_create_collection()
+    # Clean slate: wipe content/derived tables so a re-run can't leave orphaned
+    # chunks/embeddings behind (those silently pollute sem_sim). Also drops any
+    # course no longer in the dump.
+    pg_store.wipe_content_tables(keep_course_ids=list(dump.keys()))
+    print("      wiped chunks/embeddings/term_counts/categories/scores for a clean rebuild")
 
     topic_defs = _topic_defs_from_dump(dump)
+    # mechse_syllabi.json sits next to the dump in data/.
+    glossaries = _load_glossaries(dump_path.parent / "mechse_syllabi.json")
+    if glossaries:
+        n = sum(len(g[0]['d_entry']) for g in glossaries.values())
+        print(f"      glossaries: {n} entries across {len(glossaries)} courses "
+              f"({', '.join(sorted(glossaries))}) → term_counts only")
 
     print(f"[2/8] Upserting courses + chunks + term counts + categories …")
     for cid, entry in tqdm(dump.items(), unit="course"):
@@ -117,7 +149,7 @@ def main():
         )
 
         # 2. chunks + 3. term counts
-        course_dict = _course_dict_from_dump(cid, entry)
+        course_dict = _course_dict_from_dump(cid, entry, glossaries)
         chunks, term_counts = chunk_course(
             course_dict, topic_defs, topic_tags=_topic_tags_from_entry(entry)
         )
@@ -138,11 +170,11 @@ def main():
 
     print("[3/8] Encoding chunks with SciNCL (local — no Gemini calls) …")
     for cid, entry in tqdm(dump.items(), unit="course"):
-        course_dict = _course_dict_from_dump(cid, entry)
+        course_dict = _course_dict_from_dump(cid, entry, glossaries)
         chunks, _ = chunk_course(
             course_dict, topic_defs, topic_tags=_topic_tags_from_entry(entry)
         )
-        embed_chunks = [c for c in chunks if c['chunk_type'] in ('topic', 'definition')]
+        embed_chunks = [c for c in chunks if c['chunk_type'] == 'topic']
         if not embed_chunks:
             continue
         embeddings = encode([c['raw_text'] for c in embed_chunks])

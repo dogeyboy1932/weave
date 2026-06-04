@@ -1,0 +1,266 @@
+{
+    "CHEM 102": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "MATH 112"
+    },
+    "CHEM 103": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "None"
+    },
+    "CHEM 104": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(CHEM 102 OR CHEM 202)"
+    },
+    "CHEM 105": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(CHEM 102 AND CHEM 103)"
+    },
+    "CS 101": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "(MATH 220 OR MATH 221 OR MATH 231 OR MATH 241)"
+    },
+    "MATH 221": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "MATH 115"
+    },
+    "MATH 231": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "(MATH 220 OR MATH 221)"
+    },
+    "MATH 241": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "None"
+    },
+    "MATH 285": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "None"
+    },
+    "PHYS 211": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "None"
+    },
+    "PHYS 212": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "None"
+    },
+    "MATH 257": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "CS 101 AND (MATH 220 OR MATH 221)"
+    },
+    "PHYS 213": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "None"
+    },
+    "PHYS 214": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "PHYS 212"
+    },
+    "ECE 205": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "PHYS 212"
+    },
+    "ECE 206": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "ECE 205"
+    },
+    "MATH 441": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(MATH 241 OR MATH 347 OR MATH 348)"
+    },
+    "MATH 442": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(MATH 284 OR MATH 285 OR MATH 441)"
+    },
+    "TAM 210": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "PHYS 211"
+    },
+    "TAM 211": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "PHYS 211"
+    },
+    "TAM 212": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "(TAM 210 OR TAM 211)"
+    },
+    "TAM 251": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(TAM 210 OR TAM 211)"
+    },
+    "TAM 445": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "TAM 251"
+    },
+    "TAM 456": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "TAM 251"
+    },
+    "TAM 470": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(CS 101 OR CS 124 OR ECE 220) AND (MATH 285 OR MATH 286 OR MATH 441)"
+    },
+    "ME 340": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "TAM 212 AND (MATH 285 OR MATH 286 OR MATH 441)"
+    },
+    "ME 440": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 370"
+    },
+    "TAM 412": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "TAM 212 AND (MATH 225 OR MATH 257 OR MATH 415) AND (MATH 285 OR MATH 441)"
+    },
+    "ME 170": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "None"
+    },
+    "ME 270": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "ME 170"
+    },
+    "ME 330": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "(TAM 251 AND CHEM 102)"
+    },
+    "ME 370": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "(ME 270 AND TAM 212 AND TAM 251)"
+    },
+    "ME 371": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "ME 370 AND (TAM 324 OR ME 330)"
+    },
+    "ME 431": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(ME 330 AND ME 371)"
+    },
+    "ME 432": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(PHYS 212 AND ME 330)"
+    },
+    "ME 445": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(MATH 285 OR MATH 286 OR MATH 415 OR MATH 418)"
+    },
+    "ME 446": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "SE 320"
+    },
+    "ME 447": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "MATH 415 AND (CS 101 OR CS 125)"
+    },
+    "ME 451": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 270"
+    },
+    "ME 452": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(CS 101 AND ME 270)"
+    },
+    "ME 453": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 270 AND (IE 300 OR STAT 400) AND (MATH 257 OR MATH 415)"
+    },
+    "ME 455": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 270"
+    },
+    "ME 458": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 371"
+    },
+    "ME 487": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "PHYS 212"
+    },
+    "TAM 324": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "(CHEM 104 AND TAM 251)"
+    },
+    "ME 475": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 370"
+    },
+    "ME 481": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(TAM 212 AND TAM 251)"
+    },
+    "ME 482": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "TAM 251"
+    },
+    "ME 483": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(CHEM 102 AND TAM 251)"
+    },
+    "ME 360": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "ME 340"
+    },
+    "ME 460": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(ME 340 AND ME 360)"
+    },
+    "ME 461": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(ME 360 OR ABE 425)"
+    },
+    "ME 462": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 360"
+    },
+    "ME 200": {
+        "type": "Core ME; Core EM",
+        "prerequisites": "MATH 241"
+    },
+    "ME 310": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "(MATH 285 OR MATH 286 OR MATH 441)"
+    },
+    "ME 320": {
+        "type": "Core ME; Elective EM",
+        "prerequisites": "ME 200 AND (ME 310 OR TAM 335) AND (MATH 285 OR MATH 286 OR MATH 441)"
+    },
+    "ME 400": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 200"
+    },
+    "ME 401": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "None"
+    },
+    "ME 402": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "None"
+    },
+    "ME 403": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "None"
+    },
+    "ME 404": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 200"
+    },
+    "ME 410": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "(ME 200 AND ME 310) AND (TAM 335 OR AE 311)"
+    },
+    "ME 411": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "AE 311 AND (ME 310 OR TAM 335)"
+    },
+    "ME 412": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 320 AND (ME 310 OR TAM 335)"
+    },
+    "ME 420": {
+        "type": "Elective ME; Elective EM",
+        "prerequisites": "ME 320 AND (ME 310 OR TAM 335)"
+    },
+    "TAM 335": {
+        "type": "Elective ME; Core EM",
+        "prerequisites": "TAM 212"
+    }
+}

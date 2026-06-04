@@ -37,74 +37,69 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from google import genai
 
 import config
-from llm.topic_extractor import analyze_course
-
-
-def _reconstruct_syllabus(entry: dict) -> str:
-    """
-    Build a syllabus-style text from the existing dump entry so analyze_course()
-    can run on it. Includes course description, objectives, and every topic's
-    name + 1-line definition. ~5-7k chars per course — fits in the 7000-char
-    prompt slice analyze_course() takes.
-    """
-    parts: list[str] = []
-    name = entry.get("name", "").strip()
-    if name:
-        parts.append(f"Course: {name}")
-    desc = entry.get("description", "").strip()
-    if desc:
-        parts.append(f"Description: {desc}")
-    objs = entry.get("objectives", [])
-    if objs:
-        parts.append("Objectives:")
-        parts.extend(f"- {o.strip()}" for o in objs if o.strip())
-    topics = entry.get("topics", [])
-    if topics:
-        parts.append("\nTopics:")
-        for t in topics:
-            tname = (t.get("name") or "").strip()
-            tdesc = (t.get("description") or "").strip()
-            if tname and tdesc:
-                parts.append(f"- {tname}: {tdesc}")
-            elif tname:
-                parts.append(f"- {tname}")
-    return "\n".join(parts)
+from llm.topic_extractor import enrich_topics
 
 
 def _enrich_one(course_id: str, entry: dict, api_key: str) -> tuple[str, dict | None, str | None]:
-    """One Gemini call. Returns (course_id, new_topics_by_name | None, err | None)."""
+    """One Gemini call. Returns (course_id, new_topics_by_name | None, err | None).
+
+    Keys are the raw LLM-returned names. Matching against the dump's original
+    names happens in the merger, which tries progressive colon-truncation so
+    topics like "Foo: bar" or "Foo: bar: baz" all resolve correctly.
+    """
     try:
         client = genai.Client(api_key=api_key)
-        syllabus = _reconstruct_syllabus(entry)
-        result = analyze_course(course_id, entry.get("name", course_id), syllabus, client=client)
-        # result['topics'] = [{'name','description','categories','tags'}, ...]
-        return course_id, {t["name"]: t for t in result.get("topics", [])}, None
+        topics_in = [
+            {"name": t["name"], "description": t.get("description", "")}
+            for t in entry.get("topics", [])
+            if t.get("name")
+        ]
+        if not topics_in:
+            return course_id, {}, None
+        enriched = enrich_topics(course_id, entry.get("name", course_id),
+                                 topics_in, client=client)
+        return course_id, {t["name"]: t for t in enriched if t.get("name")}, None
     except Exception as e:
         return course_id, None, f"{type(e).__name__}: {e}"
 
 
 def _merge_into_dump(dump: dict, course_id: str, new_topics_by_name: dict) -> tuple[int, int, int]:
-    """Apply enriched tags/categories. Match topics by exact name; warn on misses.
+    """Apply enriched tags/categories. Match topics by exact / ci / colon-truncated name.
+
+    Match strategy: for each LLM-returned name, try the full name, then
+    progressively drop trailing `: …` segments and try again. Handles all of:
+      Original "Foo"                  LLM "Foo"           → exact
+      Original "Foo"                  LLM "Foo: bar"      → drop ":bar" → "Foo"
+      Original "Foo: bar"             LLM "Foo: bar"      → exact
+      Original "Foo: bar"             LLM "Foo: bar: baz" → drop ":baz" → "Foo: bar"
 
     Returns (matched, added, skipped) counts.
     """
     entry = dump[course_id]
     matched = added = skipped = 0
-    existing_by_name = {t["name"]: t for t in entry.get("topics", [])}
-    for name, new_t in new_topics_by_name.items():
-        # Prefer exact match; fall back to case-insensitive match
-        target = existing_by_name.get(name)
-        if target is None:
-            ci = next((t for t in entry["topics"]
-                       if t["name"].strip().lower() == name.strip().lower()), None)
-            if ci is None:
-                # New topic the LLM came up with — skip silently to preserve human edits.
-                skipped += 1
+    existing = entry.get("topics", [])
+    by_name = {t["name"]: t for t in existing}
+    by_ci   = {t["name"].strip().lower(): t for t in existing}
+
+    def _find(name: str):
+        # Progressive colon-truncation: try the full name first, then drop one
+        # trailing `: …` segment at a time until match or no colons remain.
+        parts = name.split(":")
+        for i in range(len(parts), 0, -1):
+            attempt = ":".join(parts[:i]).strip()
+            if not attempt:
                 continue
-            target = ci
-            matched += 1
-        else:
-            matched += 1
+            t = by_name.get(attempt) or by_ci.get(attempt.lower())
+            if t is not None:
+                return t
+        return None
+
+    for name, new_t in new_topics_by_name.items():
+        target = _find(name)
+        if target is None:
+            skipped += 1
+            continue
+        matched += 1
         new_tags = new_t.get("tags") or []
         if new_tags:
             target["tags"] = new_tags

@@ -35,8 +35,17 @@ scoring:
   alpha_cat: 0.2
   alpha:     0.4              # legacy fallback when alpha_* aren't set
   dirichlet_mu: 2000.0
-  sem_floor: 0.35             # SciNCL cosine baseline for random eng text pairs
-  min_score: 0.55             # graph-edge threshold + Louvain input
+  sem_floor: 0.74             # SciNCL cosine baseline for random eng-text pairs.
+                              # Empirically calibrated: across all 595 course
+                              # pairs the raw cosine never drops below ~0.69
+                              # (SciNCL maps all scientific text into a narrow
+                              # cone), so the old 0.35 calibrated noise to ~0.52.
+                              # 0.74 is the separation-maximising floor between
+                              # genuine cross-domain pairs and baseline noise.
+  min_score: 0.40             # graph-edge threshold + Louvain input. Retuned
+                              # from 0.55 after sem_floor=0.74 lowered final_score
+                              # to its true (un-inflated) scale; 0.40 keeps the
+                              # Map view at ~140 edges / avg-degree 8.
 
 retrieval:
   top_k_ann:           5

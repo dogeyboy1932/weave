@@ -1178,6 +1178,19 @@
       background: rgba(99,102,241,0.12); color: #a5b4fc;
       border: 1px solid rgba(99,102,241,0.3); font-weight: 500;
     }
+    /* ── Shared-topics drill-down ── */
+    .dt-shared-row {
+      display: flex; align-items: center; gap: 10px; padding: 5px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.08);
+    }
+    .dt-shared-row:last-child { border-bottom: none; }
+    .dt-shared-pct {
+      flex: 0 0 auto; min-width: 38px; text-align: right;
+      font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.78rem;
+      color: #34d399;
+    }
+    .dt-shared-topics { font-size: 0.8rem; color: #cbd5e1; line-height: 1.4; }
+    .dt-shared-arrow { color: #f97316; font-weight: 700; padding: 0 4px; }
   </style>
 </head>
 <body>
@@ -1971,6 +1984,19 @@ async function fetchCatDist(courseId) {
   } catch { return null; }
 }
 
+const exSharedCache = {};
+async function fetchSharedTopics(a, b) {
+  const key = `${a}|${b}`;
+  if (exSharedCache[key]) return exSharedCache[key];
+  try {
+    const r = await fetch(`${API}/similarity/shared-topics?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}&top=5`);
+    if (!r.ok) return null;
+    const d = await r.json();
+    exSharedCache[key] = d.shared_topics || [];
+    return exSharedCache[key];
+  } catch { return null; }
+}
+
 function renderCatBars(cats) {
   return CAT_ORDER.map(cat => {
     const val = cats[cat] || 0;
@@ -2397,12 +2423,32 @@ async function openDtModal(sourceCourseId, d) {
     <div class="modal-terms-label">Driving Terms</div>
     <div class="modal-terms-desc">Shared vocabulary with the highest co-occurrence weight — what explains the connection.</div>
     <div class="modal-terms-list">${termsHtml}</div>
+    <div class="modal-terms-label" style="margin-top:18px;">Shared Topics</div>
+    <div class="modal-terms-desc">The most semantically aligned topic pairs across the two courses — the conceptual overlaps driving this match. Higher % = stronger alignment.</div>
+    <div id="dt-shared-topics" style="color:#475569;font-size:.75rem;margin-top:8px;">Loading…</div>
     ${llmSection}
     <div class="modal-terms-label" style="margin-top:18px;">Category Composition</div>
     <div class="modal-terms-desc">LLM-assigned disciplinary breakdown across 8 engineering domains (averaged over all topics).</div>
     <div id="dt-cat-area" style="color:#475569;font-size:.75rem;margin-top:8px;">Loading…</div>`;
 
   document.getElementById('dt-modal').classList.add('active');
+
+  // Shared topics (deterministic "why similar" — no API key needed).
+  fetchSharedTopics(sourceCourseId, d.courseId).then(pairs => {
+    const el = document.getElementById('dt-shared-topics');
+    if (!el) return;
+    if (!pairs || !pairs.length) {
+      el.textContent = 'No strongly aligned topic pairs found.';
+      return;
+    }
+    el.innerHTML = pairs.map(p => {
+      const pct = (p.score * 100).toFixed(0);
+      return `<div class="dt-shared-row">
+        <span class="dt-shared-pct">${pct}%</span>
+        <span class="dt-shared-topics">${esc(p.topic_a)} <span class="dt-shared-arrow">↔</span> ${esc(p.topic_b)}</span>
+      </div>`;
+    }).join('');
+  });
 
   const [catA, catB] = await Promise.all([
     fetchCatDist(sourceCourseId),

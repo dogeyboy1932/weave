@@ -1,0 +1,60 @@
+Here is a rough rant of everything I hope to see get done:
+
+Clean up Supabase
+
+Ensure the current tokenization of the courses_dump is efficient in identifying similar courses and topics while also figuring out that the courses come from different domains.
+Perhaps the categories are better off not being embedded. I feel like the lexicogrpahic similarity might bring the topics closer but their variation in categories might pull them further.
+It kind of neutralizes. If anything maybe it would make sense for hybrid scoring? The BERT model is only concerned with finding course and topic similarities
+with the augmented help of tagging and such. The non-obvious matches are more of a mathematical thing. Two courses of different domains may be matched in the 
+BERT model, identifying that they are from different categories or the course (for example only share one topic). If a topic from both courses are similar,
+then the respective courses the topics are in would be "linked." Say a MechE Course has a python exercise for modeling physics simulations and so it connects
+to a CS course because of it's python, the "python modeling" topic would be what is shared. But MechE course overall is in a completely different domain to CS.
+The categories, names, and descritpions were meant to highlight that certain courses were part of certain fields and finding these few overlaps would be goal.
+I hope the current pipeline reflects that.
+
+We gotta purify the enriched data one more time. We can completely scrap whats on Supabase and start from the beginning, keeping the enriched courses and topic definitions in mind.
+/data. All the files in the data folder contribute to the current course corpus. Ignore courses like CS 411. That was recently added as I was testing upload. 
+Study the structure of the data before we proceed to begin our embeddings. mechse_syllabi.json has a lot extra information like terms and definitions, we gotta figure out if it's wise to include that as we embed courses and topics.
+Making sure the data is as high quality as possible is the biggest priority. We gotta know what our data should be and how it should be factored into embeddings. Let's discuss this and think about this.
+
+
+
+
+We spent a shitton of time dealing with ONNX and trying to find a more efficient way to take this into production. Let's take it one at a time. I want to first confirm
+that the model, scoring, embeddings, all work pretty well locally.
+
+WE WILL GO SEQUENTIALLY FOR THE SAKE OF MAKING SURE EVERYTHING WORKS.
+
+1.) All 35 courses, their tags, and any useful data is tokenized and embedded. We'll talk about what the best strategy is. What should we tokenize, what should be considered for SciNCL?
+
+2a.) Figure out the best way to score similarities. Naturally SciNCL will retrieve vector-embeddings of courses MOST similar to each other (from what I understand).
+This will be the obvious-scoring. We have to take into account what led to this similarity (convert the similar embeddings into words to better identify what the similarities are).
+Think of it like this, in RAG, the chunked data is returned and is passed into an LLM for better clarity. We retrieve similarities with the purpose of understanding why they are similar.
+2b.)A score only tells so much, it helps with ranking and navigating but once a match is identified, the user is interested in seeing where the overlaps are and that should be retained.
+Now I'm not asking you to cache an LLM response for every similarity. But as you find the similarity score, "save the overlaps". When a user clicks on "why-similar" in the front-end, this information will be used as context for the LLM
+In course similarities, when we try to dig further into matches, it would be nice to see what TOPICS overlap. This goes back into the "python" example.
+I should be able to see something like "similar TOPICS: python". We will be finding similarities between topics too so, when matching topics are identified, this should be
+reflected when the corresponding matching courses are paired. Please let me know if this does not make any sense.
+2c.) We gotta figure out determine what scoring mechanism does the best job in reflecting course matches.
+
+
+3.) After an effective scoring pipeline is determined for obvious and non-obvious matches for courses and topics, we gotta figure out the best architecture. 
+I've been trying to get ONNX working due to the fact that a lighter weight. I thought it could help conserve storage as we bring this into production without
+destroying the quality of the app. Please help work through this. Figure out the best way we can bring this app into production. /models already has something in there
+but potentially it needs to be cleaned and reproduced. 
+
+4.) The Ingestion pipeline has to be perfected. Every time I add a course, it should be integrated into supabase. The courses_dump.json and topic_definitions.json
+files are purely training data to start us off with. They are not dynamic. Once we have our initial model setup with embeddings and everything. I would imagine we won't
+need them anymore. Respectively we also won't need the scripts for restore_from_dump and enrich_tags.
+
+5.) Clean the entire filebase, it's littered with files we will no longer use once the model is setup. Make sure everything that is no longer used to be archived.
+
+6.) Commit everything.
+
+
+Now this appears to be rather disorganized so plan everything properly. You need a detailed workflow of tasks to complete and properly go through it all.
+We cannot go back and forth and keep being stuck on poor data. We gotta figure out everything in advance. This should be the last time we reembed the data. After this,
+we cannot do the long process of reembedding anymore.
+
+There are a lot of errors and cutting corners and we have wasted a lot of time running in circles. Ideally the app was done before I brought up the issue of
+having poor data. 

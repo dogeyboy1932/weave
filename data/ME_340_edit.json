@@ -1,0 +1,700 @@
+{
+  "course_id": "ME 340",
+  "name": "Dynamics of Mechanical Systems",
+  "description": "Dynamic modeling of mechanical components and systems; time domain and frequency domain analysis of linear time invariant systems; multi-degree-of-freedom systems; linearization of nonlinear systems.",
+  "prereqs": "TAM 212, MATH 285, MATH 441",
+  "credits": 4,
+  "course_type": "Core ME; Elective EM",
+  "instructors": "Salapaka, S, Farjam, N",
+  "objectives": [
+    "Be able to analyze various types of dynamic systems: mechanical, electrical, etc.",
+    "Be able to coordinate analytical concepts with experimental data seen on dynamic systems.",
+    "Also relate analytical concepts to everyday systems.",
+    "Utilize systems concepts to understand complicated systems from simpler subsystems."
+  ],
+  "topics": [
+    {
+      "name": "A nonlinear pendulum",
+      "description": "Unlike the linearized simple pendulum (sin \u03b8 \u2248 \u03b8), the nonlinear pendulum retains the full sine term in its equation of motion: \u03b8\u0308 + (g/L)sin(\u03b8) = 0. This seemingly minor change introduces rich behavior including amplitude-dependent frequency, non-sinusoidal oscillations for large angles, and chaotic motion under certain driving conditions. Studying nonlinear pendulums teaches the limitations of linearization, introduces phase plane analysis, and demonstrates how small nonlinearities cause quali",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.5,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Applications to beat generation and vibration absorbers",
+      "description": "Beat generation occurs when two closely-spaced natural frequencies are excited, creating periodic amplitude modulation where energy transfers between modes. This phenomenon can be exploited in vibration absorbers (tuned mass dampers) which are auxiliary mass-spring systems attached to a primary structure. When properly tuned, the absorber's natural frequency matches the problematic excitation frequency, creating beats that redistribute energy between the primary system and absorber, dramatically",
+      "categories": {
+        "Systems": 0.1,
+        "Materials": 0.1,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Application to vibration isolation",
+      "description": "Vibration isolation involves designing systems to minimize the transmission of unwanted vibrations from a source to a sensitive component or from a component to its surroundings. By understanding frequency response, engineers can design isolation systems (typically using springs and dampers) that attenuate vibrations at problematic frequencies. Effective isolation requires operating above the system's natural frequency where transmissibility is less than unity, balancing trade-offs between stati",
+      "categories": {
+        "Systems": 0.2,
+        "Materials": 0.1,
+        "Mechanics": 0.5,
+        "Mathematics": 0.15,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "A quarter-car model",
+      "description": "The quarter-car model simplifies vehicle suspension analysis by representing one wheel, suspension, and one-quarter of the vehicle mass as a two-degree-of-freedom system. The unsprung mass (wheel and suspension components) connects to ground through a tire spring, while the sprung mass (vehicle body portion) connects to the unsprung mass through the suspension spring and damper. This model captures essential dynamics for ride quality, road holding, and suspension design while remaining analytica",
+      "categories": {
+        "Systems": 0.15,
+        "Materials": 0.05,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Base excitation",
+      "description": "Base excitation refers to dynamic loading where the foundation or support structure of a system moves, inducing motion in the mounted components. Common in seismic analysis, vehicle dynamics, and vibration testing, base excitation problems analyze how vibrations transmit from a moving base to the system. The analysis differs from force excitation because the input is a displacement, velocity, or acceleration boundary condition rather than an applied force, requiring modified equations of motion ",
+      "categories": {
+        "Systems": 0.1,
+        "Mechanics": 0.7,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Block diagrams and simulation",
+      "description": "Block diagrams provide graphical representations of dynamic systems using blocks for mathematical operations (integration, gain, summation) and arrows showing signal flow. This visual language simplifies understanding of complex system interconnections, feedback loops, and signal processing. Simulation involves numerically solving the equations represented by block diagrams to predict time-domain behavior for various inputs. Block diagrams bridge physical understanding, mathematical models, and ",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.55,
+        "Mechanics": 0.05,
+        "Electrical": 0.1,
+        "Mathematics": 0.2,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "Boundary-value problems for cantilevered and clamped-clamped beams",
+      "description": "Beam vibration analysis requires solving the fourth-order PDE governing beam motion subject to boundary conditions at the ends. Cantilevered beams (fixed-free) have zero displacement and slope at the fixed end and zero moment and shear at the free end. Clamped-clamped beams (fixed-fixed) have zero displacement and slope at both ends. These boundary conditions profoundly affect natural frequencies and mode shapes. Solving involves assuming modal solutions, applying boundary conditions to determin",
+      "categories": {
+        "Systems": 0.1,
+        "Materials": 0.1,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Complex numbers",
+      "description": "Complex numbers, expressed as a + bi where i = \u221a(-1), are essential mathematical tools in dynamics for representing sinusoidal motion and analyzing linear systems. Euler's formula (e^(i\u03c9t) = cos(\u03c9t) + i sin(\u03c9t)) allows compact representation of oscillatory behavior, converting differential equations into algebraic equations. Complex numbers naturally encode both magnitude and phase information, simplifying frequency-domain analysis, impedance calculations, and stability assessments. The complex ",
+      "categories": {
+        "Systems": 0.1,
+        "Mechanics": 0.3,
+        "Electrical": 0.1,
+        "Mathematics": 0.5
+      },
+      "tags": []
+    },
+    {
+      "name": "Continuous systems",
+      "description": "Continuous systems have infinite degrees of freedom, requiring partial differential equations (PDEs) rather than ordinary differential equations for their description. Examples include vibrating strings, beams, membranes, and fluid flows where properties vary continuously over spatial dimensions. Unlike lumped-parameter models with discrete masses and springs, continuous systems exhibit spatial variation in displacement, requiring boundary conditions in addition to initial conditions. Despite in",
+      "categories": {
+        "Fluids": 0.3,
+        "Systems": 0.1,
+        "Mechanics": 0.4,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Damping ratio and natural frequency",
+      "description": "The damping ratio (\u03b6) and natural frequency (\u03c9n) are fundamental parameters characterizing second-order systems. Natural frequency represents the frequency at which an undamped system would oscillate freely, while the damping ratio quantifies the level of energy dissipation relative to critical damping. Together, these parameters determine whether a system exhibits underdamped (oscillatory), critically damped (fastest non-oscillatory), or overdamped (slow, non-oscillatory) behavior, completely d",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.2,
+        "Mechanics": 0.5,
+        "Electrical": 0.1,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Dynamic simulation",
+      "description": "Dynamic simulation numerically solves system equations to predict behavior over time. Process: (1) formulate model (ODEs/DAEs), (2) specify initial conditions and parameters, (3) select integration method (Runge-Kutta, ode45), (4) run simulation, (5) analyze results. Tools: MATLAB/Simulink, Python, Modelica. Enables: design validation, parameter studies, scenario analysis, control testing. Considerations: numerical accuracy, stiffness, real-time requirements, computational efficiency. Simulation",
+      "categories": {
+        "Fluids": 0.0526,
+        "Systems": 0.4211,
+        "Mechanics": 0.2105,
+        "Mathematics": 0.2632,
+        "Thermodynamics": 0.0526
+      },
+      "tags": []
+    },
+    {
+      "name": "Dynamic system classification",
+      "description": "Systems classified by properties: Linear vs. nonlinear (superposition applies or not). Time-invariant vs. time-varying (parameters constant or changing). Continuous vs. discrete time. Lumped vs. distributed parameters. Deterministic vs. stochastic. SISO (single input/output) vs. MIMO. Order: number of energy storage elements (determines ODE order). Stable vs. unstable. Understanding classification guides analysis method selection, predicts behavior, and determines applicable control strategies. ",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.45,
+        "Mechanics": 0.1,
+        "Electrical": 0.1,
+        "Mathematics": 0.25,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "Eigenvalues and eigenvectors",
+      "description": "Eigenvalues and eigenvectors are fundamental concepts from linear algebra crucial for analyzing MDOF systems. For a matrix A, eigenvalue \u03bb and eigenvector v satisfy Av = \u03bbv. In dynamics, eigenvalues of the system matrix determine natural frequencies and decay rates, while eigenvectors define mode shapes. The eigenvalue problem transforms coupled differential equations into decoupled modal equations, each representing an independent oscillation mode. This diagonalization simplifies analysis, reve",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.2,
+        "Mechanics": 0.35,
+        "Electrical": 0.05,
+        "Mathematics": 0.35
+      },
+      "tags": []
+    },
+    {
+      "name": "Equilibrium configurations",
+      "description": "Equilibrium configurations are system states where all velocities and accelerations are zero, representing balance between forces and moments. For conservative systems, equilibria occur at critical points of potential energy (where \u2202V/\u2202q\u1d62 = 0 for all coordinates). Systems may have multiple equilibria, some stable (small perturbations decay) and others unstable (small perturbations grow). Finding equilibria is the first step in analyzing nonlinear systems, providing reference states for lineariza",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.1,
+        "Mechanics": 0.5,
+        "Mathematics": 0.2,
+        "Thermodynamics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Exponentially decaying harmonic signals",
+      "description": "Exponentially decaying harmonic signals combine oscillatory and decay behavior, expressed as x(t) = Ae^(-\u03b6\u03c9\u2099t)cos(\u03c9dt + \u03c6), where A is amplitude, \u03b6\u03c9\u2099 is the decay rate, \u03c9d is the damped natural frequency, and \u03c6 is phase. These signals characterize underdamped second-order system responses, appearing in vibrating structures, damped electrical circuits, and countless engineering applications. The exponential envelope controls decay rate while the cosine term provides oscillation, with their intera",
+      "categories": {
+        "Systems": 0.25,
+        "Mechanics": 0.35,
+        "Electrical": 0.2,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Exponentially decaying signals",
+      "description": "Exponentially decaying signals are functions that decrease at a rate proportional to their current value, mathematically expressed as y(t) = y\u2080e^(-t/\u03c4). These signals characterize first-order system responses and damped oscillations in second-order systems. The decay rate is determined by the time constant or damping coefficient, with larger values producing slower decay. Understanding exponential decay is fundamental to predicting transient behavior, assessing system stability, and designing co",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.4,
+        "Chemistry": 0.05,
+        "Materials": 0.05,
+        "Mechanics": 0.05,
+        "Electrical": 0.1,
+        "Mathematics": 0.25,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "First and second order systems",
+      "description": "First and second order systems represent differential equations that govern the dynamic behavior of mechanical systems. First-order systems involve one energy storage element and are described by a single derivative, while second-order systems involve two energy storage elements and are described by second derivatives. These mathematical models predict how systems respond to inputs over time, with first-order systems exhibiting exponential behavior and second-order systems showing potential osci",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.2,
+        "Mechanics": 0.4,
+        "Mathematics": 0.2,
+        "Thermodynamics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "First-order systems",
+      "description": "First-order systems are governed by first-order ordinary differential equations of the form \u03c4(dy/dt) + y = u(t), where the highest derivative is first order. These systems contain a single energy storage element (like thermal capacitance or fluid volume) and exhibit exponential approach to steady state without oscillation. Common examples include RC circuits, temperature diffusion, and fluid level control. The system's response is completely characterized by its time constant \u03c4 and steady-state ",
+      "categories": {
+        "Fluids": 0.2,
+        "Systems": 0.2,
+        "Mechanics": 0.2,
+        "Electrical": 0.1,
+        "Mathematics": 0.1,
+        "Thermodynamics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Fluid flow",
+      "description": "Fluid flow modeling for dynamic systems: continuity (mass conservation), momentum (Navier-Stokes or Euler), energy equations. Simplified models: incompressible (\u03c1 = constant, \u2207\u00b7v = 0), inviscid (Euler), laminar pipe flow (Hagen-Poiseuille). Lumped parameter: resistance (pressure drop), capacitance (volume storage), inertance (fluid inertia). Fluid systems interact with mechanical (hydraulic actuators), thermal (heat exchangers). Linearization about operating point for control analysis. Computati",
+      "categories": {
+        "Fluids": 0.45,
+        "Systems": 0.15,
+        "Mechanics": 0.15,
+        "Mathematics": 0.15,
+        "Thermodynamics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Free, step, and unit impulse responses of linear, second-order time-invariant systems",
+      "description": "These three canonical responses characterize second-order system behavior completely. Free response (initial condition response) shows natural oscillation at the damped natural frequency. Step response reveals how systems approach new equilibria, with characteristics like rise time, settling time, overshoot, and steady-state error depending on damping. Impulse response represents the system's fundamental signature, containing all information needed to predict arbitrary input responses through co",
+      "categories": {
+        "Systems": 0.6,
+        "Mechanics": 0.1,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Frequency domain analysis",
+      "description": "Frequency domain analysis examines system behavior by studying how systems respond to sinusoidal inputs at different frequencies, using Fourier transforms to convert time-domain signals into frequency-domain representations. This approach reveals how systems amplify or attenuate signals at various frequencies, making it invaluable for understanding filtering characteristics, resonance phenomena, and stability. The frequency domain provides complementary insights to time-domain analysis, often si",
+      "categories": {
+        "Fluids": 0.0526,
+        "Systems": 0.4211,
+        "Mechanics": 0.0526,
+        "Electrical": 0.1579,
+        "Mathematics": 0.3158
+      },
+      "tags": []
+    },
+    {
+      "name": "Frequency response",
+      "description": "Frequency response describes how a system's output amplitude and phase change relative to a sinusoidal input as the input frequency varies. Typically visualized using Bode plots (magnitude and phase versus frequency), frequency response reveals critical system characteristics including resonant frequencies, bandwidth, and stability margins. For linear time-invariant systems, the frequency response is the Fourier transform of the impulse response, providing a complete characterization of steady-s",
+      "categories": {
+        "Systems": 0.6,
+        "Mechanics": 0.1,
+        "Electrical": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Harmonic excitation",
+      "description": "Harmonic excitation involves applying sinusoidal forcing functions to dynamic systems, mathematically represented as F(t) = F\u2080cos(\u03c9t) or F\u2080sin(\u03c9t). This is fundamental in vibration analysis because many real-world forces are periodic (engine vibrations, rotating machinery, electromagnetic forces) and because Fourier analysis allows decomposing arbitrary periodic inputs into harmonic components. System response to harmonic excitation reveals frequency response characteristics, resonances, and pha",
+      "categories": {
+        "Systems": 0.1,
+        "Mechanics": 0.6,
+        "Electrical": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Harmonic excitation and resonance",
+      "description": "When continuous systems experience harmonic forcing at a natural frequency, resonance occurs with theoretically unbounded amplitude growth (bounded by damping in real systems). The spatial distribution of resonant vibration matches the corresponding mode shape. Distributed forcing (pressure, body forces) couples differently to various modes based on spatial correlation between forcing pattern and mode shapes. Understanding resonance in continuous systems is critical for avoiding structural failu",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.1,
+        "Materials": 0.1,
+        "Mechanics": 0.6,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Heat transfer",
+      "description": "Heat transfer modeling: conduction (Fourier's law: q = -k\u2207T), convection (q = hA(Ts - T\u221e)), radiation (q = \u03b5\u03c3A(T\u2074 - T\u221e\u2074)). Energy balance: mcp dT/dt = Q\u0307\u1d62\u2099 - Q\u0307\u2092\u1d64\u209c for lumped capacitance. Thermal resistance Rth = \u0394T/Q\u0307 (analogous to electrical resistance). Thermal capacitance C = mcp. Time constant \u03c4 = RthC. Applications: temperature control, thermal management, coupled electromechanical systems. Linearization for small temperature variations. Understanding heat transfer essential for thermal sy",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.05,
+        "Electrical": 0.05,
+        "Mathematics": 0.1,
+        "Thermodynamics": 0.6
+      },
+      "tags": []
+    },
+    {
+      "name": "Impulse response and convolution integral",
+      "description": "The impulse response is the output of a system when subjected to an idealized instantaneous input (Dirac delta function). It completely characterizes a linear time-invariant system's behavior. The convolution integral uses the impulse response as a kernel to calculate the system's output for any arbitrary input by summing the weighted, time-shifted impulse responses. This powerful mathematical tool allows engineers to predict system behavior for complex inputs from knowledge of the impulse respo",
+      "categories": {
+        "Systems": 0.9,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Lagrange's equations",
+      "description": "Lagrange's equations provide a systematic, energy-based approach to deriving equations of motion for complex mechanical systems. By defining the Lagrangian L = T - V (kinetic minus potential energy) and generalized coordinates q\u1d62, the equations of motion follow from d/dt(\u2202L/\u2202q\u0307\u1d62) - \u2202L/\u2202q\u1d62 = Q\u1d62, where Q\u1d62 are non-conservative generalized forces. This method automatically accounts for constraint forces and works in any coordinate system, often simplifying derivations compared to Newtonian mechanics",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.1,
+        "Mechanics": 0.5,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Laplace transformation: properties, inverse transformation",
+      "description": "Laplace transform converts time-domain function f(t) to complex frequency domain: F(s) = \u222b\u2080^\u221e f(t)e^(-st)dt. Properties: linearity, differentiation (\u2112{f'} = sF(s) - f(0)), integration, shifting, convolution. Converts differential equations to algebraic equations. Inverse Laplace: f(t) = \u2112^(-1){F(s)} found via partial fractions, tables, or residue theorem. Advantages: handles initial conditions naturally, solves linear systems systematically. Applications: control systems, circuits, vibrations. U",
+      "categories": {
+        "Systems": 0.25,
+        "Mechanics": 0.15,
+        "Electrical": 0.1,
+        "Mathematics": 0.5
+      },
+      "tags": []
+    },
+    {
+      "name": "Linearization and stability",
+      "description": "Linearization approximates nonlinear systems by Taylor expansion about equilibrium points, retaining only first-order terms to obtain linear equations governing small perturbations. The resulting linear system's eigenvalues determine equilibrium stability: negative real parts indicate stable (perturbations decay), positive real parts indicate unstable (perturbations grow), and imaginary parts indicate oscillatory behavior. This local analysis predicts system behavior near equilibria, enabling ap",
+      "categories": {
+        "Systems": 0.6,
+        "Mechanics": 0.1,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Linearization of nonlinear systems",
+      "description": "Linearization approximates nonlinear system near operating point (equilibrium) using Taylor series. For \u1e8b = f(x,u), expand about (x\u0304,\u016b): \u0394\u1e8b \u2248 A\u00b7\u0394x + B\u00b7\u0394u where A = \u2202f/\u2202x|\u2093\u0304, B = \u2202f/\u2202u|\u2093\u0304. Perturbation variables: \u0394x = x - x\u0304, \u0394u = u - \u016b. Linearized system analyzed using linear tools (eigenvalues, transfer functions, control design). Valid for small deviations. Local stability from linearization predicts nonlinear stability (if hyperbolic). Essential for control design - most controllers designed ",
+      "categories": {
+        "Systems": 0.9,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Matlab computations and graphing of real- and complex-valued functions",
+      "description": "MATLAB provides computational tools for numerical analysis and visualization of dynamic systems. Students learn to implement numerical integration schemes, eigenvalue solvers, and Fourier transforms while creating informative plots of time histories, frequency responses, and complex-plane representations. Graphing complex-valued functions requires understanding how to display four-dimensional information (real/imaginary parts of inputs and outputs) through techniques like 3D surface plots, conto",
+      "categories": {
+        "Fluids": 0.125,
+        "Systems": 0.125,
+        "Chemistry": 0.125,
+        "Materials": 0.125,
+        "Mechanics": 0.125,
+        "Electrical": 0.125,
+        "Mathematics": 0.125,
+        "Thermodynamics": 0.125
+      },
+      "tags": []
+    },
+    {
+      "name": "Measurement systems",
+      "description": "Measurement systems in dynamics utilize the principles of vibrating systems to sense and record physical quantities like displacement, velocity, and acceleration. Accelerometers, for example, are essentially spring-mass-damper systems where the relative motion between the mass and housing indicates the base acceleration. Understanding the frequency response of these instruments is crucial for accurate measurements, ensuring the device's natural frequency is appropriate for the signal being measu",
+      "categories": {
+        "Systems": 0.3,
+        "Mechanics": 0.4,
+        "Electrical": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Mechanical/electromechanical systems",
+      "description": "Mechanical systems: springs (F = kx), dampers (F = c\u1e8b), masses (F = m\u1e8d). Electromechanical: motors (torque from current), generators (voltage from motion), sensors (voltage from displacement/velocity). Coupling: electromagnetic force/torque relates electrical and mechanical domains. DC motor model: V\u2090 = Ra\u1d62\u2090 + La d\u1d62\u2090/dt + K\u2091\u03c9 (electrical), T = K\u209c\u1d62\u2090 = J\u03b1 + B\u03c9 + T\u2097 (mechanical). Transducers convert between domains. Block diagrams show signal flow. Understanding electromechanical coupling essential",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.35,
+        "Electrical": 0.3,
+        "Mathematics": 0.15
+      },
+      "tags": []
+    },
+    {
+      "name": "Modal decompositions",
+      "description": "Modal decomposition expresses arbitrary motion of continuous systems as infinite series of modal contributions: x(y,t) = \u03a3 q\u1d62(t)\u03c6\u1d62(y), where \u03c6\u1d62(y) are mode shapes and q\u1d62(t) are time-varying modal coordinates. This transformation converts the PDE into infinite uncoupled ordinary differential equations, one per mode, vastly simplifying analysis. Truncating to dominant modes provides accurate approximate solutions. Modal decomposition exploits mode shape orthogonality, allowing independent treatmen",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.05,
+        "Materials": 0.05,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Modeling of dynamic systems",
+      "description": "Dynamic system modeling derives mathematical descriptions from physical principles. Process: (1) identify components and interactions, (2) apply conservation laws (mass, momentum, energy), (3) write governing equations, (4) linearize if needed, (5) validate against experiments. Lumped parameter models use ODEs (discrete components). Distributed models use PDEs (continuous). Multi-domain systems (mechanical, electrical, thermal, fluid) require coupled equations. Bond graph and block diagram repre",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.2,
+        "Mechanics": 0.35,
+        "Electrical": 0.05,
+        "Mathematics": 0.25,
+        "Thermodynamics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Mode shapes and resonance",
+      "description": "Mode shapes are the spatial deformation patterns associated with each natural frequency in multi-DOF and continuous systems. At resonance, when excitation frequency matches a natural frequency, the system vibrates in the corresponding mode shape with theoretically infinite amplitude (in undamped systems) or very large amplitude (with damping). Understanding mode shapes is critical for avoiding destructive resonances, designing vibration-resistant structures, and exploiting beneficial resonances.",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.05,
+        "Materials": 0.1,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Multi-degree-of-freedom systems",
+      "description": "Multi-degree-of-freedom (MDOF) systems require multiple independent coordinates to describe their configuration completely. Unlike single-DOF systems described by scalar differential equations, MDOF systems involve coupled matrix differential equations where motion in one coordinate affects others. These systems exhibit multiple natural frequencies and mode shapes, with each mode representing a characteristic oscillation pattern. MDOF analysis is essential for realistic modeling of structures, m",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.1,
+        "Materials": 0.05,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Natural frequencies and modal oscillations",
+      "description": "Natural frequencies are the discrete frequencies at which systems oscillate freely, determined by system properties (mass, stiffness, geometry) rather than external forcing. Modal oscillations refer to vibration in a single mode shape at the corresponding natural frequency. Each mode represents an independent oscillation pattern where all points move synchronously at the mode's natural frequency. In MDOF and continuous systems, general motion can be decomposed into superposition of modal oscilla",
+      "categories": {
+        "Fluids": 0.1,
+        "Materials": 0.1,
+        "Mechanics": 0.7,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Natural frequencies and normal modes",
+      "description": "Natural frequencies are the characteristic frequencies at which MDOF systems oscillate freely without external forcing, while normal modes (mode shapes) are the specific spatial patterns of motion at each natural frequency. During normal mode oscillation, all points move sinusoidally at the same frequency and pass through equilibrium simultaneously. Each mode shape represents an independent oscillation pattern with its own natural frequency. Modal analysis decomposes complex system responses int",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.6,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Nonlinear systems",
+      "description": "Nonlinear systems contain terms that violate superposition, including products of variables, higher-order terms, or nonlinear functions. Unlike linear systems with predictable, scalable responses, nonlinear systems exhibit phenomena like amplitude-dependent frequency, multiple equilibria, limit cycles, chaos, and jump phenomena. Many real systems are inherently nonlinear (large-angle pendulums, geometric nonlinearities, material nonlinearity), though linearization often provides useful approxima",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.25,
+        "Materials": 0.05,
+        "Mechanics": 0.2,
+        "Electrical": 0.05,
+        "Mathematics": 0.3,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "Numerical experiments with a mechanical suspension",
+      "description": "This computational laboratory uses simulation to explore mechanical suspension system behavior, typically modeling a vehicle's spring-mass-damper system. Students conduct numerical experiments varying parameters like spring stiffness, damping coefficient, and mass to observe effects on ride comfort, handling, and vibration isolation. By comparing responses to different road inputs (bumps, potholes, sinusoidal roads), students develop intuition about design trade-offs. These virtual experiments c",
+      "categories": {
+        "Systems": 0.3,
+        "Mechanics": 0.4,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Partial fractions",
+      "description": "Partial fraction decomposition is a technique for breaking complex rational functions into sums of simpler fractions, essential for solving differential equations using Laplace transforms. In dynamics, this method allows engineers to invert transformed solutions back to the time domain by decomposing transfer functions into recognizable forms with known inverse transforms. Each partial fraction corresponds to a mode or characteristic response of the system, making the decomposition physically me",
+      "categories": {
+        "Systems": 0.3,
+        "Mechanics": 0.1,
+        "Mathematics": 0.6
+      },
+      "tags": []
+    },
+    {
+      "name": "Physical experiments with a cantilevered beam",
+      "description": "This laboratory provides hands-on experience with continuous system dynamics using a physical cantilevered beam (fixed at one end, free at the other). Students excite the beam and measure vibration to identify natural frequencies and visualize mode shapes experimentally. Techniques include impact testing, frequency sweeps, and modal testing with accelerometers or strain gauges. Comparing measured frequencies and mode shapes to analytical predictions validates theory and reveals effects like mate",
+      "categories": {
+        "Systems": 0.2,
+        "Materials": 0.1,
+        "Mechanics": 0.6,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Physical experiments with a leaking tank and a hydraulic motor",
+      "description": "These laboratory experiments provide hands-on experience with first-order system behavior using fluid systems. A leaking tank demonstrates how liquid level decreases exponentially as flow rate depends on current level (height), exemplifying a first-order system with observable time constant. The hydraulic motor experiment shows how fluid flow drives rotation, with speed dynamics governed by first-order equations. Students measure parameters, compare experimental responses to theoretical predicti",
+      "categories": {
+        "Fluids": 0.4,
+        "Systems": 0.4,
+        "Mechanics": 0.1,
+        "Mathematics": 0.1
+      },
+      "tags": []
+    },
+    {
+      "name": "Physical experiments with a single-degree-of-freedom spring-mass-damper system",
+      "description": "This laboratory experiment provides hands-on experience with canonical second-order systems using a physical apparatus with adjustable mass, spring stiffness, and damping. Students excite the system with various inputs (initial displacement, step force, impulse, harmonic forcing), measure responses, and identify parameters by comparing theory to measurements. Experiments demonstrate phenomena like resonance, phase lag, and different damping regimes tangibly, reinforcing theoretical concepts. The",
+      "categories": {
+        "Systems": 0.3,
+        "Mechanics": 0.5,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Physical experiments with a two-degree-of-freedom spring-mass-damper system",
+      "description": "This laboratory extends single-DOF experiments to coupled systems with two masses, springs, and dampers. Students observe phenomena unique to MDOF systems including modal behavior, beat generation, and energy transfer between degrees of freedom. Experiments demonstrate how coupling coordinates leads to interactions, how two natural frequencies emerge from one-DOF components, and how mode shapes manifest physically. By measuring frequency responses and identifying modal parameters, students valid",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.6,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Principles of conservation - mass, energy",
+      "description": "Conservation principles form foundation for dynamic system modeling. Mass conservation: dm/dt = \u1e41\u1d62\u2099 - \u1e41\u2092\u1d64\u209c (continuity equation). Energy conservation (first law): dE/dt = Q\u0307 - \u1e86 + \u03a3(\u1e41h)\u1d62\u2099 - \u03a3(\u1e41h)\u2092\u1d64\u209c, where Q\u0307 is heat transfer, \u1e86 is power output, h is specific enthalpy. For closed systems: dE/dt = Q\u0307 - \u1e86. Mechanical energy: kinetic + potential. Momentum conservation: F = dp/dt. These principles generate governing equations for all physical systems. Understanding conservation laws enables systemat",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.1,
+        "Mechanics": 0.3,
+        "Mathematics": 0.1,
+        "Thermodynamics": 0.4
+      },
+      "tags": []
+    },
+    {
+      "name": "Second-order systems",
+      "description": "Second-order systems are governed by second-order differential equations of the form: \u1e8d + 2\u03b6\u03c9\u2099\u1e8b + \u03c9\u2099\u00b2x = f(t), involving acceleration, velocity, and position terms. These systems contain two energy storage elements (like mass and spring) and can exhibit oscillatory behavior. Characterized by natural frequency \u03c9\u2099 and damping ratio \u03b6, second-order systems show diverse responses: underdamped (oscillatory decay), critically damped (fastest non-oscillatory), and overdamped (slow non-oscillatory). The",
+      "categories": {
+        "Systems": 0.1,
+        "Mechanics": 0.4,
+        "Electrical": 0.2,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Simulation and physical experiments with a double pendulum",
+      "description": "The double pendulum (two pendulums connected in series) exemplifies rich nonlinear dynamics despite simple construction. For small angles, linearization yields four natural modes, but large-angle motion exhibits chaos - extreme sensitivity to initial conditions producing unpredictable long-term behavior. Students simulate the system numerically and compare to physical experiments, observing how small initial condition changes lead to dramatically different trajectories. This system demonstrates ",
+      "categories": {
+        "Systems": 0.2,
+        "Mechanics": 0.5,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Simulations with a finite-element model",
+      "description": "Finite element analysis (FEA) discretizes continuous systems into finite elements (small regions) connected at nodes, converting PDEs into large systems of ODEs solvable computationally. For beam vibration, elements represent beam segments with displacement and rotation DOFs at each node. FEA captures complex geometries, material variations, and boundary conditions impractical for analytical solutions. Modal analysis extracts natural frequencies and mode shapes numerically. Students compare FEA ",
+      "categories": {
+        "Systems": 0.2,
+        "Materials": 0.1,
+        "Mechanics": 0.5,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Simulink realizations",
+      "description": "Simulink is MATLAB's graphical programming environment for modeling, simulating, and analyzing dynamic systems using block diagrams. Students construct virtual system models by connecting blocks representing mathematical operations, creating executable simulations without writing code. Simulink automatically solves the underlying differential equations numerically and provides rich visualization tools. This environment is industry-standard for control system design, enabling rapid prototyping, p",
+      "categories": {
+        "Fluids": 0.0526,
+        "Systems": 0.5263,
+        "Mechanics": 0.1053,
+        "Electrical": 0.0526,
+        "Mathematics": 0.2105,
+        "Thermodynamics": 0.0526
+      },
+      "tags": []
+    },
+    {
+      "name": "Solutions of differential equations by laplace transform",
+      "description": "Laplace transform method: (1) transform differential equation, (2) solve algebraic equation for F(s), (3) inverse transform to get f(t). Initial conditions automatically incorporated. Works for linear ODEs with constant coefficients. Example: m\u1e8d + c\u1e8b + kx = f(t) becomes ms\u00b2X(s) + csX(s) + kX(s) = F(s) + initial condition terms. Solve for X(s), then x(t) = \u2112^(-1){X(s)}. Particularly useful for piecewise and impulsive forcing. Relates to transfer function approach. Alternative to classical solutio",
+      "categories": {
+        "Systems": 0.25,
+        "Mechanics": 0.25,
+        "Mathematics": 0.5
+      },
+      "tags": []
+    },
+    {
+      "name": "State(phase) space representation",
+      "description": "State space representation uses first-order differential equations: \u1e8b = Ax + Bu (state equation), y = Cx + Du (output equation), where x is state vector (position, velocity, etc.), u is input, y is output. State dimension n equals system order. Matrices A, B, C, D characterize system. Advantages: handles MIMO (multiple input/multiple output), nonlinear extension, modern control theory foundation, computational implementation. Phase space plot shows trajectories in state variables. Eigenvalues of",
+      "categories": {
+        "Systems": 0.7,
+        "Mechanics": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Steady-state response",
+      "description": "Steady-state response is the system behavior that persists after initial transients decay, representing the long-term response pattern. For linear systems under harmonic excitation, the steady-state response is sinusoidal at the forcing frequency with amplitude and phase determined by the system's frequency response function. The steady state is independent of initial conditions, depending only on input characteristics and system properties. Distinguishing between transient (temporary) and stead",
+      "categories": {
+        "Fluids": 0.05,
+        "Systems": 0.35,
+        "Mechanics": 0.2,
+        "Electrical": 0.1,
+        "Mathematics": 0.25,
+        "Thermodynamics": 0.05
+      },
+      "tags": []
+    },
+    {
+      "name": "System identification",
+      "description": "System identification involves determining mathematical models of dynamic systems from experimental input-output data. Rather than deriving models from first principles, engineers apply known inputs, measure outputs, and use parameter estimation techniques to identify system parameters like time constants, natural frequencies, and damping ratios. Common approaches include time-domain fitting of step responses or frequency-domain curve fitting to measured frequency response data. System identific",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.4,
+        "Mechanics": 0.1,
+        "Electrical": 0.1,
+        "Mathematics": 0.3
+      },
+      "tags": []
+    },
+    {
+      "name": "Time- and frequency-domain block diagrams with integrators amplifiers",
+      "description": "Block diagrams can represent systems in both time domain (using integrators \u222bdt, differentiators d/dt, and gains) and frequency domain (using transfer functions and complex gains). Integrators are fundamental building blocks converting acceleration to velocity to displacement, while amplifiers scale signals. Understanding the equivalence between time-domain differential equations and frequency-domain transfer functions allows engineers to choose the most convenient representation for analysis. T",
+      "categories": {
+        "Systems": 0.6,
+        "Mechanics": 0.1,
+        "Electrical": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Time constant",
+      "description": "The time constant is a characteristic parameter of first-order systems that quantifies how quickly the system responds to changes. Mathematically denoted as \u03c4 (tau), it represents the time required for the system's response to reach approximately 63.2% of its final steady-state value. After about five time constants, the system is considered to have reached its steady state. The time constant is inversely proportional to the system's natural decay rate and provides insight into system speed and ",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.2,
+        "Mechanics": 0.1,
+        "Electrical": 0.2,
+        "Mathematics": 0.2,
+        "Thermodynamics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Time domain analysis of linear time invariant systems",
+      "description": "LTI system analysis in time domain: impulse response h(t) = \u2112^(-1){G(s)} characterizes system completely. Output y(t) = h(t)*u(t) (convolution). Step response s(t) = \u222bh(\u03c4)d\u03c4. Transient response: natural modes from poles (exponentials, damped sinusoids). Steady-state response to sinusoidal input: magnitude and phase from frequency response. Performance metrics: rise time, settling time, overshoot, steady-state error. Time constants determine response speed. Understanding time domain analysis esse",
+      "categories": {
+        "Systems": 0.65,
+        "Electrical": 0.1,
+        "Mathematics": 0.25
+      },
+      "tags": []
+    },
+    {
+      "name": "Transfer functions - poles and zeroes",
+      "description": "Transfer function G(s) = Y(s)/U(s) relates output Y to input U in Laplace domain (zero initial conditions). Rational function: G(s) = N(s)/D(s). Poles are roots of denominator D(s) = 0, govern stability and transient response. Zeros are roots of numerator N(s) = 0. System stable if all poles in left half-plane (Re(s)",
+      "categories": {
+        "Systems": 0.7,
+        "Electrical": 0.1,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    },
+    {
+      "name": "Under-, critically-, and over-damped systems",
+      "description": "These three damping regimes categorize second-order system behavior based on damping ratio \u03b6. Underdamped systems (\u03b6",
+      "categories": {
+        "Fluids": 0.1,
+        "Systems": 0.1,
+        "Mechanics": 0.4,
+        "Electrical": 0.2,
+        "Mathematics": 0.2
+      },
+      "tags": []
+    }
+  ]
+}
