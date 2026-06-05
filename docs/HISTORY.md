@@ -1107,13 +1107,22 @@ batched `resolve_topic_chunks` over every cross-domain hit; and
 at once** (still HNSW-indexed) instead of one round trip per seed. A `Cache-Control:
 no-store` header on the search response also stops the browser replaying a stale payload.
 
-**Known residual (deferred):** a *second* layer of over-tagging remains — controls /
-application vocabulary (`transfer-function`, `state-space-model`, `frequency-response`,
-`material-processing`, `fluid-dynamics`) mis-applied to Mathematics topics. These are
-legit tags on real engineering topics, so a global delete would lose signal; the clean
-fix is a category-aware prune (strip physical-system tags from Mathematics-dominant
-topics) plus another re-embed. It's why marginal matches like "Volumes → machine tools"
-(47% non-obvious) still appear, down-ranked. Tracked for the next pass.
+**7. Second-layer tag hygiene + ingestion fix (the source of the rot).** The
+analogy-tag prune left a second layer: controls / application vocabulary
+(`transfer-function`, `state-space-model`, `frequency-response`, `material-processing`,
+`fluid-dynamics`) mis-applied to off-domain topics — these are legit on real engineering
+topics, so a global delete would lose signal. Fixed with a **category-aware prune**: a
+curated set of engineering-domain tags is removed from a topic only when the topic has
+< 0.15 category weight in that tag's domain (so ME 340 damping keeps `quality-factor`,
+but MATH 221 "limit laws" loses `transfer-function`). 132 mis-applied tags dropped from
+the dump, then a second re-embed baked it in — "Volumes → machine tools" disappeared
+entirely. **Root cause fixed too:** the live ingest prompt (`llm/topic_extractor`
+`_ANALYZE_SYSTEM`) had *ordered* this over-tagging ("always include isomorphism-bridge
+tags", "be liberal — over-tag rather than under-tag"). Rewrote it to tag faithfully and
+specifically (8–15 tags, analogy/bridge vocabulary explicitly forbidden), with the
+reframe that cross-domain matching now comes from embeddings + category divergence — so
+topics bridge by *genuinely* sharing real concepts, not by fabricated analogy tags. New
+uploads now produce clean data by construction.
 
 ---
 
