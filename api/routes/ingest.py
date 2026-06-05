@@ -22,7 +22,7 @@ from scoring import graph_compute
 try:
     import pdfplumber  # type: ignore
     from scoring.chunker          import chunk_course, topic_chunk_text, topic_term_text, tokenize
-    from scoring.vector_similarity import _topic_name
+    from scoring.vector_similarity import _topic_name, clear_cache as _clear_sem_cache
     from storage.vectors.encoder          import encode
     from llm.topic_extractor  import analyze_course, extract_topics
     from llm.category_labeler import label_topic
@@ -157,6 +157,9 @@ def _run_ingest_inner(course_id: str, course_name: str, raw_text: str, api_key: 
 
     # ── Steps 4 + 5: Math — similarity scoring with category vectors ──────────────
     print(f"[ingest] Steps 4-5/7 — Hybrid scoring + non_obvious_score …")
+    # Evict any stale per-course embedding matrices so sem_sim re-reads the
+    # freshly-inserted vectors (critical on re-ingest of an existing course).
+    _clear_sem_cache()
     all_counts = pg_store.get_all_term_counts()
     lms        = build_all_lms(all_counts)
     idf        = compute_idf(all_counts)
@@ -409,6 +412,9 @@ def _run_append_inner(course_id: str, course_name: str, raw_text: str, api_key: 
 
     # ── Steps 4: Math — recompute all similarity scores for this course ────────────
     print(f"[append] Step 4/5 — Recomputing similarity scores …")
+    # The appended course was re-embedded above; drop its cached embedding matrix
+    # so sem_sim scores against the new vectors, not the pre-append ones.
+    _clear_sem_cache()
     all_counts = pg_store.get_all_term_counts()
     lms        = build_all_lms(all_counts)
     idf        = compute_idf(all_counts)
