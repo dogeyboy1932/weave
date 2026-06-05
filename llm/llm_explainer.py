@@ -77,11 +77,41 @@ _TOPIC_SYSTEM = (
 
 
 def _parse_llm_json(text: str) -> dict:
-    text = text.strip()
-    start, end = text.find('{'), text.rfind('}') + 1
-    if start == -1 or end <= start:
-        raise ValueError(f"LLM returned invalid JSON: {text[:200]}")
-    return json.loads(text[start:end])
+    """Parse the model's JSON, tolerating truncation.
+
+    The explain models occasionally hit the output-token ceiling and return a
+    JSON object cut off mid-string. Rather than failing the whole request (the
+    old behaviour — "LLM returned invalid JSON"), we try a strict parse first,
+    then fall back to regex-extracting each known field, recovering every field
+    that completed plus the partial text of the one that was cut.
+    """
+    import re
+    text = (text or "").strip()
+    start = text.find('{')
+    if start == -1:
+        raise ValueError(f"LLM returned no JSON object: {text[:200]}")
+    snippet = text[start:]
+
+    end = snippet.rfind('}') + 1
+    if end > 0:
+        try:
+            return json.loads(snippet[:end])
+        except json.JSONDecodeError:
+            pass  # fall through to tolerant extraction
+
+    out: dict = {}
+    for key in ("connection", "in_a", "in_b", "latent", "surprise"):
+        m = re.search(r'"' + key + r'"\s*:\s*"((?:[^"\\]|\\.)*)', snippet)
+        if m:
+            try:
+                out[key] = json.loads('"' + m.group(1) + '"')  # unescape
+            except json.JSONDecodeError:
+                out[key] = m.group(1).strip()
+    if "latent" in out and "surprise" not in out:
+        out["surprise"] = out["latent"]  # back-compat for 'surprise' readers
+    if out.get("connection"):
+        return out
+    raise ValueError(f"LLM returned unparseable JSON: {text[:200]}")
 
 
 def _fmt_topics(topics: list[str], descriptions: dict | None = None) -> str:
@@ -158,7 +188,7 @@ def explain_connection(
         contents=user_msg,
         config=types.GenerateContentConfig(
             system_instruction=_COURSE_SYSTEM,
-            max_output_tokens=900,
+            max_output_tokens=2048,   # room for thinking + the 4-field JSON (was truncating)
             thinking_config=types.ThinkingConfig(thinking_budget=1024),
         ),
     )
@@ -235,7 +265,7 @@ def explain_topic_connection(
         contents=user_msg,
         config=types.GenerateContentConfig(
             system_instruction=_TOPIC_SYSTEM,
-            max_output_tokens=700,
+            max_output_tokens=2048,   # room for thinking + the 4-field JSON (was truncating)
             thinking_config=types.ThinkingConfig(thinking_budget=1024),
         ),
     )
