@@ -1012,6 +1012,41 @@
     }
     .tp-explanation-line { font-size: 0.68rem; color: #cbd5e1; margin-bottom: 4px; line-height: 1.45; }
     .tp-explanation-label { font-weight: 700; color: #f97316; }
+
+    /* ── Reworked explanation layout (Explain panel) ── */
+    .tp-xc-connection {
+      font-size: 0.74rem; line-height: 1.5; color: #f1f5f9; font-weight: 500;
+      background: linear-gradient(180deg, rgba(245,158,11,0.10), rgba(245,158,11,0.03));
+      border: 1px solid rgba(245,158,11,0.22); border-radius: 8px;
+      padding: 9px 11px 9px 10px; margin-bottom: 9px; position: relative;
+    }
+    .tp-xc-tag {
+      display: inline-block; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #fbbf24; background: rgba(245,158,11,0.14);
+      border-radius: 4px; padding: 1px 6px; margin-right: 7px; vertical-align: 1px;
+    }
+    .tp-xc-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 9px; }
+    @media (max-width: 720px) { .tp-xc-sides { grid-template-columns: 1fr; } }
+    .tp-xc-side {
+      background: rgba(148,163,184,0.05); border: 1px solid rgba(148,163,184,0.12);
+      border-radius: 7px; padding: 8px 9px; transition: border-color .15s ease, background .15s ease;
+    }
+    .tp-xc-side:hover { border-color: rgba(148,163,184,0.28); background: rgba(148,163,184,0.08); }
+    .tp-xc-side-head {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em; color: #93c5fd;
+      display: flex; align-items: center; gap: 5px; margin-bottom: 4px;
+    }
+    .tp-xc-side-dot { width: 5px; height: 5px; border-radius: 50%; background: #60a5fa; flex: none; }
+    .tp-xc-side-body { font-size: 0.67rem; line-height: 1.5; color: #cbd5e1; }
+    .tp-xc-why {
+      font-size: 0.67rem; line-height: 1.5; color: #ddd6fe;
+      background: rgba(167,139,250,0.07); border-left: 2.5px solid rgba(167,139,250,0.55);
+      border-radius: 0 6px 6px 0; padding: 7px 10px;
+    }
+    .tp-xc-why-label {
+      display: block; font-size: 0.56rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #a78bfa; margin-bottom: 3px;
+    }
     .tp-sign-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
     .tp-sign-input {
       flex: 1; font-size: 0.65rem; padding: 3px 7px; border-radius: 4px;
@@ -3073,21 +3108,42 @@ function tpRenderExplanation(uid, ctx, explanation, signedBy) {
     ${ctxCard(tc, tt, ctx.tdesc||'', ctx.ttags||[], ctx.tcats||{}, sharedSet)}
   </div>`;
 
-  /* Explanation lines */
-  const lines = explanation.split('\n').filter(Boolean).map(line => {
+  /* Explanation — parse "Label: text" lines into named sections, then render a
+     scannable layout: a hero "Connection", the two sides side-by-side, and a
+     highlighted "why non-obvious" callout. Falls back to flat lines if the
+     shape is unexpected. */
+  const sections = {};
+  let extra = '';
+  explanation.split('\n').filter(Boolean).forEach(line => {
     const colon = line.indexOf(': ');
-    if (colon > 0 && colon < 30) {
-      const label = line.slice(0, colon);
-      const text  = line.slice(colon + 2);
-      const isSurprise = label.toLowerCase().includes('non-obvious') || label.toLowerCase().includes('surprise');
-      if (isSurprise) {
-        return `<div class="tp-explanation-line" style="background:rgba(167,139,250,0.06);padding:3px 6px;border-radius:3px;border-left:2px solid rgba(167,139,250,0.4);margin-top:2px">
-          <span class="tp-explanation-label" style="color:#a78bfa">◈ ${esc(label)}:</span> <span style="color:#c4b5fd">${esc(text)}</span></div>`;
-      }
-      return `<div class="tp-explanation-line"><span class="tp-explanation-label">${esc(label)}:</span> ${esc(text)}</div>`;
-    }
-    return `<div class="tp-explanation-line">${esc(line)}</div>`;
-  }).join('');
+    if (colon > 0 && colon < 32) sections[line.slice(0, colon).trim()] = line.slice(colon + 2).trim();
+    else extra += (extra ? ' ' : '') + line.trim();
+  });
+  const keyStarting = pre => Object.keys(sections).find(k => k.toLowerCase().startsWith(pre.toLowerCase()));
+  const connKey = keyStarting('connection');
+  const inAKey  = keyStarting('in ' + sc);
+  const inBKey  = keyStarting('in ' + tc);
+  const whyKey  = Object.keys(sections).find(k => /non-?obvious|latent|surprise/i.test(k));
+
+  let lines;
+  if (connKey || inAKey || inBKey) {
+    const side = (cid, key) => `<div class="tp-xc-side">
+        <div class="tp-xc-side-head"><span class="tp-xc-side-dot"></span>${esc(cid)}</div>
+        <div class="tp-xc-side-body">${key ? esc(sections[key]) : '<span style="opacity:.5">—</span>'}</div>
+      </div>`;
+    lines = `
+      ${connKey ? `<div class="tp-xc-connection"><span class="tp-xc-tag">the link</span>${esc(sections[connKey])}</div>` : ''}
+      <div class="tp-xc-sides">
+        ${side(sc, inAKey)}
+        ${side(tc, inBKey)}
+      </div>
+      ${whyKey && sections[whyKey] ? `<div class="tp-xc-why"><span class="tp-xc-why-label">◈ why it's non-obvious</span><div>${esc(sections[whyKey])}</div></div>` : ''}
+      ${extra ? `<div class="tp-explanation-line" style="opacity:.8">${esc(extra)}</div>` : ''}`;
+  } else {
+    // Unexpected shape (e.g. partial/recovered JSON) — show whatever we have.
+    lines = explanation.split('\n').filter(Boolean)
+      .map(l => `<div class="tp-explanation-line">${esc(l)}</div>`).join('');
+  }
 
   const signedHtml = signedBy
     ? `<div class="tp-signed-by">✎ Signed by ${esc(signedBy)}</div>`
@@ -3099,7 +3155,7 @@ function tpRenderExplanation(uid, ctx, explanation, signedBy) {
   const ctxJson = JSON.stringify(ctx).replace(/'/g,"&#39;");
   container.innerHTML = `<div class="tp-explanation-box">
     ${contextHtml}
-    <div id="${uid}-lines">${lines}</div>
+    <div id="${uid}-lines" data-raw="${esc(explanation)}">${lines}</div>
     ${signedHtml}
   </div>
   <div class="ex-expl-actions" style="margin-top:4px">
@@ -3111,11 +3167,9 @@ function tpRenderExplanation(uid, ctx, explanation, signedBy) {
 function tpEditExpl(uid, sc, st, tc, tt) {
   const linesEl = document.getElementById(`${uid}-lines`);
   if (!linesEl) return;
-  const rawLines = [...linesEl.querySelectorAll('.tp-explanation-line')].map(el => {
-    const lbl = el.querySelector('.tp-explanation-label');
-    if (lbl) return lbl.textContent.replace(/:$/, '') + ': ' + (el.textContent.replace(lbl.textContent, '').trim());
-    return el.textContent.trim();
-  }).filter(Boolean).join('\n');
+  // Edit the original "Label: text" form, preserved on the container.
+  const rawLines = (linesEl.dataset.raw || '').trim()
+    || [...linesEl.querySelectorAll('.tp-explanation-line')].map(el => el.textContent.trim()).filter(Boolean).join('\n');
 
   linesEl.outerHTML = `<div id="${uid}-edit-area">
     <textarea class="ex-expl-edit-area" id="${uid}-ta">${rawLines}</textarea>
