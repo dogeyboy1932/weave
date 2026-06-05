@@ -194,14 +194,19 @@ def _seed_embeddings_bulk(seeds: list[dict]) -> dict[tuple[str, str], np.ndarray
 # (the same 0.25 the explainer uses) weeds out same-domain near-duplicates.
 _XD_SEM_FLOOR = 0.82
 _XD_JSD_FLOOR = 0.25
+# A bridge must clear this non_obvious (= sem × jsd) to be shown at all — it trims
+# the weak tail (vague queries whose "cross-domain" hits sit at ~0.37-0.45) so the
+# list is genuine bridges only. Strong matches run 0.55-0.80.
+_XD_NONOBV_FLOOR = 0.45
 
 
 def cross_domain_matches(
     seeds: list[dict],
-    top_k: int = 30,
+    top_k: int = 18,
     per_seed: int = 12,
     sem_floor: float = _XD_SEM_FLOOR,
     jsd_floor: float = _XD_JSD_FLOOR,
+    nonobv_floor: float = _XD_NONOBV_FLOOR,
 ) -> list[dict]:
     """
     Cross-domain (non-obvious) topic matches for a search query — the replacement
@@ -265,6 +270,8 @@ def cross_domain_matches(
         if jsd < jsd_floor:
             continue
         non_obv = compute_non_obvious(sem, jsd)
+        if non_obv < nonobv_floor:
+            continue
         prev = best.get(key)
         if prev and prev["non_obvious_score"] >= non_obv:
             continue
