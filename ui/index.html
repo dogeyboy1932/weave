@@ -1243,7 +1243,7 @@
     <h1>See how 35 engineering courses connect.</h1>
     <p class="lede">
       We measured every pair of UIUC MechSE courses by topic overlap and surfaced
-      <strong style="color:var(--surprise)">surprising cross-domain links</strong> —
+      <strong style="color:var(--surprise)">non-obvious cross-domain links</strong> —
       for example, the spring-mass system in ME&nbsp;340 and the RLC circuit in
       ECE&nbsp;205 are actually the same second-order ODE in different clothes.
       Pick a starting point:
@@ -1293,7 +1293,7 @@
     <div class="toolbar-group">
       <button class="btn btn-toggle" id="btn-nonob-mode" onclick="toggleNonObviousMode()"
               title="Highlight unexpected connections across different engineering domains (e.g. mechanics ↔ electronics)">
-        ✨ Surprises
+        ✦ Non-obvious
       </button>
       <button class="btn btn-ghost" id="btn-pathfinder-open" onclick="togglePathfinder()" title="Find the shortest similarity path between two courses">
         Find a path
@@ -1382,7 +1382,7 @@
           <button class="ex-sort-btn active" id="sort-hybrid"     onclick="exSetSort('hybrid')"
                   title="Sorted by overall similarity (best matches first)">Most similar</button>
           <button class="ex-sort-btn"        id="sort-nonobvious" onclick="exSetSort('non_obvious')"
-                  title="Sorted by surprise: connections that span different engineering domains">Most surprising</button>
+                  title="Sorted by non-obviousness: connections that span different engineering domains">Most non-obvious</button>
         </div>
       </div>
       <div style="flex:1;overflow-y:auto;" id="ex-similar-body">
