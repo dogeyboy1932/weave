@@ -13,34 +13,34 @@
        Light theme is opt-in via <html data-theme="light">.
     ════════════════════════════════════════════════════════════════ */
     :root {
-      /* Surfaces (darkest → lightest) */
-      --bg-app:        #0b0d14;
-      --bg-canvas:     #0c0f1a;
-      --bg-surface-1:  #111420;
-      --bg-surface-2:  #1a1d2e;
-      --bg-surface-3:  #232740;
-      --bg-overlay:    rgba(13, 16, 28, 0.78);
+      /* Surfaces (darkest → lightest) — WARM GRAPHITE (no blue cast) */
+      --bg-app:        #14110d;
+      --bg-canvas:     #17130e;
+      --bg-surface-1:  #1c1813;
+      --bg-surface-2:  #241f18;
+      --bg-surface-3:  #2e2820;
+      --bg-overlay:    rgba(20, 17, 13, 0.80);
 
-      /* Borders */
-      --border-faint:  #1e2235;
-      --border-soft:   #2d3148;
-      --border-strong: rgba(165, 180, 252, 0.18);
+      /* Borders — warm */
+      --border-faint:  #2a2419;
+      --border-soft:   #3a3225;
+      --border-strong: rgba(245, 158, 11, 0.20);
 
-      /* Text */
-      --text-strong: #e8edf8;
-      --text-base:   #cbd5e1;
-      --text-muted:  #94a3b8;
-      --text-dim:    #64748b;
-      --text-faint:  #475569;
+      /* Text — warm off-white → warm gray */
+      --text-strong: #efe9df;
+      --text-base:   #ded5c6;
+      --text-muted:  #b3a99a;
+      --text-dim:    #8f8675;
+      --text-faint:  #6d6557;
 
-      /* Brand + accents */
-      --accent:        #818cf8;   /* indigo: primary actions, links */
-      --accent-soft:   rgba(129, 140, 248, 0.14);
-      --accent-strong: #6366f1;
+      /* Brand + accents — amber (primary/warm) + teal (cool pop) */
+      --accent:        #2dd4bf;   /* teal: primary actions, direct matches */
+      --accent-soft:   rgba(45, 212, 191, 0.14);
+      --accent-strong: #14b8a6;
       --good:          #34d399;   /* green: success, strong scores */
       --warn:          #fbbf24;   /* gold: highlighted path, signed */
-      --surprise:      #f97316;   /* orange: non-obvious / surprises */
-      --info:          #22d3ee;   /* cyan: secondary metrics */
+      --surprise:      #f59e0b;   /* amber: non-obvious */
+      --info:          #2dd4bf;   /* teal: secondary metrics */
       --danger:        #f87171;
 
       /* Radii */
@@ -1033,11 +1033,11 @@
     }
     .tp-xc-side:hover { border-color: rgba(148,163,184,0.28); background: rgba(148,163,184,0.08); }
     .tp-xc-side-head {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em; color: #93c5fd;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em; color: #5eead4;
       display: flex; align-items: center; gap: 5px; margin-bottom: 4px;
     }
-    .tp-xc-side-dot { width: 5px; height: 5px; border-radius: 50%; background: #60a5fa; flex: none; }
-    .tp-xc-side-body { font-size: 0.67rem; line-height: 1.5; color: #cbd5e1; }
+    .tp-xc-side-dot { width: 5px; height: 5px; border-radius: 50%; background: #2dd4bf; flex: none; }
+    .tp-xc-side-body { font-size: 0.67rem; line-height: 1.5; color: #d8cfbf; }
     .tp-xc-why {
       font-size: 0.67rem; line-height: 1.5; color: #ddd6fe;
       background: rgba(167,139,250,0.07); border-left: 2.5px solid rgba(167,139,250,0.55);
@@ -1233,79 +1233,90 @@
        point is richer accents, brighter text, and depth (gradients/glows).
        ═══════════════════════════════════════════════════════════════════ */
     html[data-theme="dark"], :root {
-      --text-muted: #aab6cf;
-      --text-dim:   #8a99b8;
-      --text-faint: #6f7e9e;
-      --border-faint: #232842;
-      --border-soft:  #353c5e;
+      --text-base:  #ded5c6;
+      --text-muted: #b3a99a;
+      --text-dim:   #8f8675;
+      --text-faint: #6d6557;
+      --border-faint: #2a2419;
+      --border-soft:  #3a3225;
     }
     body {
       background:
-        radial-gradient(1100px 560px at 8% -10%, rgba(99,102,241,0.20), transparent 58%),
-        radial-gradient(1000px 680px at 102% -4%, rgba(236,72,153,0.13), transparent 55%),
-        radial-gradient(900px 620px at 50% 116%, rgba(34,211,238,0.10), transparent 55%),
-        linear-gradient(180deg, #0b0e1a 0%, #090a12 100%) !important;
+        radial-gradient(1100px 560px at 8% -10%, rgba(245,158,11,0.16), transparent 58%),
+        radial-gradient(1000px 680px at 102% -4%, rgba(45,212,191,0.12), transparent 55%),
+        radial-gradient(900px 620px at 50% 116%, rgba(251,146,60,0.10), transparent 55%),
+        linear-gradient(180deg, #16130e 0%, #100d09 100%) !important;
       background-attachment: fixed !important;
     }
 
-    /* Tags — colorful, glassy, hover-reactive (no more flat gray) */
+    /* Tags — warm glassy chips (teal-tinted), hover-reactive (no more flat gray) */
     .tp-tag {
-      background: linear-gradient(180deg, rgba(129,140,248,0.16), rgba(129,140,248,0.06));
-      color: #c4ccf7; border: 1px solid rgba(129,140,248,0.22);
+      background: linear-gradient(180deg, rgba(45,212,191,0.13), rgba(45,212,191,0.05));
+      color: #b9e8df; border: 1px solid rgba(45,212,191,0.20);
       transition: border-color .14s var(--ease), color .14s var(--ease), transform .12s var(--ease);
     }
-    .tp-tag:hover { border-color: rgba(129,140,248,0.55); color: #e6eaff; transform: translateY(-1px); }
+    .tp-tag:hover { border-color: rgba(45,212,191,0.5); color: #d7f5ee; transform: translateY(-1px); }
     .tp-tag-shared {
-      background: linear-gradient(180deg, rgba(245,158,11,0.22), rgba(236,72,153,0.10)) !important;
-      color: #fde68a !important; border-color: rgba(245,158,11,0.4) !important;
+      background: linear-gradient(180deg, rgba(245,158,11,0.24), rgba(251,146,60,0.12)) !important;
+      color: #fde68a !important; border-color: rgba(245,158,11,0.42) !important;
     }
 
-    /* Section + panel headers — gradient accent instead of dim gray */
+    /* Section + panel headers — warm gradient accent instead of dim gray */
     .tp-panel-head {
-      color: #c8d2ea !important;
-      background: linear-gradient(90deg, rgba(129,140,248,0.12), transparent 70%);
-      border-bottom: 1px solid rgba(129,140,248,0.16) !important;
+      color: #e7ddcb !important;
+      background: linear-gradient(90deg, rgba(245,158,11,0.10), transparent 70%);
+      border-bottom: 1px solid rgba(245,158,11,0.16) !important;
     }
     .tp-related-section-header {
       color: #fcd34d !important;
-      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(236,72,153,0.07) 75%) !important;
+      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(251,146,60,0.08) 75%) !important;
       border: 1px solid rgba(245,158,11,0.3) !important;
-      box-shadow: 0 2px 14px rgba(245,158,11,0.06);
+      box-shadow: 0 2px 14px rgba(245,158,11,0.07);
     }
 
-    /* Brighten the dull body text */
-    .tp-topic-desc, .tp-detail-desc, .tp-similar-text { color: #9fabc6 !important; }
-    .tp-topic-name { color: #e6ecf9 !important; }
-    .tp-mini-label { color: #8493b2 !important; }
-    .tp-mini-pct   { color: #9aa7c4 !important; }
-    .tp-course-name { color: #8a99b8 !important; }
-    .tp-similar-head, .tp-detail-subtitle { color: #7e8db0 !important; }
-    .tp-mini-track { background: rgba(148,163,184,0.10) !important; }
+    /* Brighten the body text to warm tones */
+    .tp-topic-desc, .tp-detail-desc, .tp-similar-text { color: #c2b6a3 !important; }
+    .tp-topic-name { color: #f2ece0 !important; }
+    .tp-mini-label { color: #a39885 !important; }
+    .tp-mini-pct   { color: #bcb09c !important; }
+    .tp-course-name { color: #a39885 !important; }
+    .tp-similar-head, .tp-detail-subtitle { color: #978c79 !important; }
+    .tp-mini-track { background: rgba(190,170,140,0.10) !important; }
     .tp-mini-fill  { filter: saturate(1.25) brightness(1.08); box-shadow: 0 0 6px currentColor; }
 
-    /* Topic cards — subtle lift + indigo glow on hover */
+    /* Topic cards — warm surface, teal glow on hover */
     .tp-topic-card {
-      background: linear-gradient(180deg, #141728, #0e1019) !important;
-      border-color: #262c44 !important;
+      background: linear-gradient(180deg, #20190f, #17120b) !important;
+      border-color: #322a1d !important;
     }
     .tp-topic-card:hover {
-      border-color: rgba(129,140,248,0.45) !important;
-      box-shadow: 0 6px 22px rgba(79,70,229,0.14);
+      border-color: rgba(45,212,191,0.42) !important;
+      box-shadow: 0 6px 22px rgba(45,212,191,0.12);
     }
+    .tp-course-card-direct  { border-color: rgba(45,212,191,0.28) !important; }
     .tp-course-card-related { border-color: rgba(245,158,11,0.3) !important; }
-    .tp-course-body { background: #0a0c16 !important; }
+    .tp-course-body { background: #120e09 !important; }
 
-    /* Badges — vibrant gradient pills */
+    /* Direct-match course headers/badges/ids — recolor indigo -> teal */
+    .tp-course-header-direct {
+      background: linear-gradient(90deg, rgba(45,212,191,0.16) 0%, rgba(45,212,191,0.05) 60%, transparent 100%) !important;
+      border-bottom: 1px solid rgba(45,212,191,0.16) !important;
+    }
+    .tp-course-id-direct, .tp-course-chevron-direct { color: #5eead4 !important; }
     .tp-course-badge-direct {
-      background: linear-gradient(90deg, rgba(99,102,241,0.32), rgba(56,189,248,0.18)) !important;
-      color: #c7d2fe !important; border-color: rgba(129,140,248,0.45) !important;
+      background: linear-gradient(90deg, rgba(45,212,191,0.30), rgba(20,184,166,0.16)) !important;
+      color: #99f6e4 !important; border-color: rgba(45,212,191,0.45) !important;
+    }
+    .tp-tag-matched {
+      background: rgba(45,212,191,0.16) !important; color: #5eead4 !important;
+      border-color: rgba(45,212,191,0.35) !important;
     }
     .tp-course-badge-related {
-      background: linear-gradient(90deg, rgba(245,158,11,0.30), rgba(236,72,153,0.20)) !important;
+      background: linear-gradient(90deg, rgba(245,158,11,0.30), rgba(251,146,60,0.20)) !important;
       color: #fde68a !important; border-color: rgba(245,158,11,0.45) !important;
     }
 
-    /* Cross-domain "bridges …" indicator — make the non-obvious score read as a pill */
+    /* Cross-domain "bridges …" indicator — the non-obvious score reads as a warm pill */
     .tp-match-shared {
       color: #fcd34d !important;
       background: linear-gradient(90deg, rgba(245,158,11,0.10), transparent);
@@ -1314,26 +1325,26 @@
     }
     .tp-match-shared b { color: #fef3c7; }
 
-    /* "Try:" suggestion chips + buttons — give them life */
+    /* Buttons — warm lift on hover */
     .tp-explain-btn, .ex-expl-action-btn {
       transition: transform .12s var(--ease), box-shadow .15s var(--ease), filter .15s var(--ease);
     }
-    .tp-explain-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,0.22); filter: brightness(1.08); }
+    .tp-explain-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(45,212,191,0.22); filter: brightness(1.08); }
 
-    /* Scrollbars — tinted */
-    .tp-panel-scroll::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.30) !important; }
-    .tp-panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(129,140,248,0.5) !important; }
+    /* Scrollbars — warm tint */
+    .tp-panel-scroll::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.28) !important; }
+    .tp-panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(245,158,11,0.5) !important; }
 
     /* Regenerate-with-feedback row + cached note */
     .tp-regen-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
     .tp-fb-input {
-      flex: 1; min-width: 0; font-size: 0.64rem; color: #d8def0;
-      background: rgba(148,163,184,0.06); border: 1px solid rgba(129,140,248,0.20);
+      flex: 1; min-width: 0; font-size: 0.64rem; color: #ede4d4;
+      background: rgba(190,170,140,0.06); border: 1px solid rgba(45,212,191,0.22);
       border-radius: 6px; padding: 5px 9px; outline: none;
       transition: border-color .14s var(--ease), background .14s var(--ease);
     }
-    .tp-fb-input::placeholder { color: #66748f; }
-    .tp-fb-input:focus { border-color: rgba(129,140,248,0.55); background: rgba(129,140,248,0.08); }
+    .tp-fb-input::placeholder { color: #8a8071; }
+    .tp-fb-input:focus { border-color: rgba(45,212,191,0.55); background: rgba(45,212,191,0.08); }
     .tp-regen-btn { white-space: nowrap; }
     .tp-cached-note { font-size: 0.58rem; color: #6ee7b7; opacity: 0.85; margin-top: 5px; }
   </style>
