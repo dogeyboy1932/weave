@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1232,108 +1232,135 @@
        Appended last so it wins on equal specificity. Dark base kept; the
        point is richer accents, brighter text, and depth (gradients/glows).
        ═══════════════════════════════════════════════════════════════════ */
-    html[data-theme="dark"], :root {
-      --text-base:  #ded5c6;
-      --text-muted: #b3a99a;
-      --text-dim:   #8f8675;
-      --text-faint: #6d6557;
-      --border-faint: #2a2419;
-      --border-soft:  #3a3225;
+    /* ════════════ DARK theme (toggle option) — warm graphite, scoped ════════════ */
+    html[data-theme="dark"] {
+      --text-base:  #ded5c6; --text-muted: #b3a99a; --text-dim: #8f8675;
+      --text-faint: #6d6557; --border-faint: #2a2419; --border-soft: #3a3225;
     }
-    body {
+    html[data-theme="dark"] body {
       background:
         radial-gradient(1100px 560px at 8% -10%, rgba(245,158,11,0.16), transparent 58%),
         radial-gradient(1000px 680px at 102% -4%, rgba(45,212,191,0.12), transparent 55%),
-        radial-gradient(900px 620px at 50% 116%, rgba(251,146,60,0.10), transparent 55%),
         linear-gradient(180deg, #16130e 0%, #100d09 100%) !important;
       background-attachment: fixed !important;
     }
+    html[data-theme="dark"] .tp-tag { background: rgba(45,212,191,0.10); color: #b9e8df; border: 1px solid rgba(45,212,191,0.20); }
+    html[data-theme="dark"] .tp-topic-card { background: #1b1610 !important; border-color: #322a1d !important; }
+    html[data-theme="dark"] .tp-course-body { background: #120e09 !important; }
+    html[data-theme="dark"] .tp-topic-name { color: #f2ece0 !important; }
+    html[data-theme="dark"] .tp-topic-desc, html[data-theme="dark"] .tp-detail-desc { color: #c2b6a3 !important; }
 
-    /* Tags — warm glassy chips (teal-tinted), hover-reactive (no more flat gray) */
-    .tp-tag {
-      background: linear-gradient(180deg, rgba(45,212,191,0.13), rgba(45,212,191,0.05));
-      color: #b9e8df; border: 1px solid rgba(45,212,191,0.20);
-      transition: border-color .14s var(--ease), color .14s var(--ease), transform .12s var(--ease);
+    /* ════════════ LIGHT theme (DEFAULT) — bright, high-contrast, vibrant ════════════ */
+    html[data-theme="light"] {
+      --bg-app: #f5f6fc; --bg-canvas: #ffffff; --bg-surface-1: #ffffff;
+      --accent: #6366f1; --accent-strong: #4f46e5;
+      --text-strong: #0f172a; --text-base: #1e293b; --text-muted: #475569;
+      --text-dim: #64748b; --text-faint: #94a3b8;
+      --border-faint: #e7eaf3; --border-soft: #d4d9e8;
     }
-    .tp-tag:hover { border-color: rgba(45,212,191,0.5); color: #d7f5ee; transform: translateY(-1px); }
-    .tp-tag-shared {
-      background: linear-gradient(180deg, rgba(245,158,11,0.24), rgba(251,146,60,0.12)) !important;
-      color: #fde68a !important; border-color: rgba(245,158,11,0.42) !important;
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(1000px 520px at 8% -8%, rgba(99,102,241,0.10), transparent 55%),
+        radial-gradient(900px 560px at 102% 0%, rgba(244,114,182,0.08), transparent 52%),
+        radial-gradient(800px 520px at 50% 118%, rgba(45,212,191,0.07), transparent 55%),
+        linear-gradient(180deg, #fbfbff 0%, #f3f4fb 100%) !important;
+      background-attachment: fixed !important;
     }
-
-    /* Section + panel headers — warm gradient accent instead of dim gray */
-    .tp-panel-head {
-      color: #e7ddcb !important;
-      background: linear-gradient(90deg, rgba(245,158,11,0.10), transparent 70%);
-      border-bottom: 1px solid rgba(245,158,11,0.16) !important;
+    /* Tags — vibrant indigo chips, strong contrast */
+    html[data-theme="light"] .tp-tag {
+      background: #eef1fe; color: #4338ca; border: 1px solid #c8d0fb;
+      transition: border-color .14s var(--ease), transform .12s var(--ease);
     }
-    .tp-related-section-header {
-      color: #fcd34d !important;
-      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(251,146,60,0.08) 75%) !important;
-      border: 1px solid rgba(245,158,11,0.3) !important;
-      box-shadow: 0 2px 14px rgba(245,158,11,0.07);
+    html[data-theme="light"] .tp-tag:hover { border-color: #6366f1; transform: translateY(-1px); }
+    html[data-theme="light"] .tp-tag-shared { background: #fff1df !important; color: #c2410c !important; border-color: #fdba74 !important; }
+    html[data-theme="light"] .tp-tag-matched { background: #e0e7ff !important; color: #4338ca !important; border-color: #a5b4fc !important; }
+    /* Headers */
+    html[data-theme="light"] .tp-panel-head {
+      color: #334155 !important; background: linear-gradient(90deg, rgba(99,102,241,0.07), transparent 70%);
+      border-bottom: 1px solid #e2e6f0 !important;
     }
-
-    /* Brighten the body text to warm tones */
-    .tp-topic-desc, .tp-detail-desc, .tp-similar-text { color: #c2b6a3 !important; }
-    .tp-topic-name { color: #f2ece0 !important; }
-    .tp-mini-label { color: #a39885 !important; }
-    .tp-mini-pct   { color: #bcb09c !important; }
-    .tp-course-name { color: #a39885 !important; }
-    .tp-similar-head, .tp-detail-subtitle { color: #978c79 !important; }
-    .tp-mini-track { background: rgba(190,170,140,0.10) !important; }
-    .tp-mini-fill  { filter: saturate(1.25) brightness(1.08); box-shadow: 0 0 6px currentColor; }
-
-    /* Topic cards — warm surface, teal glow on hover */
-    .tp-topic-card {
-      background: linear-gradient(180deg, #20190f, #17120b) !important;
-      border-color: #322a1d !important;
+    html[data-theme="light"] .tp-related-section-header {
+      color: #c2410c !important; background: linear-gradient(90deg, #fff2e2, #ffffff 78%) !important;
+      border: 1px solid #fdba74 !important; box-shadow: 0 2px 12px rgba(245,158,11,0.10);
     }
-    .tp-topic-card:hover {
-      border-color: rgba(45,212,191,0.42) !important;
-      box-shadow: 0 6px 22px rgba(45,212,191,0.12);
+    /* Text — dark on light = high contrast */
+    html[data-theme="light"] .tp-topic-name { color: #0f172a !important; }
+    html[data-theme="light"] .tp-topic-desc,
+    html[data-theme="light"] .tp-detail-desc,
+    html[data-theme="light"] .tp-similar-text { color: #475569 !important; }
+    html[data-theme="light"] .tp-course-name { color: #64748b !important; }
+    html[data-theme="light"] .tp-mini-label { color: #64748b !important; }
+    html[data-theme="light"] .tp-mini-pct { color: #475569 !important; }
+    html[data-theme="light"] .tp-similar-head,
+    html[data-theme="light"] .tp-detail-subtitle { color: #64748b !important; }
+    html[data-theme="light"] .tp-mini-track { background: #e8ebf5 !important; }
+    .tp-mini-fill { filter: saturate(1.2); }
+    /* Cards — white, real shadow, indigo lift on hover */
+    html[data-theme="light"] .tp-topic-card {
+      background: #ffffff !important; border-color: #e6e9f3 !important;
+      box-shadow: 0 1px 2px rgba(15,23,42,0.05);
     }
-    .tp-course-card-direct  { border-color: rgba(45,212,191,0.28) !important; }
-    .tp-course-card-related { border-color: rgba(245,158,11,0.3) !important; }
-    .tp-course-body { background: #120e09 !important; }
-
-    /* Direct-match course headers/badges/ids — recolor indigo -> teal */
-    .tp-course-header-direct {
-      background: linear-gradient(90deg, rgba(45,212,191,0.16) 0%, rgba(45,212,191,0.05) 60%, transparent 100%) !important;
-      border-bottom: 1px solid rgba(45,212,191,0.16) !important;
+    html[data-theme="light"] .tp-topic-card:hover {
+      border-color: #a5b4fc !important; box-shadow: 0 8px 24px rgba(99,102,241,0.16) !important;
     }
-    .tp-course-id-direct, .tp-course-chevron-direct { color: #5eead4 !important; }
-    .tp-course-badge-direct {
-      background: linear-gradient(90deg, rgba(45,212,191,0.30), rgba(20,184,166,0.16)) !important;
-      color: #99f6e4 !important; border-color: rgba(45,212,191,0.45) !important;
+    html[data-theme="light"] .tp-course-card { border-color: #e2e6f0; }
+    html[data-theme="light"] .tp-course-card-direct  { border-color: #c8d0fb !important; }
+    html[data-theme="light"] .tp-course-card-related { border-color: #fed7aa !important; }
+    html[data-theme="light"] .tp-course-body { background: #f8f9fd !important; }
+    html[data-theme="light"] .tp-course-header-direct {
+      background: linear-gradient(90deg, #eef1fe, transparent 80%) !important;
+      border-bottom: 1px solid #d8defb !important;
     }
-    .tp-tag-matched {
-      background: rgba(45,212,191,0.16) !important; color: #5eead4 !important;
-      border-color: rgba(45,212,191,0.35) !important;
+    html[data-theme="light"] .tp-course-header-related {
+      background: linear-gradient(90deg, #fff2e2, transparent 80%) !important;
+      border-bottom: 1px solid #fed7aa !important;
     }
-    .tp-course-badge-related {
-      background: linear-gradient(90deg, rgba(245,158,11,0.30), rgba(251,146,60,0.20)) !important;
-      color: #fde68a !important; border-color: rgba(245,158,11,0.45) !important;
+    html[data-theme="light"] .tp-course-id-direct, html[data-theme="light"] .tp-course-chevron-direct { color: #4f46e5 !important; }
+    html[data-theme="light"] .tp-course-id-related, html[data-theme="light"] .tp-course-chevron-related { color: #c2410c !important; }
+    html[data-theme="light"] .tp-course-name { color: #64748b !important; }
+    /* Badges — SOLID vibrant fills, white text */
+    html[data-theme="light"] .tp-course-badge-direct {
+      background: #6366f1 !important; color: #fff !important; border: 1px solid #4f46e5 !important;
     }
-
-    /* Cross-domain "bridges …" indicator — the non-obvious score reads as a warm pill */
-    .tp-match-shared {
-      color: #fcd34d !important;
-      background: linear-gradient(90deg, rgba(245,158,11,0.10), transparent);
-      border-left: 2px solid rgba(245,158,11,0.5);
-      padding: 4px 8px; border-radius: 0 5px 5px 0; line-height: 1.5;
+    html[data-theme="light"] .tp-course-badge-related {
+      background: #f59e0b !important; color: #fff !important; border: 1px solid #d97706 !important;
     }
-    .tp-match-shared b { color: #fef3c7; }
-
-    /* Buttons — warm lift on hover */
-    .tp-explain-btn, .ex-expl-action-btn {
-      transition: transform .12s var(--ease), box-shadow .15s var(--ease), filter .15s var(--ease);
+    html[data-theme="light"] .tp-match-shared {
+      color: #c2410c !important; background: linear-gradient(90deg, #fff4e6, transparent);
+      border-left: 2px solid #f59e0b; padding: 4px 8px; border-radius: 0 5px 5px 0; line-height: 1.5;
     }
-    .tp-explain-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(45,212,191,0.22); filter: brightness(1.08); }
-
-    /* Scrollbars — warm tint */
-    .tp-panel-scroll::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.28) !important; }
-    .tp-panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(245,158,11,0.5) !important; }
+    html[data-theme="light"] .tp-match-shared b { color: #9a3412 !important; }
+    /* Explanation panel — light */
+    html[data-theme="light"] .tp-xc-connection {
+      background: linear-gradient(180deg, #fff7ed, #fffdfa) !important;
+      border: 1px solid #fdba74 !important; color: #1e293b !important;
+    }
+    html[data-theme="light"] .tp-xc-tag { color: #c2410c !important; background: #ffe9d1 !important; }
+    html[data-theme="light"] .tp-xc-side { background: #f7f8fd !important; border: 1px solid #e2e6f0 !important; }
+    html[data-theme="light"] .tp-xc-side:hover { border-color: #c8d0fb !important; background: #f0f3fe !important; }
+    html[data-theme="light"] .tp-xc-side-head { color: #4f46e5 !important; }
+    html[data-theme="light"] .tp-xc-side-dot { background: #6366f1 !important; }
+    html[data-theme="light"] .tp-xc-side-body { color: #334155 !important; }
+    html[data-theme="light"] .tp-xc-why { background: #f5f3ff !important; border-left-color: #8b5cf6 !important; color: #5b21b6 !important; }
+    html[data-theme="light"] .tp-xc-why-label { color: #7c3aed !important; }
+    html[data-theme="light"] .tp-fb-input { color: #1e293b !important; background: #fff !important; border-color: #c8d0fb !important; }
+    html[data-theme="light"] .tp-fb-input::placeholder { color: #94a3b8 !important; }
+    html[data-theme="light"] .tp-fb-input:focus { border-color: #6366f1 !important; background: #f6f8ff !important; }
+    html[data-theme="light"] .tp-cached-note { color: #059669 !important; }
+    /* Buttons */
+    .tp-explain-btn, .ex-expl-action-btn { transition: transform .12s var(--ease), box-shadow .15s var(--ease), filter .15s var(--ease); }
+    html[data-theme="light"] .tp-explain-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,0.25); filter: brightness(1.03); }
+    html[data-theme="light"] .tp-panel-scroll::-webkit-scrollbar-thumb { background: #c8d0fb !important; }
+    html[data-theme="light"] .tp-panel-scroll::-webkit-scrollbar-thumb:hover { background: #a5b4fc !important; }
+    /* Kill stray dark hairlines/titles on light */
+    html[data-theme="light"] .tp-panel { border-right-color: #e6e9f3 !important; }
+    html[data-theme="light"] .tp-topic-body { border-top-color: #eef0f6 !important; }
+    html[data-theme="light"] .tp-detail-section { border-bottom-color: #eef0f6 !important; }
+    html[data-theme="light"] .tp-detail-back { border-bottom-color: #e6e9f3 !important; color: #64748b !important; }
+    html[data-theme="light"] .tp-detail-title { color: #0f172a !important; }
+    html[data-theme="light"] .tp-course-card { background: #ffffff; }
+    html[data-theme="light"] .tp-matrix-table th { color: #475569 !important; background: #f1f3fa !important; }
+    html[data-theme="light"] #tp-results, html[data-theme="light"] #tp-matrix { background: transparent; }
 
     /* Regenerate-with-feedback row + cached note */
     .tp-regen-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
@@ -1701,8 +1728,8 @@ async function populateCourseSuggestions() {
 
 // One-time boot
 window.addEventListener('DOMContentLoaded', () => {
-  // Theme — respect saved choice, default dark
-  applyTheme(localStorage.getItem('siip_theme') || 'dark');
+  // Theme — respect saved choice, default light
+  applyTheme(localStorage.getItem('siip_theme') || 'light');
   refreshKeyIndicator();
   // Show welcome on first visit
   if (!localStorage.getItem('siip_welcomed')) openWelcome();
