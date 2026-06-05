@@ -640,6 +640,7 @@ def resolve_topic_chunks(chunk_hits: list[dict]) -> list[dict]:
             continue
         meta = course_meta[topic_text]
         out.append({
+            'chunk_id':    h['chunk_id'],
             'course_id':   h['course_id'],
             'topic_text':  topic_text,
             'categories':  meta['categories'],
@@ -648,6 +649,106 @@ def resolve_topic_chunks(chunk_hits: list[dict]) -> list[dict]:
             'score':       round(float(h['score']), 4),
         })
     return out
+
+
+def get_topic_descriptions_bulk(course_ids: list[str]) -> dict[str, dict[str, str]]:
+    """{course_id: {topic_text: definition}} for many courses in two queries.
+
+    Bulk form of get_topic_descriptions_for_course — used by /topics/search so a
+    result spanning N courses costs 2 round trips instead of 2·N."""
+    if not course_ids:
+        return {}
+    course_ids = list(set(course_ids))
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT course_id, raw_text FROM chunks "
+            "WHERE course_id = ANY(%s::text[]) AND chunk_type='topic'",
+            (course_ids,),
+        )
+        raws_by_course: dict[str, list[str]] = {}
+        for cid, raw in cur.fetchall():
+            raws_by_course.setdefault(cid, []).append(raw)
+        cur.execute(
+            "SELECT course_id, topic_text FROM topic_categories "
+            "WHERE course_id = ANY(%s::text[])",
+            (course_ids,),
+        )
+        texts_by_course: dict[str, list[str]] = {}
+        for cid, tt in cur.fetchall():
+            texts_by_course.setdefault(cid, []).append(tt)
+
+    out: dict[str, dict[str, str]] = {}
+    for cid in course_ids:
+        topic_texts = texts_by_course.get(cid, [])
+        m: dict[str, str] = {}
+        for raw in raws_by_course.get(cid, []):
+            tt = _match_topic_text(raw, topic_texts)
+            if tt is not None:
+                m[tt] = _extract_definition(raw, tt)
+        out[cid] = m
+    return out
+
+
+def search_topics_tokens(tokens: list[str], phrase: str, limit: int = 40) -> list[dict]:
+    """
+    Token-based lexical topic search — the primary /topics/search signal.
+
+    Matches a topic if ANY query token appears in its topic_text or any tag
+    (so multi-word queries like "machine learning" work, where the old
+    whole-phrase ILIKE returned nothing). Results are ranked by, in order:
+      1. exact phrase present in topic_text   (most precise)
+      2. number of distinct query tokens matched (text or tag)
+      3. a text hit outranks a tag-only hit
+      4. course_id, topic_text  (stable tiebreak)
+
+    Annotated with matched_by ('text'|'tag') and matched_tags so the UI can show
+    why each result matched. This is deliberately lexical: SciNCL cosine over the
+    938 topic vectors is near-uniform for bare keywords (top-50 within ~0.04) and
+    so returns centroid noise, not relevant topics — see search_topics_semantic,
+    used only as a no-lexical-hit fallback.
+    """
+    if not tokens:
+        return []
+    likes = [f'%{t}%' for t in tokens]
+    phrase_like = f'%{phrase}%'
+    with _Conn() as cur:
+        cur.execute("""
+            SELECT course_id, topic_text, categories, COALESCE(tags, '[]') AS tags
+            FROM topic_categories
+            WHERE topic_text ILIKE ANY(%s)
+               OR EXISTS (
+                   SELECT 1 FROM jsonb_array_elements_text(COALESCE(tags, '[]')) t
+                   WHERE t ILIKE ANY(%s)
+               )
+        """, (likes, likes))
+        rows = cur.fetchall()
+
+    low_tokens = [t.lower() for t in tokens]
+    phrase_low = phrase.lower()
+    scored = []
+    for r in rows:
+        text_low = r[1].lower()
+        tags = r[3] if isinstance(r[3], list) else json.loads(r[3])
+        text_tokens = {t for t in low_tokens if t in text_low}
+        matched_tags = [tg for tg in tags if any(t in tg.lower() for t in low_tokens)]
+        n_matched = len(text_tokens | {t for t in low_tokens
+                                       for tg in tags if t in tg.lower()})
+        rank = (
+            0 if phrase_low in text_low else 1,   # exact phrase first
+            -n_matched,                            # more tokens matched = better
+            0 if text_tokens else 1,               # text hit beats tag-only
+            r[0], r[1],
+        )
+        scored.append((rank, {
+            'course_id':    r[0],
+            'topic_text':   r[1],
+            'categories':   r[2] if isinstance(r[2], dict) else json.loads(r[2]),
+            'tags':         tags,
+            'matched_by':   'text' if text_tokens else 'tag',
+            'matched_tags': matched_tags if not text_tokens else [],
+        }))
+    scored.sort(key=lambda x: x[0])
+    return [m for _, m in scored[:limit]]
 
 
 def find_related_by_tags(tags: list[str], exclude_courses: list[str]) -> list[dict]:

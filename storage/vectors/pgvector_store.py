@@ -222,6 +222,55 @@ def search_topics_semantic(
     ]
 
 
+def search_neighbors_batch(
+    seeds: list[tuple[np.ndarray, str]],
+    limit: int = 36,
+) -> list[list[dict]]:
+    """
+    ANN for MANY seed vectors in ONE round trip via a LATERAL join.
+
+    seeds: [(query_vector, exclude_course_id), ...]. For each seed returns its
+    top-`limit` nearest topic neighbours from other courses. The single-query
+    form replaces N separate search_global_excluding calls — the dominant cost
+    of /topics/search over a cloud Postgres was the per-seed round trips.
+
+    Returns a list parallel to `seeds`; element i is that seed's
+    [{chunk_id, course_id, score}] sorted by score desc.
+    """
+    if not seeds:
+        return []
+    values_sql = ", ".join(
+        f"({i}, %s::vector, %s)" for i in range(len(seeds))
+    )
+    params: list = []
+    for vec, excl in seeds:
+        params.append(_vec_literal(vec))
+        params.append(excl)
+    params.append(limit)
+
+    sql = f"""
+        WITH seeds(idx, vec, excl) AS (VALUES {values_sql})
+        SELECT s.idx, e.chunk_id, e.course_id, 1 - (e.embedding <=> s.vec) AS sim
+        FROM seeds s
+        CROSS JOIN LATERAL (
+            SELECT chunk_id, course_id, embedding
+            FROM chunk_embeddings
+            WHERE course_id <> s.excl
+            ORDER BY embedding <=> s.vec
+            LIMIT %s
+        ) e
+    """
+    out: list[list[dict]] = [[] for _ in seeds]
+    with _Conn() as cur:
+        if config.ANN_INDEX_TYPE == 'hnsw':
+            cur.execute(f"SET LOCAL hnsw.ef_search = {config.ANN_HNSW_EF_SEARCH}")
+        cur.execute(sql, params)
+        for idx, chunk_id, course_id, sim in cur.fetchall():
+            out[idx].append({"chunk_id": chunk_id, "course_id": course_id,
+                             "score": float(sim)})
+    return out
+
+
 # ── Deletes ──────────────────────────────────────────────────────────────────
 def delete_course(course_id: str):
     with _Conn() as cur:

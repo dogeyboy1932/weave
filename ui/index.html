@@ -2721,8 +2721,12 @@ function tpRenderResults(data) {
     let indicator = '';
     if (!isRelated && m.matched_by === 'tag' && highlight.size)
       indicator = `<div class="tp-match-indicator tp-match-tag">↳ via tag: ${[...highlight].map(esc).join(', ')}</div>`;
-    else if (isRelated && highlight.size)
-      indicator = `<div class="tp-match-indicator tp-match-shared">⇔ shared: ${[...highlight].map(esc).join(', ')}</div>`;
+    else if (isRelated && m.source_topic) {
+      const pct = v => Math.round((v || 0) * 100);
+      const sharedTxt = highlight.size ? ` · shares ${[...highlight].map(esc).join(', ')}` : '';
+      indicator = `<div class="tp-match-indicator tp-match-shared">⇔ bridges <b>${esc(m.source_course)}: ${esc(m.source_topic)}</b>`
+        + ` · non-obvious ${pct(m.non_obvious_score)}% <span style="opacity:.7">(semantic ${pct(m.sem_score)}% · domain gap ${pct(m.category_jsd)}%)</span>${sharedTxt}</div>`;
+    }
 
     let similarHtml = '';
     if (!isRelated && m.topic_matches && m.topic_matches.length) {
@@ -2736,12 +2740,12 @@ function tpRenderResults(data) {
     }
 
     let explainHtml = '';
-    if (isRelated && sourceTopic) {
+    if (isRelated && m.source_topic) {
       const uid = `expl-${CSS.escape(m.course_id + '-' + m.topic_text)}`;
       const ctxData = JSON.stringify({
-        sc: sourceTopic.course_id, st: sourceTopic.topic_text,
-        sdesc: (sourceTopic.description || '').slice(0, 200),
-        stags: sourceTopic.tags || [], scats: sourceTopic.categories || {},
+        sc: m.source_course, st: m.source_topic,
+        sdesc: (m.source_description || '').slice(0, 200),
+        stags: m.source_tags || [], scats: m.source_categories || {},
         tc: m.course_id, tt: m.topic_text,
         tdesc: (m.description || '').slice(0, 200),
         ttags: tags, tcats: m.categories || {},
@@ -2786,7 +2790,7 @@ function tpRenderResults(data) {
     const name     = course ? course.name : cid;
     const variant  = isRelated ? 'related' : 'direct';
     const badge    = isRelated
-      ? `<span class="tp-course-badge tp-course-badge-related">${items.length} topic${items.length>1?'s':''} · ${Math.max(...items.map(r=>r.shared_tags?.length||0))} shared tags</span>`
+      ? `<span class="tp-course-badge tp-course-badge-related">${items.length} topic${items.length>1?'s':''} · ${Math.round(Math.max(...items.map(r=>r.non_obvious_score||0))*100)}% non-obvious</span>`
       : `<span class="tp-course-badge tp-course-badge-direct">${items.length} match${items.length>1?'es':''}</span>`;
     return `<div class="tp-course-card tp-course-card-${variant}" data-open="${open}">
       <div class="tp-course-header tp-course-header-${variant}" onclick="tpToggleCourse(this)">
@@ -2813,30 +2817,25 @@ function tpRenderResults(data) {
   for (const cid of directCourses)
     html += renderCourseCard(cid, grouped[cid], false, true, null);
 
-  /* Phase 2 — cross-domain, grouped + ranked by shared tag count, collapsed by default */
+  /* Phase 2 — cross-domain non-obvious matches, ranked by non_obvious score
+     (semantic similarity × category divergence), collapsed by default */
   if (related && related.length) {
-    html += `<div class="tp-related-section-header">⇔ &nbsp;Cross-domain connections via shared tags</div>`;
-
-    /* Pick the best source topic per shared tag (most-shared-tags direct match topic) */
-    const bestSource = matches.reduce((best, m) =>
-      !best || (m.tags?.length || 0) > (best.tags?.length || 0) ? m : best, null);
+    html += `<div class="tp-related-section-header">⇔ &nbsp;Cross-domain connections — semantically related, different domain</div>`;
 
     const relGrouped = {};
     related.forEach(r => {
       if (!relGrouped[r.course_id]) relGrouped[r.course_id] = [];
       relGrouped[r.course_id].push(r);
     });
-    /* Rank each topic within course by # shared tags desc */
+    /* Rank each topic within course by non-obvious score desc */
     Object.values(relGrouped).forEach(items =>
-      items.sort((a, b) => (b.shared_tags?.length || 0) - (a.shared_tags?.length || 0)));
-    /* Rank courses by total shared-tag count desc */
-    const relCourses = Object.keys(relGrouped).sort((a, b) => {
-      const sa = relGrouped[a].reduce((s, r) => s + (r.shared_tags?.length || 0), 0);
-      const sb = relGrouped[b].reduce((s, r) => s + (r.shared_tags?.length || 0), 0);
-      return sb - sa;
-    });
+      items.sort((a, b) => (b.non_obvious_score || 0) - (a.non_obvious_score || 0)));
+    /* Rank courses by their single best non-obvious match desc */
+    const relCourses = Object.keys(relGrouped).sort((a, b) =>
+      Math.max(...relGrouped[b].map(r => r.non_obvious_score || 0)) -
+      Math.max(...relGrouped[a].map(r => r.non_obvious_score || 0)));
     for (const cid of relCourses)
-      html += renderCourseCard(cid, relGrouped[cid], true, false, bestSource);
+      html += renderCourseCard(cid, relGrouped[cid], true, false, null);
   }
 
   document.getElementById('tp-results').innerHTML = html;

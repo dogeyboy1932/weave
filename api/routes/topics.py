@@ -2,11 +2,13 @@ import time
 from collections import OrderedDict
 from threading import Lock
 from typing import Optional
-from fastapi import APIRouter, Query, Header, HTTPException
+from fastapi import APIRouter, Query, Header, HTTPException, Response
 from pydantic import BaseModel
 import storage.postgres.store as pg_store
 from storage.vectors import store as vector_store
 from storage.vectors.encoder import encode
+from scoring.chunker import tokenize
+from scoring.vector_similarity import cross_domain_matches
 from llm.llm_explainer import explain_topic_connection
 
 router = APIRouter()
@@ -102,64 +104,74 @@ def course_info(course: str = Query(..., description="Course ID")):
 
 @router.get("/search")
 def search_topics(
+    response: Response,
     q:   str = Query(..., min_length=2, description="Topic concept or phrase"),
     top: int = Query(40, ge=1, le=100),
 ):
     """
-    Two-phase semantic topic search:
+    Lexical-primary hybrid topic search.
 
-    Phase 1 — Direct: the query is embedded with the same SciNCL encoder used at
-    ingest and matched by cosine (pgvector HNSW ANN) against the topic vectors.
-    This means "Machine Learning" surfaces CS 446's "Neural networks" even though
-    the exact words never appear in the topic text — the old keyword ILIKE match
-    returned nothing for such queries.
+    Phase 1 — Lexical (primary): tokenize the query and match each token against
+    topic text + tags. Precise and fast, and the form users expect from a search
+    box: "machine" → ME 370 Machine dynamics / ME 371 Machine components, not
+    centroid noise. Tokenizing also fixes the old whole-phrase ILIKE bug where
+    "machine learning" matched nothing (now machine ∪ learning both hit).
+
+    Phase 1-fallback — Semantic: ONLY when lexical finds nothing, embed the query
+    with SciNCL and run pgvector ANN over the topic vectors. SciNCL is a scientific
+    *document* model — its cosine is near-uniform for bare keywords (the top-50 of
+    a 938-vector search span ~0.04), so it returns relevant results only for
+    abstract-shaped phrases and is a last resort, not the primary signal.
 
     Phase 2 — Related: topics from OTHER courses sharing exact tags with the
     phase-1 hits, e.g. ECE 210's RLC Circuit ⇔ ME 340's Spring-Mass-Damper via
     "second-order-ode" / "natural-frequency".
 
-    Performance: one ANN query for phase 1, then every cross-row lookup
+    Performance: one lexical query for phase 1, then every cross-row lookup
     (per-topic neighbors, per-course descriptions, per-pair course similarity) is
     batched. Identical queries are served from a 5-minute in-process LRU cache.
     """
+    # Results depend on live data + search code; never let the browser serve a
+    # stale cached payload (this is what made an old semantic response linger).
+    response.headers["Cache-Control"] = "no-store"
+
     cache_key = (q.strip().lower(), top)
     cached = _cache_get(cache_key)
     if cached is not None:
         return cached
 
-    # Per-course description cache so phase-2 (related) items can be enriched
-    # without re-fetching a course's topic chunks more than once.
-    _desc_cache: dict[str, dict] = {}
-
-    def _desc(course_id: str, topic_text: str) -> str:
-        if course_id not in _desc_cache:
-            _desc_cache[course_id] = pg_store.get_topic_descriptions_for_course(course_id)
-        return _desc_cache[course_id].get(topic_text, "")
-
-    # Phase 1: semantic nearest topics (embed query → ANN over topic vectors).
-    qvec = encode([q])[0]
-    hits = vector_store.search_topics_semantic(qvec, limit=top)
-    matches = pg_store.resolve_topic_chunks(hits)  # cosine-ranked, with descriptions
+    # Phase 1: lexical token match (primary). Fall back to SciNCL ANN only when
+    # there is no lexical hit at all.
+    tokens = tokenize(q) or [q.strip().lower()]
+    matches = pg_store.search_topics_tokens(tokens, q.strip(), top)
+    search_mode = "lexical"
+    if not matches:
+        qvec = encode([q])[0]
+        hits = vector_store.search_topics_semantic(qvec, limit=top)
+        matches = pg_store.resolve_topic_chunks(hits)  # cosine-ranked, has descriptions
+        for m in matches:
+            m['matched_by']   = 'semantic'
+            m['matched_tags'] = []
+        search_mode = "semantic"
+    # Descriptions for every direct-match course in one batched call.
+    descs = pg_store.get_topic_descriptions_bulk([m['course_id'] for m in matches])
     for m in matches:
-        m['matched_by']   = 'semantic'
-        m['matched_tags'] = []
+        m.setdefault('description', descs.get(m['course_id'], {}).get(m['topic_text'], ''))
 
-    # Collect all tags from direct matches for phase 2
-    all_tags: list[str] = []
-    seen_tags: set = set()
-    for m in matches:
-        for tag in m.get('tags', []):
-            if tag not in seen_tags:
-                seen_tags.add(tag)
-                all_tags.append(tag)
-
-    # Phase 2: other courses sharing tags with phase-1 hits (one query)
-    direct_courses = list(dict.fromkeys(m['course_id'] for m in matches))
-    related = pg_store.find_related_by_tags(all_tags, exclude_courses=direct_courses)
+    # Phase 2: cross-domain (non-obvious) connections. Seeded from the strongest
+    # direct matches, we follow each seed topic's EMBEDDING to its nearest
+    # neighbours in other courses and keep only those that are both semantically
+    # close and category-divergent (non_obvious = sem × cat_jsd). This replaces
+    # the old "share any tag with any direct match" union, which over-connected
+    # everything through a handful of broad tags.
+    seeds = [
+        {'course_id': m['course_id'], 'topic_text': m['topic_text'],
+         'categories': m.get('categories') or {}, 'tags': m.get('tags') or [],
+         'description': m.get('description', '')}
+        for m in matches[:6]
+    ]
+    related = cross_domain_matches(seeds)
     for r in related:
-        r['description'] = _desc(r['course_id'], r['topic_text'])
-        # The UI doesn't render `topic_matches` for related items, so we
-        # don't fetch them. (Saved ~50 round trips per search.)
         r['explanation'] = None
         r['signed_by']   = None
 
@@ -189,6 +201,7 @@ def search_topics(
 
     payload = {
         "query":        q,
+        "mode":         search_mode,   # 'lexical' (primary) or 'semantic' (fallback)
         "matches":      matches,   # direct text/tag hits
         "related":      related,   # cross-domain via shared tags
         "courses":      courses,

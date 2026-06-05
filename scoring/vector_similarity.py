@@ -132,6 +132,163 @@ def shared_topics(
     return out
 
 
+def _seed_embeddings_bulk(seeds: list[dict]) -> dict[tuple[str, str], np.ndarray]:
+    """
+    {(course_id, topic_text): stored embedding} for the requested seed topics,
+    fetched for ALL seed courses in three queries total (not three per course).
+
+    Maps each embedded chunk back to its clean topic_text via the same
+    longest-prefix rule used elsewhere (pg_store._match_topic_text).
+    """
+    import storage.postgres.store as pg_store
+    from storage.postgres.store import _Conn
+    from storage.vectors.pgvector_store import _parse_vector
+
+    course_ids = list({s["course_id"] for s in seeds})
+    wanted = {(s["course_id"], s["topic_text"]) for s in seeds}
+    if not course_ids:
+        return {}
+
+    with _Conn() as cur:
+        cur.execute(
+            "SELECT chunk_id, course_id, raw_text FROM chunks "
+            "WHERE course_id = ANY(%s::text[]) AND chunk_type='topic'",
+            (course_ids,),
+        )
+        chunk_rows = cur.fetchall()
+        cur.execute(
+            "SELECT course_id, topic_text FROM topic_categories "
+            "WHERE course_id = ANY(%s::text[])",
+            (course_ids,),
+        )
+        texts_by_course: dict[str, list[str]] = {}
+        for cid, tt in cur.fetchall():
+            texts_by_course.setdefault(cid, []).append(tt)
+
+        # Resolve each seed topic to its chunk_id, then fetch just those vectors.
+        chunk_for_seed: dict[tuple[str, str], str] = {}
+        for chunk_id, cid, raw in chunk_rows:
+            tt = pg_store._match_topic_text(raw, texts_by_course.get(cid, []))
+            if tt is not None and (cid, tt) in wanted:
+                chunk_for_seed[(cid, tt)] = chunk_id
+        if not chunk_for_seed:
+            return {}
+        cur.execute(
+            "SELECT chunk_id, embedding FROM chunk_embeddings "
+            "WHERE chunk_id = ANY(%s::text[])",
+            (list(chunk_for_seed.values()),),
+        )
+        emb_by_chunk = {r[0]: _parse_vector(r[1]) for r in cur.fetchall()}
+
+    return {
+        key: emb_by_chunk[cid]
+        for key, cid in chunk_for_seed.items()
+        if cid in emb_by_chunk
+    }
+
+
+# Cross-domain discovery knobs. A neighbour must be semantically close to a seed
+# topic (its query-relevant match) AND land in a divergent category mix to count
+# as a non-obvious bridge — this is the project's non_obvious = sem × cat_jsd,
+# applied at topic level. SEM_FLOOR weeds out loosely-related topics; JSD_FLOOR
+# (the same 0.25 the explainer uses) weeds out same-domain near-duplicates.
+_XD_SEM_FLOOR = 0.82
+_XD_JSD_FLOOR = 0.25
+
+
+def cross_domain_matches(
+    seeds: list[dict],
+    top_k: int = 30,
+    per_seed: int = 12,
+    sem_floor: float = _XD_SEM_FLOOR,
+    jsd_floor: float = _XD_JSD_FLOOR,
+) -> list[dict]:
+    """
+    Cross-domain (non-obvious) topic matches for a search query — the replacement
+    for the old "share any tag with any direct match" phase 2.
+
+    seeds: the query's strong direct matches, each {course_id, topic_text,
+    categories, tags, description}. For each seed we take its STORED embedding
+    (reliable, unlike a bare-keyword query vector), pull its nearest topic
+    neighbours in OTHER courses via pgvector ANN, and keep only those that are
+    both semantically close (cosine ≥ sem_floor) and category-divergent
+    (JSD ≥ jsd_floor). Ranked by non_obvious = cosine × JSD, deduped to the best
+    bridge per target topic, with the seed it connects to attached for the
+    explainer. shared_tags is the genuine specific-tag overlap (a clean label,
+    not the discovery mechanism).
+    """
+    import storage.postgres.store as pg_store
+    from storage.vectors.store import search_neighbors_batch
+    from scoring.category_scorer import (
+        course_category_vector, compute_category_jsd, compute_non_obvious,
+    )
+
+    # All seed embeddings in ~3 queries.
+    seed_emb = _seed_embeddings_bulk(seeds)
+    direct_keys = {(s["course_id"], s["topic_text"]) for s in seeds}
+
+    # One ANN round trip for ALL seeds (LATERAL), then resolve every hit in a
+    # SINGLE batch (resolve_topic_chunks is two queries regardless of size).
+    embedded_seeds = [s for s in seeds
+                      if (s["course_id"], s["topic_text"]) in seed_emb]
+    neighbours = search_neighbors_batch(
+        [(seed_emb[(s["course_id"], s["topic_text"])], s["course_id"])
+         for s in embedded_seeds],
+        limit=per_seed * 3,
+    )
+    raw_hits: list[tuple[dict, dict]] = []   # (seed, hit{chunk_id,course_id,score})
+    uniq_hits: dict[str, dict] = {}
+    for s, hits in zip(embedded_seeds, neighbours):
+        for h in hits:
+            raw_hits.append((s, h))
+            uniq_hits.setdefault(h["chunk_id"], h)
+
+    meta_by_chunk = {r["chunk_id"]: r
+                     for r in pg_store.resolve_topic_chunks(list(uniq_hits.values()))}
+
+    best: dict[tuple[str, str], dict] = {}
+    seed_vecs = {(s["course_id"], s["topic_text"]): course_category_vector([s.get("categories") or {}])
+                 for s in seeds}
+    for s, h in raw_hits:
+        n = meta_by_chunk.get(h["chunk_id"])
+        if n is None:
+            continue
+        key = (n["course_id"], n["topic_text"])
+        if key in direct_keys:
+            continue
+        sem = float(h["score"])
+        if sem < sem_floor:
+            continue
+        jsd = compute_category_jsd(
+            seed_vecs[(s["course_id"], s["topic_text"])],
+            course_category_vector([n.get("categories") or {}]))
+        if jsd < jsd_floor:
+            continue
+        non_obv = compute_non_obvious(sem, jsd)
+        prev = best.get(key)
+        if prev and prev["non_obvious_score"] >= non_obv:
+            continue
+        best[key] = {
+            "course_id":          n["course_id"],
+            "topic_text":         n["topic_text"],
+            "categories":         n["categories"],
+            "tags":               n["tags"],
+            "description":        n["description"],
+            "sem_score":          round(sem, 4),
+            "category_jsd":       round(jsd, 4),
+            "non_obvious_score":  round(non_obv, 4),
+            "shared_tags":        sorted(set(s.get("tags") or []) & set(n.get("tags") or [])),
+            "source_course":      s["course_id"],
+            "source_topic":       s["topic_text"],
+            "source_tags":        s.get("tags") or [],
+            "source_categories":  s.get("categories") or {},
+            "source_description": s.get("description", ""),
+        }
+
+    return sorted(best.values(),
+                  key=lambda r: r["non_obvious_score"], reverse=True)[:top_k]
+
+
 def clear_cache() -> None:
     """Invalidate the in-process embedding cache (e.g. after re-ingest)."""
     _cache.clear()

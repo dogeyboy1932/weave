@@ -1039,6 +1039,84 @@ if scale ever changes the math.
 
 ---
 
+## Phase 19 — Topic-search overhaul: lexical-primary, category-divergence cross-domain, tag prune + re-embed
+
+**Date:** June 4, 2026 (continuation)
+
+Phase 18 had made `/topics/search` purely semantic (embed the query, ANN over the
+938 topic vectors). Live testing exposed that this was wrong for a search box:
+**SciNCL is a scientific-document model, not a keyword matcher.** For a bare query
+its cosines are near-uniform — the whole 938-vector corpus sits in a ~0.04-wide band
+— so it returned the densest cluster near the corpus centroid (CHEM/thermodynamics)
+instead of relevant topics. For "machine learning" the noise literally outscored the
+signal: CHEM "Entropy" (0.856) ranked above the real ML topic CS 568 (0.838).
+
+**1. Lexical-primary hybrid search.** `/topics/search` (`api/routes/topics.py`) is now
+tokenized lexical matching first (`pg_store.search_topics_tokens` — any query token
+against topic text + tags, ranked by exact-phrase > tokens-matched > text-over-tag).
+This is precise and is the form a search box should have: "machine" → ME 370 Machine
+dynamics / ME 371 Machine components. Tokenizing also fixed the original
+"machine learning returns nothing" bug — the old code required the whole phrase as one
+`ILIKE` substring; now `machine ∪ learning` both hit. SciNCL ANN survives **only as a
+fallback** when a query has zero lexical hits (e.g. "photosynthesis").
+
+**2. Cross-domain rework — category divergence, not shared tags.** The old phase-2
+("surface any topic sharing any tag with any direct match") was a giant OR that
+over-connected everything through a handful of broad tags. Replaced with
+`scoring/vector_similarity.cross_domain_matches`: seeded from the strongest direct
+matches, follow each seed topic's **stored embedding** (reliable, unlike a bare-query
+vector) to its nearest neighbours in other courses, and keep only those that are both
+semantically close (cosine ≥ 0.82) **and** category-divergent (JSD ≥ 0.25). Ranked by
+`non_obvious = sem × cat_jsd` — the project thesis, applied at topic level. Each result
+carries its source topic (for the explainer) and its real scores. This surfaces genuine
+bridges: vibration → ECE 205 sinusoidal response, MATH 285 eigenvalues → TAM 445
+principal stress directions, heat transfer → MATH 285 heat equation. The UI
+(`ui/index.html`) now ranks the cross-domain section by non-obvious score and shows
+`non-obvious % · semantic % · domain gap %` on each connection.
+
+**3. Tag prune (the over-enrichment, part 2).** Phase 16's isomorphism-aware enrichment
+had sprayed "bridge vocabulary" everywhere — `isomorphic-to-rlc-circuit` was on 159
+topics, `mechanical-electrical-analogy` on 174. The genuine isomorphism applies to a
+dozen second-order-ODE topics, not 159. Diagnosis showed **85% of the 8,960 tags are
+specific single-topic descriptors (good)** — the rot was ~137 `isomorphic-to-*` /
+`*-analogy` meta-tags (747 tag-slots). Pruned that whole class from both
+`topic_categories` and the recovery dump. The canonical ME 340 ↔ ECE 205 isomorphism
+survives via genuinely shared specific tags (`second-order-system`, `quality-factor`)
+plus the embeddings — nothing real lost.
+
+**4. The definitive re-embed.** Prune-only cleans the tag tables but not the *frozen
+vectors* (the junk tags were baked into each chunk's embedded text), so 37% of vectors
+still pulled toward the analogy cluster — e.g. MATH 221 "chain rule" sat at cosine 0.87
+to ME 340 "beats". Since the dump was already pruned, `scripts/restore_from_dump.py`
+re-embedded all 938 vectors from clean text (zero Gemini cost) — the "one last re-embed"
+fix.txt anticipated. chain-rule↔beats fell 0.87 → 0.83; canonical pair preserved
+(sem 0.875, non_obvious 0.221).
+
+**5. `[SEP]` regression fix.** The re-embed surfaced a *pre-existing* bug:
+`scripts/build_topic_graph._build_chunk_to_topic` still split chunk text on the `[SEP]`
+separator that Phase 18's variant-C format removed, so `topic_similarity` had been
+silently empty (0 pairs). Repointed it at the shared longest-prefix matcher →
+9,380 pairs restored (the "similar topics in other courses" sublist works again).
+
+**6. Search performance — 10.3 s → ~2.5 s (4×).** The pipeline had been doing ~50
+separate round trips to the cloud Postgres (~195 ms each). Batched the hot paths:
+`pg_store.get_topic_descriptions_bulk` (per-course descriptions in 2 queries, not 2·N);
+`vector_similarity._seed_embeddings_bulk` (all seed vectors in 3 queries); a single
+batched `resolve_topic_chunks` over every cross-domain hit; and
+`pgvector_store.search_neighbors_batch` — **one LATERAL query that runs all seeds' ANN
+at once** (still HNSW-indexed) instead of one round trip per seed. A `Cache-Control:
+no-store` header on the search response also stops the browser replaying a stale payload.
+
+**Known residual (deferred):** a *second* layer of over-tagging remains — controls /
+application vocabulary (`transfer-function`, `state-space-model`, `frequency-response`,
+`material-processing`, `fluid-dynamics`) mis-applied to Mathematics topics. These are
+legit tags on real engineering topics, so a global delete would lose signal; the clean
+fix is a category-aware prune (strip physical-system tags from Mathematics-dominant
+topics) plus another re-embed. It's why marginal matches like "Volumes → machine tools"
+(47% non-obvious) still appear, down-ranked. Tracked for the next pass.
+
+---
+
 ## Cross-cutting design principles that emerged
 
 These weren't planned up front — they crystallized through arguments with reality. They are the rules the codebase now lives by.

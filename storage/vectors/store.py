@@ -20,6 +20,7 @@ from storage.vectors.pgvector_store import (  # noqa: F401
     search_in_course,
     search_global_excluding,
     search_topics_semantic,
+    search_neighbors_batch,
     delete_course,
     drop_collection,
 )

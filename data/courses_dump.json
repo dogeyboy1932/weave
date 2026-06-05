@@ -2100,7 +2100,6 @@
           "light-interaction-with-matter",
           "quantitative-analysis",
           "calibration-curve",
-          "isomorphic-to-ohms-law-analogy",
           "mathematical-model",
           "chemical-concentration",
           "optical-path-length",
@@ -2154,7 +2153,6 @@
           "thermal-equilibrium",
           "heat-capacity",
           "phase-transition",
-          "isomorphic-to-thermal-rc-network",
           "conservation-of-energy",
           "q-equals-mc-delta-t",
           "dissipation-mechanism",
@@ -2185,7 +2183,6 @@
           "stoichiometry",
           "quantitative-analysis",
           "concentration-determination",
-          "isomorphic-to-thermal-rc-network",
           "solution-properties",
           "molecular-weight",
           "van't-hoff-factor",
@@ -2288,7 +2285,6 @@
           "absorbance-measurement",
           "wavelength-dependence",
           "quantitative-analysis",
-          "isomorphic-to-rlc-circuit",
           "colorimetry",
           "material-identification",
           "solution-analysis",
@@ -2471,7 +2467,6 @@
           "spectroscopic-data",
           "interpolation",
           "extrapolation",
-          "isomorphic-to-rlc-circuit",
           "experimental-data",
           "data-analysis",
           "relationship-modeling"
@@ -2549,7 +2544,6 @@
           "latent-heat",
           "thermal-energy-absorption",
           "thermal-energy-release",
-          "isomorphic-to-thermal-rc-network",
           "thermodynamic-properties",
           "melting-point",
           "boiling-point",
@@ -2595,9 +2589,6 @@
           "state-space-model",
           "conservation-law",
           "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "energy-storage-dissipation-analogy",
           "time-constant",
           "quality-factor"
         ]
@@ -2618,13 +2609,7 @@
           "distance-traveled",
           "displacement-from-velocity",
           "conservation-law",
-          "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
-          "impedance-analogy"
+          "balance-equation"
         ]
       },
       {
@@ -2644,10 +2629,6 @@
           "riemann-sum",
           "area-calculation",
           "geometric-measure",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "displacement-charge-analogy",
           "volume-computation"
         ]
       },
@@ -2667,9 +2648,6 @@
           "definite-integral",
           "normalization-factor",
           "probability-density-function",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response",
           "time-constant"
         ]
@@ -2690,11 +2668,7 @@
           "epsilon-delta-definition",
           "transfer-function",
           "state-space-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "frequency-response",
-          "impedance-analogy"
+          "frequency-response"
         ]
       },
       {
@@ -2713,9 +2687,6 @@
           "vertical-asymptote",
           "intermediate-value-theorem",
           "mean-value-theorem",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "time-constant",
           "stability-analysis"
         ]
@@ -2734,15 +2705,7 @@
           "differentiation-rules",
           "function-transformation",
           "differential-equation",
-          "state-space-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy",
-          "damping-resistance-analogy",
-          "displacement-charge-analogy"
+          "state-space-model"
         ]
       },
       {
@@ -2759,9 +2722,6 @@
           "inverse-functions",
           "exponential-functions",
           "differential-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response",
           "time-constant"
         ]
@@ -2782,9 +2742,6 @@
           "polynomial-functions",
           "exponential-growth-decay",
           "differential-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "time-constant",
           "feedback-loop"
         ]
@@ -2806,9 +2763,6 @@
           "periodic-functions",
           "harmonic-oscillator-equation",
           "wave-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response",
           "natural-frequency",
           "resonance"
@@ -2830,10 +2784,6 @@
           "radioactive-decay",
           "compound-interest",
           "time-constant",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-thermal-rc-network",
-          "diffusion-conduction-analogy",
-          "thermal-electrical-analogy",
           "feedback-loop"
         ]
       },
@@ -2852,8 +2802,6 @@
           "laplace-transform",
           "transfer-function",
           "steady-state-response",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
           "frequency-response"
         ]
       },
@@ -2872,9 +2820,6 @@
           "first-derivative-test",
           "second-derivative-test",
           "curve-sketching",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "stability-analysis",
           "frequency-response"
         ]
@@ -2893,11 +2838,7 @@
           "hyperbolic-identities",
           "catenary-curve",
           "special-functions",
-          "differential-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "differential-equation"
         ]
       },
       {
@@ -2913,14 +2854,7 @@
           "relation-between-variables",
           "implicit-functions",
           "related-rates",
-          "tangent-lines-to-curves",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
-          "displacement-charge-analogy"
+          "tangent-lines-to-curves"
         ]
       },
       {
@@ -2943,11 +2877,7 @@
           "displacement",
           "velocity-acceleration",
           "conservation-law",
-          "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "balance-equation"
         ]
       },
       {
@@ -2964,8 +2894,6 @@
           "indeterminate-forms",
           "algebraic-manipulation",
           "transfer-function",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
           "frequency-response"
         ]
       },
@@ -2983,9 +2911,6 @@
           "epsilon-delta-definition",
           "continuity",
           "function-behavior",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "frequency-response"
         ]
@@ -3006,8 +2931,6 @@
           "laplace-transform",
           "transfer-function",
           "steady-state-response",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
           "frequency-response"
         ]
       },
@@ -3026,9 +2949,6 @@
           "error-estimation",
           "first-order-approximation",
           "state-space-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "time-constant"
         ]
       },
@@ -3046,9 +2966,6 @@
           "closed-interval-method",
           "optimization",
           "curve-sketching",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "resonance"
         ]
       },
@@ -3065,9 +2982,6 @@
           "differentiable-functions",
           "continuous-functions",
           "related-rates",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "stability-analysis"
         ]
       },
@@ -3086,9 +3000,6 @@
           "numerical-analysis",
           "convergence",
           "differential-equation-solver",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "optimization"
         ]
       },
@@ -3112,9 +3023,6 @@
           "calculus-applications",
           "dimensional-analysis",
           "resource-allocation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "efficiency-maximization"
         ]
       },
@@ -3140,9 +3048,6 @@
           "biology-applications",
           "economics-applications",
           "chemistry-applications",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "feedback-loop"
         ]
       },
@@ -3162,13 +3067,6 @@
           "rates-of-change",
           "geometric-problems",
           "physical-phenomena",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
-          "displacement-charge-analogy",
           "fluid-flow-rates",
           "heat-transfer-rates"
         ]
@@ -3190,9 +3088,6 @@
           "concavity",
           "inflection-points",
           "function-graphing",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response"
         ]
       },
@@ -3211,11 +3106,6 @@
           "derivative",
           "position-function",
           "rate-of-change",
-          "isomorphic-to-spring-mass-damper",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
           "motion-analysis"
         ]
       },
@@ -3232,9 +3122,6 @@
           "implicit-differentiation",
           "related-rates",
           "higher-order-derivatives",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response"
         ]
       },
@@ -3253,10 +3140,6 @@
           "net-change",
           "conservation-law",
           "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "displacement-charge-analogy",
           "impulse-response"
         ]
       },
@@ -3274,11 +3157,7 @@
           "definite-integral-evaluation",
           "antiderivatives",
           "net-change",
-          "accumulation-function",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "accumulation-function"
         ]
       },
       {
@@ -3295,11 +3174,7 @@
           "definite-integral-evaluation",
           "antiderivatives",
           "net-change",
-          "accumulation-function",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "accumulation-function"
         ]
       },
       {
@@ -3315,10 +3190,7 @@
           "neighborhood",
           "real-analysis",
           "logical-quantifiers",
-          "proof-techniques",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy"
+          "proof-techniques"
         ]
       },
       {
@@ -3335,9 +3207,6 @@
           "differentiating-quotients",
           "chain-rule",
           "higher-order-derivatives",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "frequency-response"
         ]
       },
@@ -3355,9 +3224,6 @@
           "reversing-chain-rule",
           "definite-integrals",
           "indefinite-integrals",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "conservation-law",
           "balance-equation"
         ]
@@ -3376,9 +3242,6 @@
           "cross-sectional-area",
           "integration",
           "geometric-calculation",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "fluid-dynamics",
           "material-processing"
         ]
@@ -3397,9 +3260,6 @@
           "integration",
           "volume-calculation",
           "surface-area",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "fluid-dynamics",
           "material-processing"
         ]
@@ -3420,11 +3280,7 @@
           "hookes-law-springs",
           "pumping-fluids",
           "energy-transfer",
-          "conservation-of-energy",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "conservation-of-energy"
         ]
       }
     ]
@@ -4831,7 +4687,6 @@
           "polar-coordinate-area-formula",
           "polar-coordinate-arc-length",
           "sector-area-summation",
-          "parametric-arc-length-analogy",
           "calculus-ii-topic",
           "geometric-shapes-analysis",
           "angle-sweep-integration",
@@ -4867,8 +4722,7 @@
           "non-cartesian-coordinate-systems",
           "variable-parameter-dependence",
           "rate-of-change-with-time",
-          "velocity-and-acceleration-calculus",
-          "isomorphic-to-rlc-circuit"
+          "velocity-and-acceleration-calculus"
         ]
       },
       {
@@ -5050,8 +4904,7 @@
           "differential-equation-solution-method",
           "numerical-analysis-technique",
           "signal-analysis-tool",
-          "physics-modeling-technique",
-          "isomorphic-to-rlc-circuit"
+          "physics-modeling-technique"
         ]
       },
       {
@@ -5177,7 +5030,6 @@
           "physics-modeling-technique",
           "engineering-simulation-tool",
           "signal-processing-application",
-          "isomorphic-to-rlc-circuit",
           "function-behavior-analysis"
         ]
       },
@@ -5654,8 +5506,7 @@
           "boss-creation",
           "cut-features",
           "prismatic-geometry",
-          "feature-creation-operation",
-          "sweeping-operation-analogy"
+          "feature-creation-operation"
         ]
       },
       {
@@ -5907,7 +5758,6 @@
           "spherical-parts",
           "full-360-degree-rotation",
           "partial-angle-rotation",
-          "sweeping-operation-analogy",
           "feature-creation-operation",
           "geometric-transformation"
         ]
@@ -6111,7 +5961,6 @@
           "rigid-body-dynamics",
           "moment-of-inertia",
           "angular-acceleration",
-          "isomorphic-to-magnetic-flux",
           "rotational-energy-conservation",
           "precession-dynamics",
           "gyroscopic-effects",
@@ -6471,7 +6320,6 @@
           "mass-distribution",
           "moment-of-inertia-calculation",
           "rotational-equilibrium",
-          "isomorphic-to-magnetic-field-generation",
           "rotational-motion",
           "lever-arm"
         ]
@@ -6583,7 +6431,6 @@
           "energy-oscillation",
           "linear-restoring-force",
           "differential-equation-of-motion",
-          "isomorphic-to-rlc-circuit",
           "phase-angle",
           "damped-oscillation"
         ]
@@ -6786,12 +6633,9 @@
           "closed-curve-integral",
           "double-integral-region",
           "boundary-flux-conservation",
-          "isomorphic-to-rlc-circuit",
           "conservation-law",
           "multivariable-calculus",
           "partial-differential-equation",
-          "fluid-dynamics-analogy",
-          "electromagnetism-analogy",
           "greens-theorem",
           "surface-integral",
           "boundary-value-problem"
@@ -6818,9 +6662,6 @@
           "probability-density",
           "iterated-integral",
           "fubini-s-theorem",
-          "laplace-transform-analogy",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
           "second-order-linear-ode",
           "lumped-parameter-model",
           "numerical-integration-methods"
@@ -6843,9 +6684,6 @@
           "arc-length-parameterization",
           "differential-geometry",
           "vector-valued-function",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "convolution-integral",
           "time-constant",
@@ -6871,8 +6709,6 @@
           "laplace-transform",
           "sensitivity-analysis",
           "feedback-loop",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "frequency-response",
           "linear-time-invariant-system"
         ]
@@ -6897,11 +6733,9 @@
           "lumped-parameter-model",
           "boundary-value-problem",
           "partial-differential-equation",
-          "heat-conduction-analogy",
           "laplace-transform",
           "quality-factor",
-          "frequency-response",
-          "energy-storage-dissipation-analogy"
+          "frequency-response"
         ]
       },
       {
@@ -6920,9 +6754,6 @@
           "conservative-field",
           "path-parameterization",
           "energy-transfer-mechanics",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "impedance-analogy",
           "laplace-transform",
           "convolution-integral",
           "state-space-model",
@@ -6949,12 +6780,7 @@
           "multiply-connected-domains",
           "simply-connected-domains",
           "line-integral-topology",
-          "greens-theorem-analogy",
-          "stokes-theorem-analogy",
-          "divergence-theorem-analogy",
           "fundamental-theorem-line-integrals",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-thermal-rc-network",
           "mathematical-physics"
         ]
       },
@@ -6975,9 +6801,6 @@
           "fundamental-theorem-line-integrals",
           "scalar-potential",
           "field-theory",
-          "isomorphic-to-rlc-circuit",
-          "force-voltage-analogy",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "laplace-transform",
           "transfer-function",
@@ -7054,10 +6877,6 @@
           "torque-calculation",
           "area-vector",
           "angular-momentum",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "fluid-dynamics-analogy",
-          "electromagnetism-analogy",
           "conservation-law",
           "linear-algebra",
           "basis-vectors"
@@ -7083,9 +6902,6 @@
           "stokes-theorem",
           "divergence-theorem",
           "partial-differential-equation",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "fluid-dynamics-analogy",
           "conservation-law"
         ]
       },
@@ -7108,7 +6924,6 @@
           "space-curves",
           "path-description",
           "motion-tracking",
-          "isomorphic-to-spring-mass-damper",
           "arc-length-parameterization",
           "differential-geometry",
           "geometric-representation",
@@ -7159,7 +6974,6 @@
           "smoothness-vector-function",
           "kinematics",
           "differential-calculus",
-          "isomorphic-to-spring-mass-damper",
           "transfer-function",
           "state-space-model",
           "convolution-integral",
@@ -7187,8 +7001,6 @@
           "characteristic-equation",
           "cross-product-calculation",
           "linear-algebra",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "laplace-transform",
           "state-space-model",
           "numerical-stability",
@@ -7236,8 +7048,6 @@
           "multivariable-calculus",
           "optimization",
           "level-sets-perpendicular",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "state-space-model",
           "partial-differential-equation",
@@ -7263,14 +7073,9 @@
           "sources-and-sinks",
           "conservation-of-mass",
           "gauss-law-electromagnetism",
-          "greens-theorem-analogy",
-          "stokes-theorem-analogy",
           "partial-differential-equation",
           "boundary-value-problem",
-          "conservation-law",
-          "fluid-dynamics-analogy",
-          "heat-transfer-analogy",
-          "electromagnetism-analogy"
+          "conservation-law"
         ]
       },
       {
@@ -7291,11 +7096,6 @@
           "work-calculation",
           "component-wise-product",
           "linear-algebra",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "energy-storage-dissipation-analogy",
-          "impedance-analogy",
           "transfer-function",
           "state-space-model",
           "mathematical-foundations"
@@ -7323,7 +7123,6 @@
           "vector-calculus",
           "partial-differential-equation",
           "boundary-value-problem",
-          "isomorphic-to-rlc-circuit",
           "charge-continuity-equation",
           "field-theory"
         ]
@@ -7372,8 +7171,6 @@
           "work-calculation-simplification",
           "gradient-theorem",
           "vector-calculus-fundamental",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "transfer-function",
           "state-space-model",
@@ -7400,8 +7197,6 @@
           "level-surfaces",
           "optimization",
           "normal-vector",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "state-space-model",
           "partial-differential-equation",
@@ -7427,11 +7222,7 @@
           "area-calculation",
           "greens-theorem-flux-form",
           "stokes-theorem-special-case",
-          "divergence-theorem-analogy",
           "partial-differential-equation",
-          "fluid-dynamics-analogy",
-          "electromagnetism-analogy",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "conservation-law"
         ]
@@ -7456,8 +7247,6 @@
           "greens-theorem-flux-form",
           "stokes-theorem",
           "divergence-theorem",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "field-theory",
           "mathematical-physics",
@@ -7486,10 +7275,6 @@
           "vector-calculus-fundamentals",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "fluid-dynamics-analogy",
-          "electromagnetism-analogy",
           "mathematical-physics"
         ]
       },
@@ -7512,11 +7297,6 @@
           "path-parameterization",
           "f-ds-integral",
           "f-dr-integral",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "impedance-analogy",
           "transfer-function"
         ]
       },
@@ -7566,7 +7346,6 @@
           "lumped-parameter-model",
           "boundary-value-problem",
           "partial-differential-equation",
-          "heat-conduction-analogy",
           "laplace-transform",
           "quality-factor",
           "frequency-response"
@@ -7594,7 +7373,6 @@
           "lumped-parameter-model",
           "boundary-value-problem",
           "partial-differential-equation",
-          "heat-conduction-analogy",
           "laplace-transform",
           "quality-factor",
           "frequency-response"
@@ -7618,10 +7396,6 @@
           "work-done",
           "flow-through-surface",
           "vector-calculus",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "impedance-analogy",
           "transfer-function",
           "state-space-model",
           "boundary-value-problem",
@@ -7649,10 +7423,8 @@
           "physical-meaning",
           "geometric-meaning",
           "greens-theorem",
-          "stokes-theorem-analogy",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "control-theory"
         ]
@@ -7728,8 +7500,6 @@
           "coordinate-transformation",
           "multivariable-calculus",
           "differential-geometry",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "partial-differential-equation",
           "numerical-integration",
           "mapping-and-transformations",
@@ -7809,8 +7579,6 @@
           "area-distortion",
           "geometric-mapping",
           "vector-spaces",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "partial-differential-equation",
           "numerical-integration",
           "state-space-model",
@@ -7842,9 +7610,7 @@
           "signal-processing",
           "linear-time-invariant-system",
           "numerical-methods",
-          "optimization",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy"
+          "optimization"
         ]
       },
       {
@@ -7865,8 +7631,6 @@
           "geometric-properties",
           "optimization",
           "level-surfaces",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "state-space-model",
           "partial-differential-equation",
@@ -7894,7 +7658,6 @@
           "lumped-parameter-model",
           "boundary-value-problem",
           "partial-differential-equation",
-          "heat-conduction-analogy",
           "laplace-transform",
           "quality-factor",
           "frequency-response"
@@ -7917,8 +7680,6 @@
           "integration-variable-change",
           "multivariable-calculus",
           "differential-geometry",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "partial-differential-equation",
           "numerical-integration",
           "state-space-model",
@@ -8021,8 +7782,6 @@
           "closed-path-integral-zero",
           "fundamental-theorem-line-integrals",
           "vector-calculus-theorem",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "transfer-function",
           "state-space-model",
@@ -8074,8 +7833,6 @@
           "sector-integration",
           "change-of-variables-formula",
           "multivariable-calculus",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "partial-differential-equation",
           "numerical-integration",
           "state-space-model",
@@ -8176,12 +7933,10 @@
           "vector-field-circulation",
           "surface-boundary-relation",
           "greens-theorem-generalization",
-          "divergence-theorem-analogy",
           "fluid-dynamics",
           "electromagnetism",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "field-theory",
           "computational-methods",
@@ -8207,7 +7962,6 @@
           "materials-science",
           "heat-transfer-surface",
           "fluid-flow-surface",
-          "isomorphic-to-rlc-circuit",
           "transfer-function",
           "boundary-value-problem",
           "computational-geometry",
@@ -8233,7 +7987,6 @@
           "curved-surface-integration",
           "multivariable-calculus",
           "differential-geometry",
-          "isomorphic-to-rlc-circuit",
           "transfer-function",
           "boundary-value-problem",
           "mathematical-modeling",
@@ -8265,7 +8018,6 @@
           "electromagnetism",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "computational-methods",
           "vector-calculus"
@@ -8323,8 +8075,6 @@
           "geometric-approximation",
           "optimization",
           "level-sets-normal",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "state-space-model",
           "partial-differential-equation",
@@ -8350,8 +8100,6 @@
           "geometric-approximation",
           "multivariable-calculus",
           "differential-geometry",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "state-space-model",
           "partial-differential-equation",
@@ -8377,8 +8125,6 @@
           "greens-theorem-condition",
           "stokes-theorem-condition",
           "divergence-theorem-condition",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "field-theory",
           "mathematical-physics",
@@ -8408,7 +8154,6 @@
           "spherical-coordinates-integration",
           "partial-differential-equation",
           "boundary-value-problem",
-          "heat-conduction-analogy",
           "fluid-dynamics",
           "mathematical-modeling",
           "computational-methods"
@@ -8436,7 +8181,6 @@
           "stokes-theorem-relation",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "field-theory",
           "control-theory"
@@ -8484,8 +8228,6 @@
           "linear-combinations",
           "geometric-interpretation",
           "linear-algebra",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "state-space-model",
           "transfer-function",
           "mathematical-foundations",
@@ -8516,7 +8258,6 @@
           "electromagnetic-field",
           "partial-differential-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "mathematical-physics",
           "field-theory",
           "computational-methods"
@@ -8540,8 +8281,6 @@
           "position-vector",
           "displacement-vector",
           "linear-algebra",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "state-space-model",
           "transfer-function",
           "kinematics",
@@ -9124,9 +8863,6 @@
           "phasor-analysis",
           "complex-impedance",
           "frequency-response",
-          "impedance-analogy",
-          "isomorphic-to-rlc-circuit",
-          "energy-storage-dissipation-analogy",
           "time-constant",
           "fourier-analysis",
           "rms-values",
@@ -9136,7 +8872,6 @@
           "transfer-function",
           "damping-ratio",
           "quality-factor",
-          "mechanical-electrical-analogy",
           "natural-frequency"
         ]
       },
@@ -9159,13 +8894,9 @@
           "quality-factor",
           "damping-ratio",
           "power-factor",
-          "isomorphic-to-rlc-circuit",
-          "energy-storage-dissipation-analogy",
-          "impedance-analogy",
           "frequency-response",
           "harmonic-oscillator-equation",
           "underdamped-response",
-          "mechanical-electrical-analogy",
           "transfer-function",
           "lumped-parameter-model",
           "optimal-control-theory"
@@ -9188,7 +8919,6 @@
           "current-distribution",
           "symmetry-analysis",
           "maxwell's-equations",
-          "isomorphic-to-fluid-flow",
           "biot-savart-law",
           "ampere-maxwell-law",
           "solenoid-field",
@@ -9214,7 +8944,6 @@
           "current-distribution",
           "right-hand-rule",
           "maxwell's-equations",
-          "isomorphic-to-fluid-flow",
           "ampere's-law",
           "field-calculation",
           "wire-current",
@@ -9235,8 +8964,6 @@
         },
         "tags": [
           "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "stiffness-capacitance-analogy",
           "charge-storage",
           "electric-field-storage",
           "geometry-dependence",
@@ -9246,8 +8973,6 @@
           "energy-storage",
           "potential-difference",
           "electrical-properties",
-          "mechanical-electrical-analogy",
-          "displacement-charge-analogy",
           "lumped-parameter-model"
         ]
       },
@@ -9263,8 +8988,6 @@
         },
         "tags": [
           "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "stiffness-capacitance-analogy",
           "charge-storage",
           "electric-field-storage",
           "energy-storage",
@@ -9272,8 +8995,6 @@
           "parallel-plate-capacitor",
           "series-combination",
           "parallel-combination",
-          "impedance-analogy",
-          "displacement-charge-analogy",
           "electrical-components",
           "material-properties",
           "lumped-parameter-model"
@@ -9301,8 +9022,6 @@
           "gauss's-law",
           "electric-field",
           "force-field-interaction",
-          "mechanical-electrical-analogy",
-          "isomorphic-to-newtons-law-of-gravitation",
           "mathematical-modeling"
         ]
       },
@@ -9324,8 +9043,6 @@
           "coulomb's-law",
           "potential-field",
           "charge-distribution",
-          "isomorphic-to-fluid-velocity-field",
-          "isomorphic-to-temperature-gradient",
           "electromagnetism-fundamentals",
           "mathematical-modeling",
           "conservative-field",
@@ -9349,11 +9066,8 @@
           "electric-field",
           "surface-area",
           "normal-component",
-          "flow-analogy",
           "quantifies-penetration",
           "maxwell's-equations",
-          "isomorphic-to-fluid-flow-rate",
-          "isomorphic-to-heat-flow",
           "field-visualization",
           "boundary-condition",
           "divergence-theorem",
@@ -9378,8 +9092,6 @@
           "potential-difference",
           "coulomb's-law",
           "gauss's-law",
-          "isomorphic-to-gravitational-potential",
-          "isomorphic-to-pressure-field",
           "conservative-field",
           "energy-landscape",
           "field-gradient",
@@ -9405,8 +9117,6 @@
           "energy-transport",
           "spectrum",
           "maxwell's-equations",
-          "isomorphic-to-sound-waves",
-          "isomorphic-to-water-waves",
           "conservation-law",
           "frequency-domain",
           "wavelength",
@@ -9433,8 +9143,6 @@
           "lensing-law",
           "electromagnetic-induction",
           "maxwell's-equations",
-          "isomorphic-to-mechanical-energy-conversion",
-          "isomorphic-to-fluid-dynamics",
           "transformers",
           "generators",
           "time-dependent-fields",
@@ -9460,8 +9168,6 @@
           "force-on-dipole",
           "non-uniform-fields",
           "magnetic-monopoles-do-not-exist",
-          "isomorphic-to-electric-dipoles",
-          "isomorphic-to-mechanical-levers",
           "energy-minimization",
           "vector-calculus",
           "potential-energy",
@@ -9489,8 +9195,6 @@
           "surface-integral",
           "charge-distribution",
           "symmetry-analysis",
-          "isomorphic-to-divergence-theorem",
-          "isomorphic-to-fluid-flux",
           "boundary-condition",
           "field-calculation",
           "electrostatics",
@@ -9517,9 +9221,6 @@
           "circuit-analysis",
           "linear-equations",
           "system-of-equations",
-          "isomorphic-to-nodal-analysis",
-          "isomorphic-to-flow-networks",
-          "ohms-law-analogy",
           "state-space-model",
           "superposition-principle",
           "lumped-parameter-model",
@@ -9544,8 +9245,6 @@
           "thin-lens-equation",
           "ray-tracing",
           "optical-systems",
-          "isomorphic-to-acoustic-lenses",
-          "isomorphic-to-fluid-dynamics",
           "wave-optics",
           "geometrical-optics",
           "lens-maker-equation",
@@ -9572,8 +9271,6 @@
           "circular-motion",
           "helical-motion",
           "current-carrying-wires",
-          "isomorphic-to-electric-force",
-          "isomorphic-to-fluid-drag",
           "force-field-interaction",
           "momentum-conservation",
           "charge-motion",
@@ -9599,7 +9296,6 @@
           "self-propagating-oscillations",
           "ampere-maxwell-law",
           "faraday's-law",
-          "isomorphic-to-coupled-oscillators",
           "light-speed",
           "energy-transport",
           "boundary-conditions",
@@ -9624,8 +9320,6 @@
           "mirror-equation",
           "specular-reflection",
           "optical-systems",
-          "isomorphic-to-acoustic-reflectors",
-          "isomorphic-to-boundary-conditions",
           "plane-mirror",
           "curved-mirror",
           "radius-of-curvature",
@@ -9651,8 +9345,6 @@
           "potential-difference",
           "velocity-dependence",
           "field-strength-dependence",
-          "isomorphic-to-pump-in-fluid-flow",
-          "isomorphic-to-mechanical-work",
           "energy-conversion",
           "electromagnetic-induction",
           "conductor-motion",
@@ -9677,8 +9369,6 @@
           "magnetic-field-energy",
           "natural-frequency",
           "lc-oscillator",
-          "isomorphic-to-spring-mass-system",
-          "energy-storage-dissipation-analogy",
           "undamped-oscillation",
           "frequency-dependence",
           "resonance",
@@ -9707,8 +9397,6 @@
           "reflection",
           "scattering",
           "optical-filters",
-          "isomorphic-to-wave-orientation",
-          "isomorphic-to-vector-alignment",
           "light-interaction",
           "wave-properties",
           "material-interaction",
@@ -9733,8 +9421,6 @@
           "charging-capacitor",
           "discharging-capacitor",
           "resistor-capacitor-network",
-          "isomorphic-to-thermal-rc-network",
-          "isomorphic-to-mechanical-damping",
           "filtering-characteristics",
           "time-dependent-behavior",
           "frequency-response",
@@ -9764,8 +9450,6 @@
           "wave-speed",
           "interface-phenomena",
           "optical-properties",
-          "isomorphic-to-wave-propagation-change",
-          "isomorphic-to-fluid-dynamics",
           "boundary-interaction",
           "angle-of-incidence",
           "angle-of-refraction",
@@ -9793,8 +9477,6 @@
           "rl-circuit",
           "energy-storage",
           "magnetic-field-storage",
-          "isomorphic-to-mechanical-inertia",
-          "isomorphic-to-fluid-inertia",
           "time-dependent-behavior",
           "current-growth",
           "current-decay",
@@ -9861,11 +9543,9 @@
           "partial-differential-equation",
           "balance-equation",
           "beam-theory",
-          "stiffness-capacitance-analogy",
           "shear-force-diagram",
           "distributed-parameter-system",
           "second-order-linear-ode",
-          "mechanical-electrical-analogy",
           "variational-principle",
           "stress-strain-relationship",
           "finite-element-method",
@@ -9893,7 +9573,6 @@
           "geometric-properties",
           "mass-distribution",
           "center-of-gravity",
-          "isomorphic-to-rlc-circuit",
           "probability-density-function",
           "moment-of-inertia",
           "balance-equation",
@@ -9915,7 +9594,6 @@
           "static-equilibrium",
           "dissipation-mechanism",
           "kinetic-friction",
-          "damping-resistance-analogy",
           "adhesion-forces",
           "surface-interaction",
           "force-balance-equation",
@@ -9941,7 +9619,6 @@
           "force-balance-equation",
           "translational-equilibrium",
           "rotational-equilibrium",
-          "isomorphic-to-rlc-circuit",
           "pure-rotation",
           "couple-moment",
           "parallel-force-system",
@@ -10124,7 +9801,6 @@
           "force-moment",
           "equilibrium-analysis",
           "vector-algebra",
-          "isomorphic-to-rlc-circuit",
           "angular-momentum",
           "lever-arm-principle"
         ]
@@ -10207,11 +9883,9 @@
           "partial-differential-equation",
           "balance-equation",
           "beam-theory",
-          "stiffness-capacitance-analogy",
           "bending-moment-diagram",
           "distributed-parameter-system",
           "first-order-linear-ode",
-          "mechanical-electrical-analogy",
           "variational-principle",
           "stress-strain-relationship",
           "finite-element-method",
@@ -10313,11 +9987,7 @@
           "shear-force-diagram",
           "stress-distribution",
           "load-deflection-relationship",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "conservation-law",
-          "stiffness-capacitance-analogy",
           "boundary-value-problem"
         ]
       },
@@ -10338,17 +10008,11 @@
           "mass-distribution",
           "coordinate-system",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "displacement-charge-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "conservation-law",
           "balance-equation",
           "distributed-parameter-system",
           "calculus",
-          "first-order-linear-ode",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy"
+          "first-order-linear-ode"
         ]
       },
       {
@@ -10369,11 +10033,6 @@
           "friction-coefficient",
           "wear-and-tear",
           "energy-dissipation",
-          "isomorphic-to-rlc-circuit",
-          "damping-resistance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "non-linear-dynamics",
           "piecewise-linear-system",
           "surface-interaction",
@@ -10397,11 +10056,6 @@
           "rotational-effect",
           "independent-of-center",
           "torque-transmission",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "balance-equation",
           "lumped-parameter-model",
           "fourier-analysis"
@@ -10424,14 +10078,8 @@
           "volume-loading",
           "pressure-distribution",
           "beam-theory",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "diffusion-conduction-analogy",
           "partial-differential-equation",
-          "balance-equation",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy"
+          "balance-equation"
         ]
       },
       {
@@ -10450,9 +10098,6 @@
           "dynamic-equilibrium",
           "zero-acceleration",
           "zero-angular-acceleration",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "balance-equation",
@@ -10477,9 +10122,6 @@
           "unknown-forces",
           "reaction-forces",
           "coordinate-system",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "balance-equation",
@@ -10505,10 +10147,6 @@
           "vector-equality",
           "external-effects",
           "force-reduction",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "balance-equation",
           "conservation-law",
@@ -10535,11 +10173,6 @@
           "contact-force",
           "fundamental-interaction",
           "newtons-laws",
-          "isomorphic-to-rlc-circuit",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "conservation-law",
           "balance-equation",
           "lumped-parameter-model",
@@ -10563,9 +10196,6 @@
           "constraints-reactions",
           "equilibrium-analysis",
           "systematic-method",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "balance-equation",
@@ -10589,9 +10219,6 @@
           "force-per-area",
           "normal-to-surface",
           "buoyancy-force",
-          "isomorphic-to-rlc-circuit",
-          "thermal-electrical-analogy",
-          "diffusion-conduction-analogy",
           "partial-differential-equation",
           "balance-equation",
           "distributed-parameter-system",
@@ -10619,12 +10246,6 @@
           "volume-centroid",
           "moment-of-inertia",
           "complex-shapes",
-          "isomorphic-to-rlc-circuit",
-          "displacement-charge-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
           "lumped-parameter-model",
           "balance-equation",
           "calculus",
@@ -10647,9 +10268,6 @@
           "section-isolation",
           "force-resolution",
           "tension-compression",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "balance-equation",
@@ -10673,11 +10291,6 @@
           "torque",
           "moment-center",
           "tendency-to-rotate",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "balance-equation",
           "lumped-parameter-model",
           "review-of-vector-algebra",
@@ -10700,11 +10313,6 @@
           "axis-of-rotation",
           "integration-method",
           "cross-section-property",
-          "isomorphic-to-rlc-circuit",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "parallel-axis-theorem",
           "polar-moment-of-inertia",
           "product-of-inertia",
@@ -10727,10 +10335,6 @@
           "frames-and-machines",
           "frames-analysis",
           "beam-analysis",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "stress-analysis",
@@ -10753,11 +10357,6 @@
           "area-moment",
           "geometric-property",
           "axis-transformation",
-          "isomorphic-to-rlc-circuit",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "minimum-moment-of-inertia",
           "structural-analysis",
           "calculus"
@@ -10779,11 +10378,6 @@
           "distance-from-point",
           "sum-of-moments-of-inertia",
           "circular-sections",
-          "isomorphic-to-rlc-circuit",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "calculus",
           "structural-analysis",
           "shear-stress-distribution",
@@ -10807,9 +10401,6 @@
           "machines",
           "load-analysis",
           "safety-factors",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "fundamentals-of-statics"
@@ -10832,9 +10423,6 @@
           "axis-transformation",
           "integration-method",
           "geometric-property",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "calculus",
           "structural-analysis",
           "non-symmetric-cross-sections",
@@ -10857,11 +10445,6 @@
           "structural-slenderness",
           "buckling-analysis",
           "ratio-of-inertia",
-          "isomorphic-to-rlc-circuit",
-          "stiffness-capacitance-analogy",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "calculus",
           "structural-design"
         ]
@@ -10881,10 +10464,6 @@
           "force-couple-system",
           "single-force-representation",
           "system-reduction",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "balance-equation",
           "conservation-law",
@@ -10907,11 +10486,6 @@
           "cross-product",
           "magnitude-direction",
           "mathematical-foundation",
-          "isomorphic-to-rlc-circuit",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
           "fundamental-operations",
           "coordinate-systems",
           "statics-prerequisites"
@@ -10934,10 +10508,6 @@
           "beam-theory",
           "shear-force-diagram",
           "moment-relationship",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "impedance-analogy",
-          "energy-storage-dissipation-analogy",
           "distributed-parameter-system",
           "balance-equation",
           "conservation-law",
@@ -10960,9 +10530,6 @@
           "force-and-moment-analysis",
           "stability-criteria",
           "design-optimization",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "real-world-application",
@@ -10985,9 +10552,6 @@
           "tension-compression",
           "joint-analysis",
           "member-forces",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "method-of-joints",
@@ -11011,9 +10575,6 @@
           "compatible-displacements",
           "energy-method",
           "calculus-of-variations",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
           "lumped-parameter-model",
           "state-space-model",
           "balance-equation",
@@ -11057,7 +10618,6 @@
           "reactive-power-calculation",
           "rms-values",
           "amplitude-phase",
-          "electrical-mechanical-analogy",
           "time-harmonic-analysis",
           "energy-dissipation-rate"
         ]
@@ -11080,7 +10640,6 @@
           "sequential-logic",
           "discrete-mathematics",
           "computational-logic",
-          "isomorphic-to-digital-systems",
           "two-valued-logic",
           "gate-level-design",
           "set-theory-operations",
@@ -11108,7 +10667,6 @@
           "electrostatics",
           "charge-density",
           "electric-field-interaction",
-          "isomorphic-to-mass-in-gravity",
           "quantized-nature",
           "elementary-charge",
           "force-between-charges",
@@ -11136,8 +10694,6 @@
           "current-source-ideal",
           "linear-element-relations",
           "passive-components",
-          "energy-storage-dissipation-analogy",
-          "isomorphic-to-mechanical-elements",
           "constitutive-relations",
           "fundamental-building-blocks",
           "two-terminal-devices",
@@ -11161,7 +10717,6 @@
           "electron-flow",
           "amperes-unit",
           "current-density",
-          "isomorphic-to-fluid-flow-rate",
           "charge-transport",
           "time-varying-current",
           "current-division",
@@ -11189,7 +10744,6 @@
           "threshold-detection",
           "feedback-loop-absence",
           "input-output-relationship",
-          "isomorphic-to-threshold-switches",
           "logic-level-detection",
           "comparative-function",
           "differential-input",
@@ -11214,7 +10768,6 @@
           "equivalent-circuit",
           "source-transformation",
           "superposition-theorem",
-          "isomorphic-to-mechanical-equivalents",
           "circuit-analysis-tool",
           "parameter-extraction",
           "linear-systems-theory",
@@ -11241,7 +10794,6 @@
           "bandwidth",
           "resonance-frequency",
           "frequency-dependent-gain",
-          "isomorphic-to-mechanical-vibration-response",
           "spectral-analysis",
           "low-pass-characteristics",
           "high-pass-characteristics",
@@ -11268,7 +10820,6 @@
           "active-region",
           "cutoff-region",
           "saturation-region",
-          "isomorphic-to-controlled-valves",
           "charge-carrier-transport",
           "transistor-biasing",
           "small-signal-model",
@@ -11293,7 +10844,6 @@
           "linear-circuit-analysis",
           "algebraic-equations",
           "network-topology",
-          "isomorphic-to-mass-flow-conservation",
           "node-currents",
           "loop-voltages",
           "system-constraints",
@@ -11320,7 +10870,6 @@
           "switching-speed",
           "power-consumption",
           "semiconductor-switching",
-          "isomorphic-to-mechanical-switches",
           "binary-operations",
           "boolean-function-realization",
           "integrated-circuit-design",
@@ -11345,7 +10894,6 @@
           "fundamental-loops",
           "branch-currents",
           "matrix-methods",
-          "isomorphic-to-fluid-circulation-analysis",
           "system-of-equations",
           "graph-theory-application",
           "state-space-formulation",
@@ -11371,7 +10919,6 @@
           "system-of-equations",
           "currents-in-terms-of-voltages",
           "matrix-methods",
-          "isomorphic-to-pressure-analysis-in-fluids",
           "connectivity-analysis",
           "graph-theory-application",
           "state-space-formulation",
@@ -11398,7 +10945,6 @@
           "constitutive-relation",
           "resistance-calculation",
           "energy-conversion",
-          "isomorphic-to-fluid-flow-resistance",
           "ohmic-materials",
           "temperature-dependence",
           "basic-circuit-law",
@@ -11426,7 +10972,6 @@
           "differential-equation-solver",
           "initial-condition-dependence",
           "dc-gain-limitations",
-          "isomorphic-to-mechanical-integrators",
           "accumulation-process",
           "charge-accumulation-rate",
           "transfer-function-1-over-s",
@@ -11453,7 +10998,6 @@
           "inverting-configuration",
           "non-inverting-configuration",
           "impedance-characteristics",
-          "isomorphic-to-tuned-mechanical-systems",
           "signal-conditioning",
           "sharper-roll-off",
           "filter-order",
@@ -11479,7 +11023,6 @@
           "band-stop-filter",
           "attenuation-characteristics",
           "no-gain-in-passband",
-          "isomorphic-to-mechanical-filters",
           "linear-time-invariant-system",
           "transfer-function-analysis",
           "passive-components",
@@ -11506,7 +11049,6 @@
           "p-type-material",
           "n-type-material",
           "depletion-region",
-          "isomorphic-to-one-way-valves",
           "charge-carrier-diffusion",
           "recombination",
           "junction-potential",
@@ -11533,7 +11075,6 @@
           "conservation-of-energy",
           "joule-heating",
           "voltage-current-product",
-          "isomorphic-to-work-rate",
           "energy-conversion-rate",
           "real-power",
           "apparent-power",
@@ -11560,7 +11101,6 @@
           "rc-time-constant",
           "rl-time-constant",
           "step-response",
-          "isomorphic-to-single-tank-systems",
           "energy-storage-element",
           "linear-differential-equation",
           "natural-response",
@@ -11586,7 +11126,6 @@
           "sinusoidal-steady-state",
           "harmonic-analysis",
           "fourier-series",
-          "isomorphic-to-forced-vibrations",
           "sinusoidal-input-output",
           "frequency-response-curve",
           "steady-state-solution",
@@ -11612,7 +11151,6 @@
           "critically-damped-response",
           "resonance",
           "energy-oscillation",
-          "isomorphic-to-spring-mass-damper",
           "transfer-function-denominator",
           "quality-factor",
           "damped-oscillation",
@@ -11638,7 +11176,6 @@
           "sinusoidal-analysis",
           "mathematical-transform",
           "harmonic-signals",
-          "isomorphic-to-vector-representation",
           "steady-state-analysis",
           "phase-angle",
           "wave-representation",
@@ -11666,7 +11203,6 @@
           "initial-value",
           "switching-behavior",
           "system-response-characterization",
-          "isomorphic-to-sudden-load-change",
           "system-dynamics",
           "transient-behavior",
           "settling-time",
@@ -11692,7 +11228,6 @@
           "linearity-principle",
           "analysis-technique",
           "network-theorem",
-          "isomorphic-to-linear-system-analysis",
           "decomposition-method",
           "multiple-input-systems",
           "response-contribution",
@@ -11718,7 +11253,6 @@
           "initial-conditions",
           "capacitor-current-voltage",
           "inductor-voltage-current",
-          "isomorphic-to-time-evolution-models",
           "solution-of-odes",
           "dynamic-response",
           "behavior-over-time",
@@ -11745,7 +11279,6 @@
           "work-done-per-charge",
           "voltage-gradient",
           "potential-difference",
-          "isomorphic-to-pressure-difference",
           "driving-force-for-current",
           "electromotive-force",
           "voltage-sources",
@@ -11772,7 +11305,6 @@
           "linear-circuit-analysis",
           "simple-formulas",
           "branch-current-calculation",
-          "isomorphic-to-flow-distribution",
           "resistance-ratio",
           "conductance-ratio",
           "partitive-relationships",
@@ -11918,9 +11450,6 @@
           "critically-damped-response",
           "overdamped-response",
           "energy-dissipation",
-          "force-voltage-analogy",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "damping-mechanism",
           "transient-response",
           "frequency-response",
@@ -11989,7 +11518,6 @@
           "Mathematics": 0.3
         },
         "tags": [
-          "isomorphic-to-spring-mass-damper",
           "rlc-circuit",
           "kirchhoffs-laws",
           "differential-equation",
@@ -11997,12 +11525,6 @@
           "charge",
           "current",
           "voltage",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy",
-          "damping-resistance-analogy",
-          "impedance-analogy",
           "transient-analysis"
         ]
       },
@@ -12186,8 +11708,6 @@
           "initial-condition",
           "steady-state-solution",
           "transient-solution",
-          "isomorphic-to-diffusion",
-          "thermal-electrical-analogy",
           "mathematical-modeling",
           "physical-phenomenon"
         ]
@@ -12660,8 +12180,6 @@
           "sinusoidal-oscillation",
           "natural-frequency",
           "perpetual-motion",
-          "isomorphic-to-lc-circuit",
-          "mechanical-electrical-analogy",
           "energy-conservation",
           "simple-harmonic-motion",
           "vibrational-analysis",
@@ -12924,7 +12442,6 @@
           "spontaneous-process-direction",
           "statistical-thermodynamics-concept",
           "microscopic-interpretation",
-          "information-theory-analogy",
           "dissipation-measure",
           "equilibrium-tendency"
         ]
@@ -13869,8 +13386,6 @@
           "ground-state-energy",
           "hermite-polynomials",
           "harmonic-oscillator-equation",
-          "isomorphic-to-spring-mass-damper",
-          "isomorphic-to-rlc-circuit",
           "natural-frequency",
           "energy-quantization",
           "fourier-analysis",
@@ -14265,13 +13780,6 @@
           "differential-equation-system",
           "lumped-parameter-model",
           "state-space-model",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy",
-          "displacement-charge-analogy",
-          "energy-storage-dissipation-analogy",
           "angular-momentum-conservation",
           "rigid-body-dynamics"
         ]
@@ -14296,13 +13804,6 @@
           "second-order-linear-ode",
           "differential-equation-system",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy",
-          "displacement-charge-analogy",
           "momentum-conservation"
         ]
       },
@@ -14325,10 +13826,6 @@
           "momentum-conservation",
           "conservation-law",
           "balance-equation",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy",
-          "energy-storage-dissipation-analogy",
           "time-integral-of-force"
         ]
       },
@@ -14350,10 +13847,6 @@
           "relative-motion-analysis",
           "vector-calculus",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
           "position-velocity-acceleration"
         ]
       },
@@ -14377,11 +13870,6 @@
           "first-order-ode",
           "second-order-ode",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
           "time-constant"
         ]
       },
@@ -14403,10 +13891,6 @@
           "weighted-average",
           "vector-summation",
           "lumped-parameter-model",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy",
-          "displacement-charge-analogy",
           "distributed-parameter-system"
         ]
       },
@@ -14429,12 +13913,7 @@
           "power-calculation",
           "variational-principle",
           "conservation-law",
-          "energy-balance",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy",
-          "impedance-analogy"
+          "energy-balance"
         ]
       },
       {
@@ -14456,12 +13935,6 @@
           "frame-acceleration",
           "transformation-equations",
           "state-space-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "displacement-charge-analogy",
           "coordinate-transformation"
         ]
       },
@@ -14484,13 +13957,7 @@
           "fundamental-laws",
           "first-order-ode",
           "second-order-ode",
-          "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy"
+          "lumped-parameter-model"
         ]
       }
     ]
@@ -14538,9 +14005,7 @@
           "elastic-limit",
           "yield-strength",
           "ultimate-strength",
-          "linear-elastic-behavior",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy"
+          "linear-elastic-behavior"
         ]
       },
       {
@@ -14563,11 +14028,6 @@
           "boundary-conditions-applied",
           "support-constraints",
           "integration-constants",
-          "isomorphic-to-spring-mass-damper",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
           "eigenvalue-problem",
           "distributed-parameter-system"
         ]
@@ -14594,9 +14054,7 @@
           "load-distribution-diagram",
           "first-order-linear-ode",
           "calculus-of-variations",
-          "energy-conservation-principle",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy"
+          "energy-conservation-principle"
         ]
       },
       {
@@ -14622,7 +14080,6 @@
           "boundary-value-problem",
           "second-order-linear-ode",
           "eigenvalue-problem",
-          "isomorphic-to-structural-instability",
           "mechanical-stability-analysis"
         ]
       },
@@ -14679,8 +14136,7 @@
           "integration-methods-used",
           "formula-lookup-tables",
           "performance-criteria-design",
-          "geometric-constraints",
-          "isomorphic-to-damping-ratios"
+          "geometric-constraints"
         ]
       },
       {
@@ -14730,8 +14186,7 @@
           "load-capacity-determination",
           "load-bearing-capacity",
           "serviceability-limit-state",
-          "strength-limit-state",
-          "isomorphic-to-structural-design"
+          "strength-limit-state"
         ]
       },
       {
@@ -14781,8 +14236,7 @@
           "fatigue-life-considerations",
           "critical-damping-ratio",
           "vibration-analysis-related",
-          "rotational-dynamics",
-          "isomorphic-to-rotating-machinery"
+          "rotational-dynamics"
         ]
       },
       {
@@ -14808,7 +14262,6 @@
           "design-safety-margins",
           "stress-intensity-factors",
           "plane-stress-analysis",
-          "isomorphic-to-complex-loadings",
           "analogous-to-multiport-networks"
         ]
       },
@@ -14835,8 +14288,7 @@
           "partial-differential-equation",
           "ordinary-differential-equation",
           "laplace-transform-method",
-          "fourier-transform-method",
-          "isomorphic-to-circuit-analysis"
+          "fourier-transform-method"
         ]
       },
       {
@@ -14858,9 +14310,7 @@
           "w-x-to-v-x-to-m-x-to-theta-to-y",
           "first-order-linear-ode",
           "second-order-linear-ode",
-          "calculus-based-method",
-          "isomorphic-to-step-by-step-analysis",
-          "mechanical-electrical-analogy"
+          "calculus-based-method"
         ]
       },
       {
@@ -14881,10 +14331,7 @@
           "boundary-conditions-used",
           "collocation-points-applied",
           "second-order-linear-ode",
-          "analytical-solution-method",
-          "isomorphic-to-rlc-circuit-analysis",
-          "mechanical-electrical-analogy",
-          "displacement-charge-analogy"
+          "analytical-solution-method"
         ]
       },
       {
@@ -14909,7 +14356,6 @@
           "pinned-pinned-boundary-conditions",
           "stability-analysis-fundamental",
           "buckling-instability-mechanisms",
-          "isomorphic-to-eigenvalue-problems",
           "structural-stability-theory"
         ]
       },
@@ -14933,8 +14379,6 @@
           "radius-of-curvature-rho",
           "neutral-axis-definition",
           "bending-strain-distribution",
-          "isomorphic-to-geometric-transformations",
-          "mechanical-electrical-analogy",
           "deformation-kinematics"
         ]
       },
@@ -14958,9 +14402,7 @@
           "moment-loads-included",
           "beam-configurations-varied",
           "linear-system-property",
-          "isomorphic-to-linear-circuit-analysis",
           "linear-time-invariant-system",
-          "mechanical-electrical-analogy",
           "harmonic-oscillator-equation-superposition"
         ]
       },
@@ -14983,8 +14425,6 @@
           "radius-of-circle",
           "principal-stresses-found",
           "maximum-shear-stress-found",
-          "isomorphic-to-impedance-diagrams",
-          "mechanical-electrical-analogy",
           "stress-strain-tensor-rotation"
         ]
       },
@@ -15010,7 +14450,6 @@
           "constitutive-relations-applied",
           "plane-stress-conditions",
           "plane-strain-conditions",
-          "isomorphic-to-multidimensional-systems",
           "analogous-to-vector-spaces"
         ]
       },
@@ -15035,8 +14474,6 @@
           "strain-tensor-eigenvalues",
           "mohrs-circle-interpretation",
           "stress-invariant-calculation",
-          "isomorphic-to-eigenvector-analysis",
-          "mechanical-electrical-analogy",
           "rotation-of-coordinate-axes"
         ]
       },
@@ -15060,10 +14497,7 @@
           "load-shear-moment-link",
           "sign-convention-explained",
           "shear-stress-distribution",
-          "bending-moment-distribution",
-          "isomorphic-to-current-in-circuits",
-          "mechanical-electrical-analogy",
-          "force-current-analogy"
+          "bending-moment-distribution"
         ]
       },
       {
@@ -15086,8 +14520,6 @@
           "pin-support-slope-non-zero",
           "free-end-slope-non-zero",
           "integration-constants-influence",
-          "isomorphic-to-phase-angle",
-          "mechanical-electrical-analogy",
           "rate-of-change-analysis"
         ]
       },
@@ -15112,7 +14544,6 @@
           "constitutive-relations-adapted",
           "plane-stress-equations",
           "plane-strain-equations",
-          "isomorphic-to-simplified-models",
           "analogous-to-1d-systems"
         ]
       },
@@ -15136,9 +14567,7 @@
           "degree-of-indeterminacy",
           "stiffness-matrix-methods",
           "force-method-analysis",
-          "displacement-method-analysis",
-          "isomorphic-to-circuit-analysis",
-          "mechanical-electrical-analogy"
+          "displacement-method-analysis"
         ]
       },
       {
@@ -15161,8 +14590,6 @@
           "force-balance-equations",
           "compatibility-of-deformation",
           "stiffness-analysis",
-          "isomorphic-to-statically-indeterminate-structures",
-          "mechanical-electrical-analogy",
           "torsional-stiffness-calculation"
         ]
       },
@@ -15187,9 +14614,7 @@
           "polar-moment-of-inertia-used",
           "combined-loading-superposition",
           "stress-concentration-regions",
-          "finite-element-analysis-visualization",
-          "isomorphic-to-potential-distribution",
-          "mechanical-electrical-analogy"
+          "finite-element-analysis-visualization"
         ]
       },
       {
@@ -15210,10 +14635,7 @@
           "maximum-stress-extreme-fibers",
           "mc-over-i-formula",
           "section-modulus-s",
-          "tension-compression-distribution",
-          "isomorphic-to-voltage-distribution",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy"
+          "tension-compression-distribution"
         ]
       },
       {
@@ -15236,8 +14658,6 @@
           "principal-axes-alignment",
           "product-of-inertia-zero",
           "simplified-analysis-possible",
-          "isomorphic-to-symmetric-electrical-networks",
-          "mechanical-electrical-analogy",
           "harmonic-oscillator-symmetry"
         ]
       },
@@ -15261,10 +14681,7 @@
           "angle-of-twist-phi",
           "shear-modulus-g",
           "length-l",
-          "thin-walled-tube-analysis",
-          "isomorphic-to-rlc-circuit-torsion",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy"
+          "thin-walled-tube-analysis"
         ]
       },
       {
@@ -15287,8 +14704,6 @@
           "sin-2theta-term",
           "principal-stress-planes",
           "maximum-shear-planes",
-          "isomorphic-to-coordinate-rotations",
-          "mechanical-electrical-analogy",
           "phase-shift-transformation"
         ]
       },
@@ -15313,9 +14728,7 @@
           "width-b",
           "max-stress-at-neutral-axis",
           "3v-over-2a-formula-rectangular",
-          "beam-theory-assumption",
-          "isomorphic-to-current-density-variation",
-          "mechanical-electrical-analogy"
+          "beam-theory-assumption"
         ]
       },
       {
@@ -15338,10 +14751,7 @@
           "stress-sigma-x-y",
           "shear-strain-gamma-xy",
           "shear-stress-tau-xy",
-          "modified-elastic-constants",
-          "isomorphic-to-rlc-circuit-equations",
-          "mechanical-electrical-analogy",
-          "ohms-law-analogy"
+          "modified-elastic-constants"
         ]
       },
       {
@@ -15363,10 +14773,7 @@
           "poissons-ratio-nu",
           "lateral-contraction-effect",
           "elongation-calculation",
-          "elasticity-theory-basic",
-          "isomorphic-to-single-degree-of-freedom-systems",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy"
+          "elasticity-theory-basic"
         ]
       },
       {
@@ -15389,7 +14796,6 @@
           "plasticity-theory-introduction",
           "stress-state-dependence",
           "material-failure-prediction",
-          "isomorphic-to-threshold-phenomena",
           "analogous-to-breakdown-voltage"
         ]
       }
@@ -15680,10 +15086,6 @@
           "conservation-law",
           "balance-equation",
           "partial-differential-equation",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
-          "mass-inductance-analogy",
-          "impedance-analogy",
           "fluid-dynamics-equation",
           "control-volume-analysis",
           "angular-velocity-term",
@@ -15705,13 +15107,6 @@
         },
         "tags": [
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
-          "energy-storage-dissipation-analogy",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "mass-inductance-analogy",
-          "stiffness-capacitance-analogy",
-          "displacement-charge-analogy",
           "potential-flow-equation",
           "steady-flow-assumption",
           "incompressible-flow-assumption",
@@ -15736,8 +15131,6 @@
           "diffusion-equation",
           "navier-stokes-equation",
           "boundary-value-problem",
-          "diffusion-conduction-analogy",
-          "isomorphic-to-thermal-rc-network",
           "laminar-flow-regime",
           "turbulent-flow-regime",
           "no-slip-condition",
@@ -15760,12 +15153,6 @@
         },
         "tags": [
           "lumped-parameter-model",
-          "isomorphic-to-spring-mass-damper",
-          "stiffness-capacitance-analogy",
-          "damping-resistance-analogy",
-          "mechanical-electrical-analogy",
-          "force-voltage-analogy",
-          "displacement-charge-analogy",
           "elastic-deformation-analysis",
           "pressure-transduction-device",
           "mechanical-linkage-system",
@@ -16128,7 +15515,6 @@
           "force-on-submerged-surfaces",
           "liquid-level-measurement",
           "density-and-gravity-dependence",
-          "rigid-body-motion-analogy",
           "shear-stress-absence",
           "pressure-surface-orthogonality",
           "fluid-column-equilibrium",
@@ -16624,7 +16010,6 @@
           "high-temperature-behavior",
           "compositional-variation-effect",
           "defect-structure-analysis",
-          "isomorphic-to-crystal-growth",
           "surface-energy-considerations",
           "boundary-layer-effects",
           "constitutive-modeling"
@@ -16741,7 +16126,6 @@
           "failure-mode-analysis",
           "reinforcement-efficiency",
           "composites-testing-standards",
-          "isomorphic-to-layered-structures",
           "boundary-value-problem-analysis",
           "multi-scale-modeling",
           "load-sharing-mechanisms",
@@ -17437,7 +16821,6 @@
           "interphase-boundaries",
           "phase-fraction",
           "dispersion-strengthening",
-          "composite-analogy",
           "heterogeneous-materials",
           "material-performance-optimization"
         ]
@@ -17607,7 +16990,6 @@
           "heat-transfer-analysis",
           "mass-transport-phenomena",
           "casting-process-optimization",
-          "isomorphic-to-diffusion-processes",
           "freezing-interface-dynamics",
           "constitutional-supercooling",
           "boundary-layer-formation",
@@ -17961,9 +17343,7 @@
           "linear-time-invariant-system",
           "state-space-model",
           "damped-oscillations",
-          "isomorphic-to-coupled-rlc",
-          "modal-analysis",
-          "mechanical-electrical-analogy"
+          "modal-analysis"
         ]
       },
       {
@@ -17987,8 +17367,6 @@
           "bode-plot",
           "low-pass-filter",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "isolation-system",
           "vibration-damping",
           "system-dynamics"
@@ -18016,7 +17394,6 @@
           "transfer-function",
           "frequency-response",
           "vibration-analysis",
-          "isomorphic-to-two-rlc-circuits",
           "lumped-parameter-model",
           "dynamic-modeling"
         ]
@@ -18038,8 +17415,6 @@
           "coupled-systems",
           "multi-degree-of-freedom",
           "lumped-parameter-model",
-          "isomorphic-to-driven-rlc-circuit",
-          "mechanical-electrical-analogy",
           "vibration-testing",
           "system-response",
           "motion-transfer",
@@ -18177,8 +17552,6 @@
           "transient-response",
           "stability-analysis",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "damping-resistance-analogy",
           "quality-factor",
           "parameter-identification",
           "system-characterization",
@@ -18350,7 +17723,6 @@
           "charging-discharging",
           "natural-response",
           "lumped-parameter-model",
-          "isomorphic-to-rc-circuit",
           "time-domain-analysis",
           "mathematical-model",
           "system-dynamics"
@@ -18376,8 +17748,6 @@
           "time-constant",
           "natural-frequency",
           "damping-ratio",
-          "isomorphic-to-rc-rlc",
-          "mechanical-electrical-analogy",
           "system-characterization",
           "dynamic-behavior",
           "mathematical-modeling",
@@ -18404,7 +17774,6 @@
           "transient-response",
           "single-energy-storage",
           "lumped-parameter-model",
-          "isomorphic-to-rc-circuit",
           "thermal-rc-network",
           "fluid-capacitance",
           "step-response",
@@ -18463,8 +17832,7 @@
           "rise-time",
           "settling-time",
           "overshoot",
-          "convolution-integral",
-          "isomorphic-to-lc-circuits"
+          "convolution-integral"
         ]
       },
       {
@@ -18518,8 +17886,7 @@
           "linear-time-invariant-system",
           "system-characterization",
           "frequency-sweep",
-          "stability-analysis",
-          "isomorphic-to-electrical-impedance"
+          "stability-analysis"
         ]
       },
       {
@@ -18544,8 +17911,6 @@
           "transfer-function",
           "second-order-system",
           "multi-degree-of-freedom",
-          "isomorphic-to-driven-rlc-circuit",
-          "mechanical-electrical-analogy",
           "time-domain-analysis"
         ]
       },
@@ -18572,8 +17937,6 @@
           "distributed-forcing",
           "continuous-systems",
           "multi-degree-of-freedom",
-          "isomorphic-to-driven-rlc-circuit",
-          "mechanical-electrical-analogy",
           "vibration-analysis"
         ]
       },
@@ -18601,7 +17964,6 @@
           "time-constant",
           "partial-differential-equation",
           "diffusion-equation",
-          "thermal-electrical-analogy",
           "thermodynamic-systems"
         ]
       },
@@ -18812,7 +18174,6 @@
           "force-torque-conversion",
           "voltage-motion-conversion",
           "coupled-systems",
-          "mechanical-electrical-analogy",
           "dynamic-modeling",
           "system-integration",
           "energy-conversion",
@@ -18899,8 +18260,6 @@
           "vibration-modes",
           "eigenvectors",
           "structural-dynamics",
-          "isomorphic-to-resonance-in-circuits",
-          "mechanical-electrical-analogy",
           "dynamic-response",
           "harmonic-excitation"
         ]
@@ -18928,8 +18287,6 @@
           "state-space-model",
           "eigenvalues-eigenvectors",
           "lumped-parameter-model",
-          "isomorphic-to-coupled-rlc",
-          "mechanical-electrical-analogy",
           "dynamic-behavior"
         ]
       },
@@ -18954,8 +18311,6 @@
           "multi-degree-of-freedom",
           "continuous-systems",
           "lumped-parameter-model",
-          "isomorphic-to-lc-circuit-resonances",
-          "mechanical-electrical-analogy",
           "characteristic-behavior",
           "transient-response"
         ]
@@ -18979,8 +18334,6 @@
           "continuous-systems",
           "coupled-systems",
           "linear-time-invariant-system",
-          "isomorphic-to-lc-circuit-resonances",
-          "mechanical-electrical-analogy",
           "vibration-characteristics",
           "spatial-patterns",
           "harmonic-motion"
@@ -19223,8 +18576,6 @@
           "critically-damped",
           "overdamped-response",
           "lumped-parameter-model",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "system-characterization",
           "dynamic-behavior"
         ]
@@ -19551,9 +18902,7 @@
           "sinusoidal-oscillation",
           "overshoot",
           "settling-time",
-          "lumped-parameter-model",
-          "isomorphic-to-rlc-circuits",
-          "mechanical-electrical-analogy"
+          "lumped-parameter-model"
         ]
       }
     ]
@@ -19599,9 +18948,7 @@
           "eigenvalue-problem",
           "lumped-parameter-model",
           "state-space-model",
-          "natural-frequency",
-          "isomorphic-to-spring-mass-damper",
-          "energy-storage-dissipation-analogy"
+          "natural-frequency"
         ]
       },
       {
@@ -19627,7 +18974,6 @@
           "transfer-function",
           "boundary-value-problem",
           "harmonic-oscillator-equation",
-          "isomorphic-to-spring-mass-damper",
           "motion-input"
         ]
       },
@@ -19765,7 +19111,6 @@
           "complex-numbers",
           "complex-plane",
           "rotation-matrices",
-          "isomorphic-to-spring-mass-damper",
           "kinematic-chain"
         ]
       },
@@ -19844,7 +19189,6 @@
           "energy-conservation",
           "momentum-conservation",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
           "impact-attenuation"
         ]
       },
@@ -19870,7 +19214,6 @@
           "spatial-motion",
           "lumped-parameter-model",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
           "motion-description",
           "kinematic-constraints"
         ]
@@ -19898,7 +19241,6 @@
           "energy-methods",
           "virtual-work",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
           "dynamic-simulation"
         ]
       },
@@ -19949,10 +19291,7 @@
           "dynamic-forces",
           "vibration-analysis",
           "state-space-model",
-          "transfer-function",
-          "isomorphic-to-spring-mass-damper",
-          "mechanical-electrical-analogy",
-          "energy-storage-dissipation-analogy"
+          "transfer-function"
         ]
       },
       {
@@ -19978,8 +19317,7 @@
           "bevel-gears",
           "worm-gears",
           "kinematic-analysis",
-          "force-analysis",
-          "isomorphic-to-spring-mass-damper"
+          "force-analysis"
         ]
       },
       {
@@ -20034,7 +19372,6 @@
           "angular-acceleration",
           "linear-acceleration",
           "loop-closure-equations",
-          "isomorphic-to-spring-mass-damper",
           "kinematic-analysis"
         ]
       },
@@ -20060,7 +19397,6 @@
           "acceleration-diagrams",
           "numerical-methods",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
           "kinematic-synthesis"
         ]
       },
@@ -20116,8 +19452,7 @@
           "balancing",
           "bearing-loads",
           "power-transmission",
-          "efficiency",
-          "isomorphic-to-spring-mass-damper"
+          "efficiency"
         ]
       },
       {
@@ -20142,7 +19477,6 @@
           "work-energy-theorem",
           "conservation-law",
           "state-space-model",
-          "isomorphic-to-spring-mass-damper",
           "variational-principle"
         ]
       }
@@ -20193,8 +19527,7 @@
           "conservation-law",
           "second-order-linear-ode",
           "first-order-linear-ode",
-          "lagrangian-formulation",
-          "mechanical-electrical-analogy"
+          "lagrangian-formulation"
         ]
       },
       {
@@ -20220,7 +19553,6 @@
           "vector-calculus",
           "state-space-model",
           "geometric-properties",
-          "mechanical-electrical-analogy",
           "moment-of-inertia",
           "angular-momentum",
           "translational-velocity"
@@ -20246,7 +19578,6 @@
           "automated-derivation",
           "system-modeling",
           "kinematic-constraints",
-          "mechanical-electrical-analogy",
           "numerical-methods",
           "linear-algebra",
           "boundary-value-problem",
@@ -20272,7 +19603,6 @@
           "system-analysis",
           "linear-dependence",
           "mathematical-modeling",
-          "mechanical-electrical-analogy",
           "coordinate-transformation",
           "holonomic-constraints",
           "state-space-model",
@@ -20299,7 +19629,6 @@
           "gradient-vector",
           "energy-conservation",
           "generalized-coordinates",
-          "isomorphic-to-spring-mass-damper",
           "harmonic-oscillator-equation",
           "conservation-law",
           "potential-function"
@@ -20325,7 +19654,6 @@
           "rotational-kinematics",
           "transformation-matrix",
           "spatial-description",
-          "isomorphic-to-spring-mass-damper",
           "mathematical-framework",
           "linear-algebra",
           "rotation-matrix",
@@ -20352,7 +19680,6 @@
           "equations-of-motion",
           "system-dynamics",
           "equilibrium-condition",
-          "mechanical-electrical-analogy",
           "variational-principle",
           "forces-of-constraint",
           "calculus-of-variations",
@@ -20382,7 +19709,6 @@
           "path-integral",
           "variational-calculus",
           "system-dynamics",
-          "isomorphic-to-rlc-circuit",
           "energy-functional"
         ]
       },
@@ -20407,7 +19733,6 @@
           "rotational-dynamics",
           "equivalent-mass-distribution",
           "mathematical-equivalence",
-          "mechanical-electrical-analogy",
           "moment-of-inertia-tensor",
           "force-and-moment-analysis"
         ]
@@ -20434,7 +19759,6 @@
           "diagonalization",
           "natural-frequencies",
           "mode-shapes",
-          "isomorphic-to-rlc-circuit",
           "mechanical-vibration-analysis",
           "quadratic-form-analysis"
         ]
@@ -20459,7 +19783,6 @@
           "symmetry-properties",
           "conservation-laws",
           "partial-derivatives",
-          "mechanical-electrical-analogy",
           "lagrangian-formulation",
           "phase-space-analysis"
         ]
@@ -20485,7 +19808,6 @@
           "conserved-quantity",
           "calculus-of-variations",
           "system-dynamics",
-          "mechanical-electrical-analogy",
           "first-integrals",
           "partial-derivative"
         ]
@@ -20509,7 +19831,6 @@
           "3d-rotation",
           "geometric-representation",
           "transformation-equations",
-          "mechanical-electrical-analogy",
           "matrix-representation",
           "vector-calculus",
           "rotational-dynamics"
@@ -20534,7 +19855,6 @@
           "constraint-equations",
           "rigid-body-dynamics",
           "particle-dynamics",
-          "mechanical-electrical-analogy",
           "second-order-linear-ode",
           "system-dynamics",
           "variational-principle",
@@ -20562,7 +19882,6 @@
           "generalized-velocities",
           "partial-derivatives",
           "second-order-linear-ode",
-          "mechanical-electrical-analogy",
           "variational-principle",
           "system-dynamics"
         ]
@@ -20586,7 +19905,6 @@
           "generalized-forces",
           "workless-forces",
           "system-constraints",
-          "mechanical-electrical-analogy",
           "d'alembert's-principle",
           "lagrange-multipliers",
           "kinematic-constraints"
@@ -20611,7 +19929,6 @@
           "symplectomorphism",
           "conservation-laws",
           "legendre-transformation",
-          "mechanical-electrical-analogy",
           "energy-formalism",
           "lagrangian-mechanics-alternative",
           "classical-mechanics"
@@ -20636,7 +19953,6 @@
           "energy-based-formulation",
           "classical-mechanics",
           "variational-principle",
-          "mechanical-electrical-analogy",
           "system-modeling",
           "dynamics-derivation"
         ]
@@ -20660,7 +19976,6 @@
           "superposition-principle",
           "equations-of-motion",
           "mechanical-vibrations",
-          "isomorphic-to-rlc-circuit",
           "second-order-linear-ode",
           "resonance-phenomena",
           "transient-response",
@@ -20691,7 +20006,6 @@
           "conservative-systems",
           "energy-dissipation",
           "superposition-of-modes",
-          "isomorphic-to-rlc-circuit",
           "time-constant",
           "amplitude-decay"
         ]
@@ -20717,7 +20031,6 @@
           "contact-mechanics",
           "tribology",
           "mechanical-systems",
-          "isomorphic-to-rlc-circuit",
           "energy-dissipation",
           "impact-dynamics",
           "surface-interaction"
@@ -20744,7 +20057,6 @@
           "rotation-motion",
           "newton-euler-equations",
           "kinematics-and-dynamics",
-          "mechanical-electrical-analogy",
           "system-dynamics",
           "force-and-moment-analysis",
           "spatial-kinematics"
@@ -20774,7 +20086,6 @@
           "kinetic-energy-formulation",
           "lagrangian-mechanics",
           "mathematical-modeling",
-          "mechanical-electrical-analogy",
           "coordinate-transformation",
           "system-analysis"
         ]
@@ -20799,7 +20110,6 @@
           "torque-units",
           "non-conservative-forces",
           "applied-forces",
-          "mechanical-electrical-analogy",
           "system-dynamics",
           "force-analysis"
         ]
@@ -20822,7 +20132,6 @@
           "linear-momentum",
           "angular-momentum",
           "canonical-momentum",
-          "mechanical-electrical-analogy",
           "phase-space-coordinates",
           "partial-derivative"
         ]
@@ -20847,7 +20156,6 @@
           "lagrangian-mechanics",
           "d'alembert's-principle",
           "system-dynamics",
-          "mechanical-electrical-analogy",
           "kinematics",
           "realizable-motion"
         ]
@@ -20870,7 +20178,6 @@
           "partial-derivatives",
           "symplectic-structure",
           "conservative-systems",
-          "mechanical-electrical-analogy",
           "system-dynamics",
           "reversible-dynamics",
           "time-evolution"
@@ -20895,7 +20202,6 @@
           "lagrangian-function",
           "conserved-quantity",
           "system-analysis",
-          "mechanical-electrical-analogy",
           "partial-derivatives",
           "energy-conservation",
           "momentum-conservation"
@@ -20921,7 +20227,6 @@
           "stiffness-matrix",
           "damping-matrix",
           "joint-torques",
-          "mechanical-electrical-analogy",
           "trajectory-generation",
           "system-identification"
         ]
@@ -20947,7 +20252,6 @@
           "hamiltonian",
           "energy-conservation",
           "mechanical-systems",
-          "isomorphic-to-rlc-circuit",
           "vector-calculus",
           "mass-distribution"
         ]
@@ -20971,7 +20275,6 @@
           "holonomic-constraints",
           "boundary-value-problem",
           "calculus-of-variations",
-          "mechanical-electrical-analogy",
           "differential-algebraic-equations",
           "system-constraints"
         ]
@@ -20995,7 +20298,6 @@
           "mathematical-formalism",
           "conjugate-variables",
           "calculus",
-          "mechanical-electrical-analogy",
           "phase-space",
           "variational-calculus",
           "function-transformation"
@@ -21027,7 +20329,6 @@
           "eigenvalue-analysis",
           "system-identification",
           "mechanical-vibrations",
-          "isomorphic-to-rlc-circuit",
           "state-space-model"
         ]
       },
@@ -21052,7 +20353,6 @@
           "rigid-body-dynamics",
           "angular-momentum",
           "rotational-kinematics",
-          "mechanical-electrical-analogy",
           "quadratic-form",
           "tensor-calculus"
         ]
@@ -21077,7 +20377,6 @@
           "generalized-momentum",
           "cartesian-coordinates",
           "system-dynamics",
-          "mechanical-electrical-analogy",
           "conservation-law",
           "partial-derivative",
           "force-balance"
@@ -21103,7 +20402,6 @@
           "relative-motion",
           "rotational-dynamics",
           "coordinate-transformation",
-          "mechanical-electrical-analogy",
           "system-dynamics",
           "frame-acceleration"
         ]
@@ -21127,7 +20425,6 @@
           "coupled-oscillators",
           "linear-systems",
           "mechanical-vibrations",
-          "isomorphic-to-rlc-circuit",
           "matrix-diagonalization",
           "superposition-principle",
           "transformations"
@@ -21153,7 +20450,6 @@
           "force-derivation",
           "potential-function",
           "mechanical-systems",
-          "isomorphic-to-spring-mass-damper",
           "gravitational-potential",
           "elastic-potential"
         ]
@@ -21178,7 +20474,6 @@
           "stability-analysis",
           "normal-modes",
           "mechanical-vibrations",
-          "isomorphic-to-rlc-circuit",
           "second-order-linear-ode",
           "perturbation-analysis"
         ]
@@ -21201,7 +20496,6 @@
           "non-equilibrium",
           "dynamic-systems",
           "mechanical-vibrations",
-          "isomorphic-to-rlc-circuit",
           "time-varying-linearization",
           "rotor-dynamics"
         ]
@@ -21229,7 +20523,6 @@
           "unstable-systems",
           "neutrally-stable-systems",
           "dynamic-systems-theory",
-          "mechanical-electrical-analogy",
           "control-theory",
           "phase-portrait-analysis"
         ]
@@ -21254,7 +20547,6 @@
           "non-conservative-forces",
           "lagrangian-mechanics",
           "mechanical-systems",
-          "isomorphic-to-rlc-circuit",
           "energy-conservation",
           "net-work"
         ]
@@ -21316,8 +20608,6 @@
           "electron-diffusion-in-metals",
           "conservation-law",
           "balance-equation",
-          "isomorphic-to-diffusion-process",
-          "diffusion-conduction-analogy",
           "materials-science-property",
           "thermal-properties"
         ]
@@ -21343,8 +20633,6 @@
           "viscosity-dependence",
           "thermal-conductivity-dependence",
           "density-dependence",
-          "isomorphic-to-forced-flow",
-          "mechanical-electrical-analogy",
           "fluid-dynamics-concept",
           "thermal-transport-mechanism",
           "energy-transfer-rate"
@@ -21372,7 +20660,6 @@
           "emission-characteristics",
           "electromagnetic-wave-propagation",
           "surface-phenomenon",
-          "geometric-optics-analogy",
           "radiometry-concept"
         ]
       },
@@ -21871,8 +21158,6 @@
           "frequency-response",
           "transfer-function",
           "laplace-transform",
-          "electrical-impedance-analogy",
-          "isomorphic-to-rlc-circuit",
           "lowpass-filter-design",
           "highpass-filter-design",
           "bandpass-filter-design",
@@ -21904,7 +21189,6 @@
           "frequency-response",
           "transfer-function",
           "linear-time-invariant-system",
-          "isomorphic-to-rlc-circuit",
           "lumped-parameter-model",
           "passive-components",
           "active-filters",
@@ -22004,7 +21288,6 @@
           "causal-systems-analysis",
           "stable-systems-analysis",
           "discrete-time-systems",
-          "laplace-transform-analogy",
           "frequency-response-zdomain",
           "region-of-convergence",
           "initial-value-theorem",
@@ -23720,9 +23003,7 @@
           "newtons-third-law",
           "boundary-condition",
           "field-theory",
-          "force-transmission",
-          "mechanical-electrical-analogy",
-          "isomorphic-to-rlc-circuit"
+          "force-transmission"
         ]
       },
       {
@@ -23777,7 +23058,6 @@
           "flow-rate",
           "transport-phenomena",
           "thermodynamic-equilibrium",
-          "isomorphic-to-spring-mass-damper",
           "lagrangian-description"
         ]
       },
@@ -23802,7 +23082,6 @@
           "matrix-transpose",
           "geometric-interpretation",
           "characteristic-equation",
-          "isomorphic-to-rlc-circuit",
           "system-stability"
         ]
       },
@@ -23827,7 +23106,6 @@
           "fourth-order-tensor",
           "elastic-modulus",
           "poisson-ratio",
-          "isomorphic-to-spring-mass-damper",
           "boundary-value-problem",
           "energy-conservation"
         ]
@@ -23883,7 +23161,6 @@
           "vector-space",
           "transformation-laws",
           "constitutive-equation",
-          "isomorphic-to-rlc-circuit",
           "tensor-product"
         ]
       },
@@ -23911,7 +23188,6 @@
           "coordinate-free",
           "representation",
           "equation-manipulation",
-          "isomorphic-to-spring-mass-damper",
           "system-dynamics"
         ]
       },
@@ -23939,8 +23215,6 @@
           "rheology",
           "thermodynamic-state",
           "equation-of-state",
-          "isomorphic-to-rlc-circuit",
-          "mechanical-electrical-analogy",
           "balance-equation"
         ]
       },
@@ -23967,7 +23241,6 @@
           "partial-differential-equation",
           "conservation-law",
           "potential-flow",
-          "isomorphic-to-spring-mass-damper",
           "boundary-condition",
           "material-derivative"
         ]
@@ -24023,7 +23296,6 @@
           "representation-theory",
           "eigenvalue-problem",
           "state-space-model",
-          "isomorphic-to-rlc-circuit",
           "system-matrix",
           "computational-methods"
         ]
@@ -24080,7 +23352,6 @@
           "conservation-law",
           "incompressibility-condition",
           "momentum-transport",
-          "isomorphic-to-spring-mass-damper",
           "dissipation-mechanism"
         ]
       },
@@ -24107,8 +23378,7 @@
           "orthogonal-matrix",
           "square-root-of-matrix",
           "kinematics",
-          "tensor-analysis",
-          "isomorphic-to-rlc-circuit"
+          "tensor-analysis"
         ]
       },
       {
@@ -24134,7 +23404,6 @@
           "matrix-analysis",
           "stability-analysis",
           "energy-form",
-          "isomorphic-to-rlc-circuit",
           "optimisation",
           "inverse-problems"
         ]
@@ -24161,7 +23430,6 @@
           "eigenvalue-problem",
           "linear-algebra",
           "coordinate-system",
-          "isomorphic-to-rlc-circuit",
           "normal-modes",
           "invariant-subspace"
         ]
@@ -24188,7 +23456,6 @@
           "continuum-mechanics",
           "tensor-decomposition",
           "calculus-of-variations",
-          "isomorphic-to-spring-mass-damper",
           "shear-rate",
           "rotation-rate"
         ]
@@ -24215,7 +23482,6 @@
           "matrix-group",
           "state-space-model",
           "pure-rotation",
-          "mechanical-electrical-analogy",
           "no-strain"
         ]
       },
@@ -24244,7 +23510,6 @@
           "linear-algebra",
           "geometric-interpretation",
           "energy-inner-product",
-          "isomorphic-to-rlc-circuit",
           "quadratic-form",
           "statistical-analysis"
         ]
@@ -24270,7 +23535,6 @@
           "linear-algebra",
           "operator-theory",
           "eigenvalue-problem",
-          "isomorphic-to-rlc-circuit",
           "state-representation",
           "field-theory",
           "stress-tensor"
@@ -24297,7 +23561,6 @@
           "determinant",
           "second-order-tensor",
           "material-state",
-          "isomorphic-to-rlc-circuit",
           "stress-analysis",
           "tensor-algebra"
         ]
@@ -24323,7 +23586,6 @@
           "vector-space",
           "differential-geometry",
           "abstract-algebra",
-          "isomorphic-to-rlc-circuit",
           "field-theory",
           "representation",
           "multilinear-algebra"
@@ -24353,7 +23615,6 @@
           "field-theory",
           "continuum-mechanics",
           "partial-differential-equation",
-          "isomorphic-to-rlc-circuit",
           "function-space",
           "boundary-value-problem"
         ]
@@ -24380,7 +23641,6 @@
           "square-root",
           "linear-algebra",
           "numerical-methods",
-          "isomorphic-to-rlc-circuit",
           "computational-mechanics",
           "matrix-analysis",
           "special-functions"
@@ -24410,7 +23670,6 @@
           "tensor-algebra",
           "material-description",
           "spatial-description",
-          "isomorphic-to-spring-mass-damper",
           "small-strain-theory"
         ]
       },
@@ -24465,7 +23724,6 @@
           "tensor-analysis",
           "mechanical-properties",
           "constitutive-equation",
-          "isomorphic-to-rlc-circuit",
           "field-description",
           "symmetric-tensor"
         ]
@@ -24493,7 +23751,6 @@
           "vector-calculus",
           "continuum-mechanics",
           "mathematical-proof",
-          "isomorphic-to-rlc-circuit",
           "state-evolution",
           "rate-of-change"
         ]
@@ -24520,7 +23777,6 @@
           "angular-momentum",
           "linear-algebra",
           "trilinear-form",
-          "isomorphic-to-rlc-circuit",
           "rotational-dynamics",
           "determinant-connection",
           "differential-geometry"
@@ -24550,7 +23806,6 @@
           "linear-algebra",
           "geometric-representation",
           "physics-fundamentals",
-          "isomorphic-to-rlc-circuit",
           "state-vector",
           "displacement-vector",
           "unit-vector"
@@ -24578,7 +23833,6 @@
           "body-force",
           "variational-principle",
           "work-energy-theorem",
-          "isomorphic-to-spring-mass-damper",
           "virtual-displacements",
           "equilibrium-equation"
         ]
@@ -24605,7 +23859,6 @@
           "rubber-elasticity",
           "constraint-equation",
           "conservation-law",
-          "isomorphic-to-rlc-circuit",
           "flow-characteristics",
           "constant-density",
           "geometric-constraint"

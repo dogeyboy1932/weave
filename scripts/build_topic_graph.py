@@ -28,19 +28,17 @@ def _build_chunk_to_topic(course_id: str, topic_texts: list[str]) -> dict:
     """
     Build {chunk_id: topic_text} for a course by matching chunk raw_text
     against known topic_texts from topic_categories.
+
+    Variant-C chunk text is "{topic}: {definition}. Related concepts: …" with
+    no "[SEP]" separator (Phase 18), so we recover the topic via the same
+    longest-prefix rule used everywhere else (pg_store._match_topic_text).
     """
     chunks = pg_store.get_chunks_for_course(course_id)
     mapping = {}
     for chunk_id, raw_text in chunks:
-        if '[SEP]' not in raw_text:
-            continue
-        after_sep = raw_text.split('[SEP]', 1)[1].strip()
-        after_sep_lower = after_sep.lower()
-        for topic_text in topic_texts:
-            topic_lower = topic_text.lower()
-            if after_sep_lower == topic_lower or after_sep_lower.startswith(topic_lower + ':'):
-                mapping[chunk_id] = topic_text
-                break
+        tt = pg_store._match_topic_text(raw_text, topic_texts)
+        if tt is not None:
+            mapping[chunk_id] = tt
     return mapping
 
 
