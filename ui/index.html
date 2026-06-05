@@ -1226,6 +1226,116 @@
     }
     .dt-shared-topics { font-size: 0.8rem; color: #cbd5e1; line-height: 1.4; }
     .dt-shared-arrow { color: #f97316; font-weight: 700; padding: 0 4px; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       VIBRANT THEME LAYER — injects color over the formerly-gray surfaces.
+       Appended last so it wins on equal specificity. Dark base kept; the
+       point is richer accents, brighter text, and depth (gradients/glows).
+       ═══════════════════════════════════════════════════════════════════ */
+    html[data-theme="dark"], :root {
+      --text-muted: #aab6cf;
+      --text-dim:   #8a99b8;
+      --text-faint: #6f7e9e;
+      --border-faint: #232842;
+      --border-soft:  #353c5e;
+    }
+    body {
+      background:
+        radial-gradient(1100px 560px at 8% -10%, rgba(99,102,241,0.20), transparent 58%),
+        radial-gradient(1000px 680px at 102% -4%, rgba(236,72,153,0.13), transparent 55%),
+        radial-gradient(900px 620px at 50% 116%, rgba(34,211,238,0.10), transparent 55%),
+        linear-gradient(180deg, #0b0e1a 0%, #090a12 100%) !important;
+      background-attachment: fixed !important;
+    }
+
+    /* Tags — colorful, glassy, hover-reactive (no more flat gray) */
+    .tp-tag {
+      background: linear-gradient(180deg, rgba(129,140,248,0.16), rgba(129,140,248,0.06));
+      color: #c4ccf7; border: 1px solid rgba(129,140,248,0.22);
+      transition: border-color .14s var(--ease), color .14s var(--ease), transform .12s var(--ease);
+    }
+    .tp-tag:hover { border-color: rgba(129,140,248,0.55); color: #e6eaff; transform: translateY(-1px); }
+    .tp-tag-shared {
+      background: linear-gradient(180deg, rgba(245,158,11,0.22), rgba(236,72,153,0.10)) !important;
+      color: #fde68a !important; border-color: rgba(245,158,11,0.4) !important;
+    }
+
+    /* Section + panel headers — gradient accent instead of dim gray */
+    .tp-panel-head {
+      color: #c8d2ea !important;
+      background: linear-gradient(90deg, rgba(129,140,248,0.12), transparent 70%);
+      border-bottom: 1px solid rgba(129,140,248,0.16) !important;
+    }
+    .tp-related-section-header {
+      color: #fcd34d !important;
+      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(236,72,153,0.07) 75%) !important;
+      border: 1px solid rgba(245,158,11,0.3) !important;
+      box-shadow: 0 2px 14px rgba(245,158,11,0.06);
+    }
+
+    /* Brighten the dull body text */
+    .tp-topic-desc, .tp-detail-desc, .tp-similar-text { color: #9fabc6 !important; }
+    .tp-topic-name { color: #e6ecf9 !important; }
+    .tp-mini-label { color: #8493b2 !important; }
+    .tp-mini-pct   { color: #9aa7c4 !important; }
+    .tp-course-name { color: #8a99b8 !important; }
+    .tp-similar-head, .tp-detail-subtitle { color: #7e8db0 !important; }
+    .tp-mini-track { background: rgba(148,163,184,0.10) !important; }
+    .tp-mini-fill  { filter: saturate(1.25) brightness(1.08); box-shadow: 0 0 6px currentColor; }
+
+    /* Topic cards — subtle lift + indigo glow on hover */
+    .tp-topic-card {
+      background: linear-gradient(180deg, #141728, #0e1019) !important;
+      border-color: #262c44 !important;
+    }
+    .tp-topic-card:hover {
+      border-color: rgba(129,140,248,0.45) !important;
+      box-shadow: 0 6px 22px rgba(79,70,229,0.14);
+    }
+    .tp-course-card-related { border-color: rgba(245,158,11,0.3) !important; }
+    .tp-course-body { background: #0a0c16 !important; }
+
+    /* Badges — vibrant gradient pills */
+    .tp-course-badge-direct {
+      background: linear-gradient(90deg, rgba(99,102,241,0.32), rgba(56,189,248,0.18)) !important;
+      color: #c7d2fe !important; border-color: rgba(129,140,248,0.45) !important;
+    }
+    .tp-course-badge-related {
+      background: linear-gradient(90deg, rgba(245,158,11,0.30), rgba(236,72,153,0.20)) !important;
+      color: #fde68a !important; border-color: rgba(245,158,11,0.45) !important;
+    }
+
+    /* Cross-domain "bridges …" indicator — make the non-obvious score read as a pill */
+    .tp-match-shared {
+      color: #fcd34d !important;
+      background: linear-gradient(90deg, rgba(245,158,11,0.10), transparent);
+      border-left: 2px solid rgba(245,158,11,0.5);
+      padding: 4px 8px; border-radius: 0 5px 5px 0; line-height: 1.5;
+    }
+    .tp-match-shared b { color: #fef3c7; }
+
+    /* "Try:" suggestion chips + buttons — give them life */
+    .tp-explain-btn, .ex-expl-action-btn {
+      transition: transform .12s var(--ease), box-shadow .15s var(--ease), filter .15s var(--ease);
+    }
+    .tp-explain-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,0.22); filter: brightness(1.08); }
+
+    /* Scrollbars — tinted */
+    .tp-panel-scroll::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.30) !important; }
+    .tp-panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(129,140,248,0.5) !important; }
+
+    /* Regenerate-with-feedback row + cached note */
+    .tp-regen-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .tp-fb-input {
+      flex: 1; min-width: 0; font-size: 0.64rem; color: #d8def0;
+      background: rgba(148,163,184,0.06); border: 1px solid rgba(129,140,248,0.20);
+      border-radius: 6px; padding: 5px 9px; outline: none;
+      transition: border-color .14s var(--ease), background .14s var(--ease);
+    }
+    .tp-fb-input::placeholder { color: #66748f; }
+    .tp-fb-input:focus { border-color: rgba(129,140,248,0.55); background: rgba(129,140,248,0.08); }
+    .tp-regen-btn { white-space: nowrap; }
+    .tp-cached-note { font-size: 0.58rem; color: #6ee7b7; opacity: 0.85; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -3158,10 +3268,12 @@ function tpRenderExplanation(uid, ctx, explanation, signedBy) {
     <div id="${uid}-lines" data-raw="${esc(explanation)}">${lines}</div>
     ${signedHtml}
   </div>
-  <div class="ex-expl-actions" style="margin-top:4px">
-    <button class="tp-explain-btn" data-ctx='${ctxJson}' data-uid="${uid}" onclick="tpRegenExplain(this)">↺ Regenerate</button>
+  <div class="tp-regen-row">
+    <input id="${uid}-fb" class="tp-fb-input" placeholder="Not quite right? Tell the model what to fix, then Regenerate…">
+    <button class="tp-explain-btn tp-regen-btn" data-ctx='${ctxJson}' data-uid="${uid}" onclick="tpRegenExplain(this)">↺ Regenerate</button>
     <button class="ex-expl-action-btn" onclick="tpEditExpl('${uid}','${CSS.escape(sc)}','${CSS.escape(st)}','${CSS.escape(tc)}','${CSS.escape(tt)}')">✎ Edit</button>
-  </div>`;
+  </div>
+  <div class="tp-cached-note">✓ Saved — this explanation is cached; it won't regenerate unless you ask.</div>`;
 }
 
 function tpEditExpl(uid, sc, st, tc, tt) {
@@ -3223,6 +3335,8 @@ async function tpRegenExplain(btn) {
   const ctx = JSON.parse(btn.dataset.ctx || '{}');
   const key = getApiKey();
   if (!key) { toggleKeyPanel(); return; }
+  const fbEl = document.getElementById(`${uid}-fb`);
+  const feedback = fbEl ? fbEl.value.trim() : '';
   btn.disabled = true; btn.textContent = '↺ Generating…';
   try {
     const resp = await fetch(`${API}/topics/explain`, {
@@ -3232,7 +3346,7 @@ async function tpRegenExplain(btn) {
         source_course: ctx.sc, source_topic: ctx.st,
         target_course: ctx.tc, target_topic: ctx.tt,
         shared_tags: ctx.shared || [], source_tags: ctx.stags || [],
-        target_tags: ctx.ttags || [], force: true,
+        target_tags: ctx.ttags || [], force: true, feedback,
       }),
     });
     const data = await resp.json();

@@ -210,6 +210,7 @@ def explain_topic_connection(
     source_course_name: str | None = None,
     target_course_name: str | None = None,
     is_non_obvious: bool = True,
+    feedback: str = "",
     client=None,
     api_key: str | None = None,
 ) -> dict:
@@ -248,11 +249,18 @@ def explain_topic_connection(
         "\nNote: Fill 'surprise' only if there is a genuine cross-domain surprise."
     )
 
+    feedback_note = (
+        f"\n\nThe user rejected the previous explanation with this feedback — "
+        f"address it directly in the new one: \"{feedback.strip()}\""
+        if feedback and feedback.strip() else ""
+    )
+
     user_msg = (
         f"{a_block}\n\n"
         f"{b_block}"
         f"{shared_line}"
-        f"{non_ob_note}\n\n"
+        f"{non_ob_note}"
+        f"{feedback_note}\n\n"
         "Identify the most specific named concept these topics truly share — name the "
         "equation, theorem, or algorithm. Replace COURSE_A and COURSE_B in the JSON "
         f"values with {source_course} and {target_course}."

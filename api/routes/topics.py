@@ -60,6 +60,7 @@ class ExplainRequest(BaseModel):
     source_tags:   list[str] = []
     target_tags:   list[str] = []
     force:         bool = False
+    feedback:      str = ""   # optional steer for a regeneration
 
 
 class SignRequest(BaseModel):
@@ -288,6 +289,7 @@ def explain_topic(
             source_course_name=src_ctx.get("course_name"),
             target_course_name=tgt_ctx.get("course_name"),
             is_non_obvious=is_non_obvious,
+            feedback=body.feedback,
             client=client,
         )
     except Exception as e:
