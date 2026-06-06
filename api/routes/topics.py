@@ -172,9 +172,16 @@ def search_topics(
         for m in matches[:6]
     ]
     related = cross_domain_matches(seeds)
+    # One query: which of these pairs already have a cached explanation? (so the
+    # UI can show a "view" toggle instead of a "generate" button).
+    expl_map = pg_store.get_topic_explanations_bulk([
+        (r['source_course'], r['source_topic'], r['course_id'], r['topic_text'])
+        for r in related
+    ])
     for r in related:
-        r['explanation'] = None
-        r['signed_by']   = None
+        cached = expl_map.get((r['source_course'], r['source_topic'], r['course_id'], r['topic_text']))
+        r['explanation'] = cached['explanation'] if cached else None
+        r['signed_by']   = cached['signed_by'] if cached else None
 
     # Batched neighbor lookup for direct matches only (one query for all of them).
     if matches:

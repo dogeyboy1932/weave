@@ -1005,6 +1005,24 @@ def get_topic_explanation(sc: str, st: str, tc: str, tt: str) -> dict | None:
     return {"explanation": row[0], "signed_by": row[1], "generated_at": str(row[2])}
 
 
+def get_topic_explanations_bulk(pairs: list[tuple]) -> dict:
+    """Cached explanations for many (sc, st, tc, tt) pairs in one query.
+    Returns {(sc,st,tc,tt): {'explanation','signed_by'}} for the cached ones only."""
+    if not pairs:
+        return {}
+    with _Conn() as cur:
+        cur.execute("""
+            SELECT source_course, source_topic, target_course, target_topic, explanation, signed_by
+            FROM topic_explanations
+            WHERE (source_course, source_topic, target_course, target_topic) IN %s
+        """, (tuple(tuple(p) for p in pairs),))
+        rows = cur.fetchall()
+    return {
+        (r[0], r[1], r[2], r[3]): {"explanation": r[4], "signed_by": r[5]}
+        for r in rows if r[4]
+    }
+
+
 def upsert_topic_explanation(sc: str, st: str, tc: str, tt: str,
                               explanation: str, signed_by: str | None = None):
     with _Conn() as cur:

@@ -2800,13 +2800,15 @@ function tpRenderResults(data) {
         tdesc: (m.description || '').slice(0, 200),
         ttags: tags, tcats: m.categories || {},
         shared: m.shared_tags || [],
+        expl: m.explanation || '', signed: m.signed_by || '',
       }).replace(/'/g, "&#39;");
-      explainHtml = `<div id="${uid}" style="margin-top:6px">
-        <button class="tp-explain-btn"
-          data-ctx='${ctxData}'
-          data-uid="${uid}"
-          onclick="tpExplain(this)">✦ Explain this connection</button>
-      </div>`;
+      // Cached explanation → "view" toggle (no LLM call). Otherwise → generate.
+      const btn = m.explanation
+        ? `<button class="tp-explain-btn" data-ctx='${ctxData}' data-uid="${uid}"
+             onclick="tpViewCached(this)">▾ View explanation</button>`
+        : `<button class="tp-explain-btn" data-ctx='${ctxData}' data-uid="${uid}"
+             onclick="tpExplain(this)">✦ Explain this connection</button>`;
+      explainHtml = `<div id="${uid}" style="margin-top:6px">${btn}</div>`;
     }
 
     const descHtml = m.description
@@ -3048,6 +3050,12 @@ function tpBackToMatrix() {
   if (lastData) tpRenderMatrix(lastData);
   else document.getElementById('tp-matrix').innerHTML =
     '<div class="ex-empty" style="padding-top:60px;"><p style="font-size:.8rem;color:#5c5c5c;">Matchings appear after a search</p></div>';
+}
+
+// Reveal an already-cached explanation — no LLM call, no key needed.
+function tpViewCached(btn) {
+  const ctx = JSON.parse(btn.dataset.ctx || '{}');
+  tpRenderExplanation(btn.dataset.uid, ctx, ctx.expl || '', ctx.signed || null);
 }
 
 async function tpExplain(btn) {
