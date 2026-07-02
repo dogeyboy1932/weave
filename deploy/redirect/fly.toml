@@ -1,0 +1,21 @@
+# Fly config for the REDIRECT-ONLY app (old URL -> HF Space).
+# Deploy with:  flyctl deploy -c deploy/redirect/fly.toml
+# Replaces the heavy app on `siip-armchair-akhil` with a tiny nginx 301.
+# Machine auto-stops when idle, so a stopped 256 MB VM bills ~$0/mo.
+
+app = "siip-armchair-akhil"
+primary_region = "ord"
+
+[build]
+  dockerfile = "deploy/redirect/Dockerfile"
+
+[http_service]
+  internal_port      = 8080
+  force_https        = true
+  auto_stop_machines   = true    # sleep when idle -> ~$0
+  auto_start_machines  = true    # wake in ~1s on a hit, serve the 301
+  min_machines_running = 0
+
+[[vm]]
+  size   = "shared-cpu-1x"
+  memory = "256mb"               # a redirect needs almost nothing

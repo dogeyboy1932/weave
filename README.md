@@ -18,7 +18,7 @@ UIUC MechSE curriculum mapping. Finds **non-obvious cross-domain connections**
 between course topics (ME 340 spring-mass ↔ ECE 206 RLC circuit — same
 second-order ODE, different department).
 
-**Live:** https://siip-armchair-akhil.fly.dev
+**Live:** https://dogeyboy19-armchair.hf.space  (old Fly URL https://siip-armchair-akhil.fly.dev 301-redirects here)
 **Supervisor:** Eliot Bethke (bethke2@illinois.edu)
 
 ---

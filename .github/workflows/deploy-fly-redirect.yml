@@ -1,0 +1,56 @@
+name: Deploy Fly redirect (old URL -> HF)
+
+# MANUAL-ONLY. Replaces the heavy app on `siip-armchair-akhil` with the tiny
+# nginx 301-redirect in deploy/redirect/ so the old Fly URL forwards to the
+# Hugging Face Space. Auto-stop keeps a stopped 256 MB machine at ~$0/mo.
+# Run from the Actions tab when you want to cut the old URL over to HF.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-fly
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: flyctl deploy (redirect)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      FLY_APP: siip-armchair-akhil
+      TARGET: https://dogeyboy19-armchair.hf.space
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Verify Fly API token
+        run: |
+          if [ -z "${FLY_API_TOKEN}" ]; then
+            echo "::error::GitHub secret FLY_API_TOKEN is not set."
+            exit 1
+          fi
+          flyctl apps show "$FLY_APP" >/dev/null
+          echo "✓ Fly token valid for app $FLY_APP"
+
+      - name: Deploy redirect
+        run: flyctl deploy -c deploy/redirect/fly.toml --app "$FLY_APP" --remote-only --wait-timeout 300
+
+      - name: Verify 301 -> HF
+        run: |
+          set -e
+          APP_URL="https://${FLY_APP}.fly.dev"
+          for i in $(seq 1 18); do
+            loc=$(curl -s -o /dev/null -w '%{redirect_url}' "$APP_URL/some/path?x=1" || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$APP_URL/some/path?x=1" || true)
+            if [ "$code" = "301" ] && printf '%s' "$loc" | grep -q "hf.space"; then
+              echo "✓ $APP_URL -> $loc (HTTP $code)"
+              exit 0
+            fi
+            echo "Waiting for redirect… ($i/18) [code=$code loc=$loc]"
+            sleep 10
+          done
+          echo "::error::redirect not live at $APP_URL" >&2
+          flyctl logs --app "$FLY_APP" --no-tail 2>&1 | tail -40 || true
+          exit 1
