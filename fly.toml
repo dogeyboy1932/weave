@@ -18,8 +18,10 @@ primary_region = "ord"  # Chicago — close to UIUC
   internal_port      = 8080
   force_https        = true
   # Keep one machine alive 24/7 so background ingest tasks (PDF upload =>
-  # SciNCL embed => score) always have a host. Cost: ~$3.89/mo on a 2 GB
-  # shared-cpu-1x, covered by Fly's $5/mo hobby credit.
+  # SciNCL embed => score) always have a host.
+  # COST NOTE (2026): Fly's $5/mo hobby credit is gone. This always-on 2 GB
+  # shared-cpu-1x now bills ~$4-6/mo. The free replacement is Hugging Face
+  # Spaces — see deploy/HUGGINGFACE.md. This Fly config is kept as a fallback.
   auto_stop_machines   = "off"
   auto_start_machines  = true
   min_machines_running = 1

@@ -1,3 +1,17 @@
+---
+title: ArmChair
+emoji: 🪑
+colorFrom: indigo
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
+<!-- The YAML block above configures the Hugging Face Space (Docker SDK).
+     It's ignored on GitHub (rendered as a metadata table) and required by HF.
+     Deploy flow: deploy/HUGGINGFACE.md -->
+
 # ArmChair
 
 UIUC MechSE curriculum mapping. Finds **non-obvious cross-domain connections**
