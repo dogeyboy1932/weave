@@ -28,7 +28,7 @@ awake. For burst-usage evaluation by the team, that's fine.
 ### 2. Add the database secret
 In the Space's **Settings → Variables and secrets → New secret**:
 - Name: `DATABASE_URL`
-- Value: the same Supabase connection string from your root `.env`
+- Value: the Supabase **Session pooler** connection string (see the ⚠️ below)
 
 HF injects secrets as **runtime environment variables**, which is exactly what
 `config.py` reads. (Optionally also add `GEMINI_API_KEY`, but the app is
@@ -36,6 +36,29 @@ designed to take the Gemini key from the browser, so it's not required.)
 
 `POSTGRES_SSLMODE=require` is already baked into the `Dockerfile`, so Supabase
 TLS works out of the box.
+
+> ### ⚠️ Use the Session **pooler** URL, not the direct connection (learned the hard way)
+> Supabase's **direct** host `db.<ref>.supabase.co` is **IPv6-only** on the free
+> plan. Fly has IPv6 so it works there, but **HF Spaces have no IPv6** — the direct
+> URL fails on HF with `could not translate host name ... Name or service not known`.
+>
+> Fix: in Supabase, click the green **Connect** button → **Session pooler** tab
+> (port 5432) and use *that* string. The shared pooler host
+> `aws-<n>-<region>.pooler.supabase.com` has an **IPv4** address and is free — do
+> **not** buy the $4/mo "dedicated IPv4" add-on. Note the different username
+> (`postgres.<ref>`) and host:
+> ```
+> postgresql://postgres.<ref>:<pw>@aws-1-us-west-1.pooler.supabase.com:5432/postgres
+> ```
+> Use this same pooler URL in your root `.env` too, so local dev / Fly / HF all
+> work identically regardless of IPv6.
+>
+> **Also:** free Supabase projects **auto-pause after ~7 days idle** — the host
+> stops resolving entirely (same DNS error). If you hit it, resume the project in
+> the dashboard and wait for **Active** before restarting the Space.
+>
+> **Applying a changed secret:** if the Space already crashed, saving the secret
+> may not auto-apply — hit **Settings → Factory reboot** to restart with it.
 
 ### 3. Push this repo to the Space
 The Space is its own git repo. Add it as a second remote and push:
@@ -74,15 +97,15 @@ delete `Dockerfile.api`, `fly.toml`, `deploy/deploy.sh`, and the
 
 ---
 
-## ⚠️ Turn off the Fly auto-deploy (avoid surprise charges)
+## Fly.io status (migration complete)
 
-`.github/workflows/deploy-fly.yml` redeploys Fly on **every push to `main`** —
-including the push you just made to update these files. While you're migrating,
-either:
-
-- **Disable the workflow:** GitHub → Actions → "Deploy to Fly.io" → ⋯ →
-  *Disable workflow*, **or**
-- Delete `.github/workflows/deploy-fly.yml`.
+Fly auto-deploy is already **off** — `.github/workflows/deploy-fly.yml` is
+manual-only (`workflow_dispatch`), so pushes to `main` don't trigger paid
+redeploys. As of the HF cutover, the Fly app `siip-armchair-akhil` was replaced
+by a tiny **nginx 301 redirect** (`deploy/redirect/`, deployed via
+`deploy-fly-redirect.yml`) so the old URL forwards to this Space at ≈$0. The
+full-app `fly.toml` / `deploy-fly.yml` are kept only as a fallback. Destroy the
+Fly app entirely once no one relies on the old `*.fly.dev` link.
 
 (Pushing to the `space` remote does **not** touch GitHub Actions — only pushing
 to the GitHub `origin` does.)

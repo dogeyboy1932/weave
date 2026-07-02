@@ -1,0 +1,40 @@
+name: Keep HF Space warm
+
+# Pings the free HF Space so it never reaches the ~48h idle-sleep, so anyone
+# clicking the (redirected) old resume link gets an INSTANT load instead of a
+# ~1 min cold start. Free: a 6-hourly curl is a few seconds of Actions time.
+#
+# Notes:
+# - GitHub disables scheduled workflows after 60 days of repo inactivity; a push
+#   re-enables them. Fine for an active job search. For belt-and-suspenders,
+#   also add a free UptimeRobot/cron-job.org monitor on the same URL.
+# - Cron times are UTC and best-effort (may lag under load); 6h has huge margin
+#   against the 48h sleep window.
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours
+  workflow_dispatch:          # allow manual "ping now"
+
+concurrency:
+  group: keep-hf-warm
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping HF Space /health
+        run: |
+          URL="https://dogeyboy19-armchair.hf.space/health"
+          # HF may be cold-starting; retry for a few minutes so a warm-up counts.
+          for i in $(seq 1 18); do
+            code=$(curl -s -m 20 -o /dev/null -w "%{http_code}" "$URL" || echo 000)
+            echo "attempt $i: HTTP $code"
+            if [ "$code" = "200" ]; then
+              echo "✓ Space warm ($URL)"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::warning::Space did not return 200 after retries (may still be waking)"
