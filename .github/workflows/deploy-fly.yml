@@ -1,9 +1,11 @@
 name: Deploy to Fly.io
 
-# Every push to main redeploys production (API + UI + SciNCL image).
+# MANUAL-ONLY. Auto-deploy on push was disabled during the migration to the
+# free Hugging Face Spaces host (see deploy/HUGGINGFACE.md) — Fly's hobby
+# credit is gone, so every push used to trigger a ~$4-6/mo paid redeploy.
+# Fly is kept as a fallback: run this workflow by hand from the Actions tab
+# (or re-add `push: { branches: [main] }` below) if you ever need it.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:
