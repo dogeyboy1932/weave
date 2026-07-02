@@ -39,35 +39,42 @@ Oracle blocks everything but port 22 by default:
 
 ---
 
-## Part 2 — Deploy (one command)
+## Part 2 — Deploy (rsync — the repo is private, so no GitHub clone on the VM)
 
-SSH in (default user is `ubuntu`):
+The `armchair` repo is private, so the VM can't pull it. Instead, copy the code
+**up from your laptop** with rsync — no GitHub credentials ever touch the cloud VM.
 
-```bash
-chmod 400 ~/Downloads/ssh-key-*.key
-ssh -i ~/Downloads/ssh-key-*.key ubuntu@YOUR_ORACLE_IP
-```
-
-Then run the installer, passing your Supabase URL (copy it from your local `.env`):
+**From your laptop** (run in the repo root, `akhil_app/`). Your `.env` (with
+`DATABASE_URL`) is copied up too so the container can reach Supabase:
 
 ```bash
-DATABASE_URL='postgresql://USER:PASS@HOST/DB?sslmode=require' \
-  bash <(curl -fsSL https://raw.githubusercontent.com/dogeyboy1932/armchair/main/deploy/oracle/setup.sh)
+rsync -az --delete \
+  --exclude '.git' --exclude '.archive' --exclude '__pycache__' \
+  --exclude '.venv' --exclude 'node_modules' --exclude '.model_cache' \
+  -e "ssh -i ~/Downloads/ssh-key-*.key" \
+  ./  ubuntu@YOUR_ORACLE_IP:~/armchair/
 ```
 
-Optional — pre-bake Gemini explanations (users can also paste their own key in the UI):
+Then run the installer on the VM:
 
 ```bash
-DATABASE_URL='...' GEMINI_API_KEY='...' bash <(curl -fsSL .../deploy/oracle/setup.sh)
+ssh -i ~/Downloads/ssh-key-*.key ubuntu@YOUR_ORACLE_IP \
+  'cd ~/armchair && bash deploy/oracle/setup.sh'
 ```
 
-The script installs Docker, adds swap if needed, opens the host firewall, clones the
-repo, builds the ARM image (downloads torch + SciNCL — 20–40 min first time), starts
-the container with `--restart always`, and prints:
+> If you'd rather NOT copy `.env`, add `--exclude '.env'` to the rsync and pass the
+> URL to the installer instead: `... 'cd ~/armchair && DATABASE_URL="..." bash deploy/oracle/setup.sh'`
+
+The script installs Docker, adds swap if needed, opens the host firewall, builds the
+ARM image (downloads torch + SciNCL — 20–40 min first time), starts the container
+with `--restart always`, and prints:
 
 ```
 ✓ Live at: http://YOUR_ORACLE_IP:8080
 ```
+
+**Re-deploys:** re-run the same two commands (rsync, then the ssh install). rsync only
+sends changed files; the Docker layer cache makes rebuilds fast unless deps changed.
 
 ---
 
@@ -85,11 +92,12 @@ curl http://127.0.0.1:8080/health          # {"status":"ok"} on the server
 ## Day-to-day
 
 ```bash
-cd ~/armchair
+# On the VM:
 docker logs -f armchair                     # follow logs
-git pull origin main && bash deploy/oracle/setup.sh   # update + restart
 docker restart armchair                     # bounce
 docker rm -f armchair                        # stop (image stays)
+
+# To update: re-run the rsync + install from your laptop (see Part 2).
 ```
 
 ---
