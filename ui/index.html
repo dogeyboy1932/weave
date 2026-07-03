@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIIP</title>
+  <title>Weave</title>
   <script src="config.js" onerror="this.remove();"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     /* ════════════════════════════════════════════════════════════════
-       SIIP design tokens
+       Weave design tokens
        Edit a value here once and it cascades everywhere.
        Light theme is opt-in via <html data-theme="light">.
     ════════════════════════════════════════════════════════════════ */
@@ -1248,7 +1248,7 @@
 <nav>
   <span class="nav-brand">
     <span class="brand-mark"></span>
-    SIIP <span class="brand-tag">Curriculum Mapper</span>
+    Weave <span class="brand-tag">Curriculum Mapper</span>
   </span>
   <div class="nav-links">
     <button class="nav-tab active" id="tab-graph"    onclick="switchView('graph')">Map</button>
@@ -1508,8 +1508,8 @@
 <div id="tooltip"></div>
 
 <script>
-const API = (typeof window.__SIIP_API__ === 'string' && window.__SIIP_API__)
-    ? window.__SIIP_API__.replace(/\/+$/, '')
+const API = (typeof window.__WEAVE_API__ === 'string' && window.__WEAVE_API__)
+    ? window.__WEAVE_API__.replace(/\/+$/, '')
     : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:8080'
         : window.location.origin);
@@ -1555,7 +1555,7 @@ function applyTheme(t) {
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
   const next = cur === 'light' ? 'dark' : 'light';
-  localStorage.setItem('siip_theme', next);
+  localStorage.setItem('weave_theme', next);
   applyTheme(next);
 }
 
@@ -1565,7 +1565,7 @@ function toggleTheme() {
 function openWelcome()  { document.getElementById('welcome-overlay')?.classList.add('active'); }
 function closeWelcome(persist) {
   document.getElementById('welcome-overlay')?.classList.remove('active');
-  if (persist !== false) localStorage.setItem('siip_welcomed', '1');
+  if (persist !== false) localStorage.setItem('weave_welcomed', '1');
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1596,10 +1596,10 @@ async function populateCourseSuggestions() {
 // One-time boot
 window.addEventListener('DOMContentLoaded', () => {
   // Theme — respect saved choice, default dark
-  applyTheme(localStorage.getItem('siip_theme') || 'dark');
+  applyTheme(localStorage.getItem('weave_theme') || 'dark');
   refreshKeyIndicator();
   // Show welcome on first visit
-  if (!localStorage.getItem('siip_welcomed')) openWelcome();
+  if (!localStorage.getItem('weave_welcomed')) openWelcome();
   populateCourseSuggestions();
 });
 

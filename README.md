@@ -1,5 +1,5 @@
 ---
-title: ArmChair
+title: Weave
 emoji: 🪑
 colorFrom: indigo
 colorTo: gray
@@ -12,7 +12,7 @@ pinned: false
      It's ignored on GitHub (rendered as a metadata table) and required by HF.
      Deploy flow: deploy/HUGGINGFACE.md -->
 
-# ArmChair
+# Weave
 
 UIUC MechSE curriculum mapping. Finds **non-obvious cross-domain connections**
 between course topics (ME 340 spring-mass ↔ ECE 206 RLC circuit — same
@@ -27,7 +27,7 @@ second-order ODE, different department).
 
 A research tool for mapping conceptual overlap across a curriculum. Standard
 similarity engines surface obvious same-domain matches (ME 340 ↔ ME 310 — both
-mechanical). SIIP is built to surface the **non-obvious** ones — courses whose
+mechanical). Weave is built to surface the **non-obvious** ones — courses whose
 topics are mathematically/structurally similar but live in different
 departments. The driving insight (from supervisor Eliot Bethke): *"semantic
 similarity on topic:definition strings, weighted by dissimilarity of category

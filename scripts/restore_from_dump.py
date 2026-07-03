@@ -1,5 +1,5 @@
 """
-Restore the full SIIP dataset from data/courses_dump.json.
+Restore the full Weave dataset from data/courses_dump.json.
 
 This is the recovery path when the cloud Postgres has been wiped (e.g. after
 the free-tier instance was reclaimed). The dump is the canonical snapshot of

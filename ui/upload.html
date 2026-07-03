@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIIP — Upload Syllabus</title>
+  <title>Weave — Upload Syllabus</title>
   <script src="config.js" onerror="this.remove();"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -300,7 +300,7 @@
 <body>
 
 <nav>
-  <span class="nav-brand">SIIP</span>
+  <span class="nav-brand">Weave</span>
   <div class="nav-links">
     <a class="nav-link" href="/">Graph</a>
     <a class="nav-link" href="/?view=explorer">Explorer</a>
@@ -422,8 +422,8 @@
 </div>
 
 <script>
-const API = (typeof window.__SIIP_API__ === 'string' && window.__SIIP_API__)
-  ? window.__SIIP_API__.replace(/\/+$/, '')
+const API = (typeof window.__WEAVE_API__ === 'string' && window.__WEAVE_API__)
+  ? window.__WEAVE_API__.replace(/\/+$/, '')
   : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
       ? 'http://localhost:8080'
       : window.location.origin);

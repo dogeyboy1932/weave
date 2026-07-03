@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="SIIP Semantic Similarity API",
+    title="Weave Semantic Similarity API",
     description=(
         "Hybrid IR + vector course-similarity engine. "
         "Uses Dirichlet-smoothed JSD (lexical) + SciNCL cosine similarity (semantic)."

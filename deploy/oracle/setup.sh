@@ -11,18 +11,18 @@
 #   rsync -az --delete \
 #     --exclude '.git' --exclude '.archive' --exclude '__pycache__' \
 #     --exclude '.venv' --exclude 'node_modules' --exclude '.model_cache' \
-#     "/path/to/akhil_app/"  ubuntu@ORACLE_IP:~/armchair/
-#   ssh ubuntu@ORACLE_IP 'cd ~/armchair && bash deploy/oracle/setup.sh'
+#     "/path/to/weave/"  ubuntu@ORACLE_IP:~/weave/
+#   ssh ubuntu@ORACLE_IP 'cd ~/weave && bash deploy/oracle/setup.sh'
 #
 # DATABASE_URL is read from the rsync'd .env. If you excluded .env, pass it:
-#   ssh ubuntu@ORACLE_IP 'cd ~/armchair && DATABASE_URL=... bash deploy/oracle/setup.sh'
+#   ssh ubuntu@ORACLE_IP 'cd ~/weave && DATABASE_URL=... bash deploy/oracle/setup.sh'
 #
 # Re-running is safe/idempotent: rebuilds and restarts.
 set -euo pipefail
 
 PORT="${PORT:-8080}"
-IMAGE="armchair-api"
-CONTAINER="armchair"
+IMAGE="weave-api"
+CONTAINER="weave"
 
 # Repo root = two levels up from this script (deploy/oracle/setup.sh).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

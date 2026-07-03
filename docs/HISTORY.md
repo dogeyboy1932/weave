@@ -1,4 +1,4 @@
-# SIIP / akhil_app — Complete History
+# Weave (formerly SIIP / akhil_app) — Complete History
 
 This is the consolidated, change-by-change record of every meaningful thing
 that has happened on this project, from the original UIUC cPanel site through

@@ -1,4 +1,4 @@
-# SIIP — single source of truth for all non-secret configuration.
+# Weave — single source of truth for all non-secret configuration.
 #
 # Secrets stay in environment variables (DATABASE_URL, GEMINI_API_KEY).
 # Any value here can be overridden by a matching environment variable —

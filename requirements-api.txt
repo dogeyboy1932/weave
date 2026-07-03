@@ -1,4 +1,4 @@
-# Production runtime deps for the SIIP backend on Fly.io.
+# Production runtime deps for the Weave backend on Fly.io.
 # Matches local capabilities: PDF ingest, SciNCL embedding, topic/category LLM
 # pipelines, scoring, graph build. Use pgvector instead of Milvus.
 

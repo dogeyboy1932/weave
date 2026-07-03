@@ -1,4 +1,4 @@
-# Armchair — Quick Context for Claude
+# Weave — Quick Context for Claude
 
 A locally-runnable semantic similarity engine for 35 UIUC MechSE courses. Goal:
 surface **non-obvious cross-domain connections** between course topics

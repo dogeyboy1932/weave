@@ -1,4 +1,4 @@
-# SIIP Architecture
+# Weave Architecture
 
 Single source of truth for system design, file layout, scoring math, APIs, and UI.
 For the user-facing "what is this and what can I do with it" pitch see `README.md`.

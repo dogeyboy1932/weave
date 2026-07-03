@@ -1,4 +1,4 @@
-# Deploying ArmChair to Hugging Face Spaces (free, $0/mo)
+# Deploying Weave to Hugging Face Spaces (free, $0/mo)
 
 This is the **free** replacement for the Fly.io host. Fly's old $5/mo hobby
 credit is gone, so an always-on 2 GB machine there now bills ~$4–6/mo. HF
@@ -19,11 +19,11 @@ awake. For burst-usage evaluation by the team, that's fine.
 
 ### 1. Create the Space
 - Go to https://huggingface.co/new-space
-- **Owner / name:** e.g. `your-username/armchair`
+- **Owner / name:** e.g. `your-username/weave`
 - **SDK:** Docker → **Blank** template
 - **Hardware:** CPU basic (free)
 - Create it. You'll get a git URL like
-  `https://huggingface.co/spaces/your-username/armchair`.
+  `https://huggingface.co/spaces/your-username/weave`.
 
 ### 2. Add the database secret
 In the Space's **Settings → Variables and secrets → New secret**:
@@ -65,7 +65,7 @@ The Space is its own git repo. Add it as a second remote and push:
 
 ```bash
 # from the repo root
-git remote add space https://huggingface.co/spaces/your-username/armchair
+git remote add space https://huggingface.co/spaces/your-username/weave
 git push space main
 ```
 
@@ -73,7 +73,7 @@ If HF asks for credentials, use your HF username + an access token
 (https://huggingface.co/settings/tokens, "write" scope) as the password.
 
 That's it. HF builds the root `Dockerfile`, and the Space goes live at
-`https://your-username-armchair.hf.space`.
+`https://your-username-weave.hf.space`.
 
 ---
 

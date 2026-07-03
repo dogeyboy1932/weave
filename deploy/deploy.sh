@@ -108,7 +108,7 @@ for i in $(seq 1 30); do
   if curl -sf "${URL}/health" >/dev/null; then
     echo ""
     echo "════════════════════════════════════════════════════════════"
-    echo "  ✓ SIIP is live at: $URL"
+    echo "  ✓ Weave is live at: $URL"
     echo "════════════════════════════════════════════════════════════"
     echo ""
     echo "  Graph view:  $URL"

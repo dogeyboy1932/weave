@@ -1,4 +1,4 @@
-# Deploy Armchair on Oracle Cloud (Always Free, $0/mo)
+# Deploy Weave on Oracle Cloud (Always Free, $0/mo)
 
 Current architecture (Phase 12): **one container** (`Dockerfile.api`) that connects
 to your existing **Supabase Postgres** via `DATABASE_URL`. No databases run on the
@@ -18,7 +18,7 @@ legacy multi-service stack in `.archive/`.
 
    | Setting | Value |
    |---|---|
-   | Name | `armchair-prod` |
+   | Name | `weave-prod` |
    | Image | **Ubuntu 22.04** (Canonical) |
    | Shape | **Ampere → VM.Standard.A1.Flex** |
    | OCPUs / Memory | **2 OCPU / 12 GB** (min **1 / 6**) |
@@ -41,10 +41,10 @@ Oracle blocks everything but port 22 by default:
 
 ## Part 2 — Deploy (rsync — the repo is private, so no GitHub clone on the VM)
 
-The `armchair` repo is private, so the VM can't pull it. Instead, copy the code
+The repo is private, so the VM can't pull it. Instead, copy the code
 **up from your laptop** with rsync — no GitHub credentials ever touch the cloud VM.
 
-**From your laptop** (run in the repo root, `akhil_app/`). Your `.env` (with
+**From your laptop** (run in the repo root, `weave/`). Your `.env` (with
 `DATABASE_URL`) is copied up too so the container can reach Supabase:
 
 ```bash
@@ -52,18 +52,18 @@ rsync -az --delete \
   --exclude '.git' --exclude '.archive' --exclude '__pycache__' \
   --exclude '.venv' --exclude 'node_modules' --exclude '.model_cache' \
   -e "ssh -i ~/Downloads/ssh-key-*.key" \
-  ./  ubuntu@YOUR_ORACLE_IP:~/armchair/
+  ./  ubuntu@YOUR_ORACLE_IP:~/weave/
 ```
 
 Then run the installer on the VM:
 
 ```bash
 ssh -i ~/Downloads/ssh-key-*.key ubuntu@YOUR_ORACLE_IP \
-  'cd ~/armchair && bash deploy/oracle/setup.sh'
+  'cd ~/weave && bash deploy/oracle/setup.sh'
 ```
 
 > If you'd rather NOT copy `.env`, add `--exclude '.env'` to the rsync and pass the
-> URL to the installer instead: `... 'cd ~/armchair && DATABASE_URL="..." bash deploy/oracle/setup.sh'`
+> URL to the installer instead: `... 'cd ~/weave && DATABASE_URL="..." bash deploy/oracle/setup.sh'`
 
 The script installs Docker, adds swap if needed, opens the host firewall, builds the
 ARM image (downloads torch + SciNCL — 20–40 min first time), starts the container
@@ -93,9 +93,9 @@ curl http://127.0.0.1:8080/health          # {"status":"ok"} on the server
 
 ```bash
 # On the VM:
-docker logs -f armchair                     # follow logs
-docker restart armchair                     # bounce
-docker rm -f armchair                        # stop (image stays)
+docker logs -f weave                     # follow logs
+docker restart weave                     # bounce
+docker rm -f weave                        # stop (image stays)
 
 # To update: re-run the rsync + install from your laptop (see Part 2).
 ```

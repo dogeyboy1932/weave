@@ -1,4 +1,4 @@
-# Fly.io deploy config for SIIP.
+# Fly.io deploy config for Weave.
 # Fly hosts the API *and* the static UI from `ui/` on the same origin.
 # Single database: Supabase (Postgres + pgvector). Set as a secret:
 #   fly secrets set DATABASE_URL=...
