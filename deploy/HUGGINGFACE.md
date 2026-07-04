@@ -61,16 +61,19 @@ TLS works out of the box.
 > may not auto-apply — hit **Settings → Factory reboot** to restart with it.
 
 ### 3. Push this repo to the Space
-The Space is its own git repo. Add it as a second remote and push:
+The Space is its own git repo. The deploy script wires up the `space` remote
+(over SSH) and pushes a history-free snapshot for you:
 
 ```bash
-# from the repo root
-git remote add space https://huggingface.co/spaces/your-username/weave
-git push space main
+# from the repo root — register your SSH key first (see below), then:
+HF_SPACE=your-username/weave deploy/hf-deploy.sh
 ```
 
-If HF asks for credentials, use your HF username + an access token
-(https://huggingface.co/settings/tokens, "write" scope) as the password.
+Auth is over SSH: add your public key once at
+https://huggingface.co/settings/keys (`cat ~/.ssh/id_rsa.pub`). Don't push the
+repo's full history directly — HF rejects the historical binary blobs in
+`samples/`; see **Redeploying after code changes** below for why the script
+snapshots instead.
 
 That's it. HF builds the root `Dockerfile`, and the Space goes live at
 `https://your-username-weave.hf.space`.
@@ -114,9 +117,21 @@ to the GitHub `origin` does.)
 
 ## Redeploying after code changes
 ```bash
-git push space main   # rebuilds the Space
+deploy/hf-deploy.sh          # snapshot current main -> Space, wait for RUNNING
+# HF_SPACE=owner/space deploy/hf-deploy.sh   # override the target Space
 ```
-No script, no CLI login — HF rebuilds on push.
+The Space carries a **single flat snapshot commit**, not the repo's real git
+history, so a plain `git push space main` no longer works:
+
+- HF's pre-receive hook **rejects the historical binary blobs** in `samples/`
+  (long since deleted, but still in the repo's real history), and
+- the Space history has diverged from `main` (its seed commit isn't an ancestor),
+  so a fast-forward push is refused.
+
+`deploy/hf-deploy.sh` sidesteps both: it builds an orphan (history-free) commit
+of the current tree and force-pushes it as the Space's `main`. Your GitHub
+`origin` and its full history are never touched. Auth is over SSH — register your
+key once at https://huggingface.co/settings/keys (the script checks for you).
 
 ## Running maintenance scripts
 Free Spaces don't offer an SSH console. To run one-off ops (e.g.
