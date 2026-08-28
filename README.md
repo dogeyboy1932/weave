@@ -14,6 +14,8 @@ pinned: false
 
 # Weave
 
+![Weave](docs/screenshot.png)
+
 UIUC MechSE curriculum mapping. Finds **non-obvious cross-domain connections**
 between course topics (ME 340 spring-mass ↔ ECE 206 RLC circuit — same
 second-order ODE, different department).
